@@ -2,8 +2,8 @@
 // Configuración de base de datos
 define('DB_HOST', 'localhost');
 define('DB_USER', 'root');
-define('DB_PASS', 'root');
-define('DB_NAME', 'agenciaviajes');
+define('DB_PASS', '');
+define('DB_NAME', 'agencia_viajes');
 
 // URL raíz
 define('URLROOT', 'http://localhost/agencia');
