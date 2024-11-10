@@ -3,3 +3,9 @@
   color: var(--text-color);
   margin-bottom: 2rem;
 }
+
+.wrapp-empleados {
+  background-color: white;
+  padding: 2rem 2rem;
+  border-radius: 0.75rem;
+}

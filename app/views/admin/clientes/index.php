@@ -1,12 +1,15 @@
-<?php 
-require_once ROOT . '/app/views/templates/TableHelper.php';
 
-?>
+<div class="clientes">
+  <div class="wrapp-title">
+    <h1 class="title"><?php echo $title; ?></h1>
+    <a class="btn btn-primary">
+    Agregar cliente
+    </a>
 
-<div class="dashboard">
-  <h1><?php echo $title; ?></h1>
+  </div>
   <!-- Contenido del Dashboard -->
-  <table id="miTabla" class="display table">
+  <div class="wrapp-clientes">
+     <table id="miTabla" class="display table">
     <thead>
         <tr>
             <th>ID</th>
@@ -26,4 +29,6 @@ require_once ROOT . '/app/views/templates/TableHelper.php';
         }?>
     </tbody>
   </table>
+  </div>
+ 
 </div>
