@@ -3,7 +3,7 @@ class VueloModel extends Model {
 
     // Obtener todos los vuelos
     public function getAll() {
-        $sql = "SELECT ID_vuelo, num_vuelo, ciudad_origen, ciudad_destino, fecha_salida, fecha_llegada, precio FROM vuelo";
+        $sql = "SELECT v.ID_vuelo, v.num_vuelo, c.Nombre as 'ciudad_origen', c2.Nombre as 'ciudad_destino', v.fecha_salida, v.fecha_llegada, v.precio FROM vuelo v INNER JOIN ciudad c on v.Ciudad_Origen = c.ID_Ciudad INNER JOIN ciudad c2 on v.Ciudad_Destino = c2.ID_Ciudad;";
         $stmt = $this->executeQuery($sql);
         $vuelos = [];
         

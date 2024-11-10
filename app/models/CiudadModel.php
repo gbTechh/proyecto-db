@@ -3,15 +3,17 @@ class CiudadModel extends Model {
 
     // Obtener todas las ciudades
     public function getAll() {
-        $sql = "SELECT ID_ciudad, nombre, pais FROM ciudad";
+        $sql = "SELECT c.ID_Ciudad, c.Nombre, c.Pais, COUNT(DISTINCT g.ID_Guia) as cant_guias, COUNT(DISTINCT h.ID_Hotel) as cant_hoteles FROM ciudad c LEFT JOIN guia_turistico g ON g.ID_Ciudad = c.ID_Ciudad LEFT JOIN hotel h ON h.ID_Ciudad = c.ID_Ciudad GROUP BY c.ID_Ciudad, c.Nombre, c.Pais";
         $stmt = $this->executeQuery($sql);
         $ciudades = [];
         
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $ciudades[] = new Ciudad(
-                $row['ID_ciudad'],
-                $row['nombre'],
-                $row['pais']
+                $row['ID_Ciudad'],
+                $row['Nombre'],
+                $row['Pais'],
+                $row['cant_guias'],
+                $row['cant_hoteles'],
             );
         }
         
@@ -28,7 +30,9 @@ class CiudadModel extends Model {
             return new Ciudad(
                 $row['ID_ciudad'],
                 $row['nombre'],
-                $row['pais']
+                $row['pais'],
+                $row['cant_guias'],
+                $row['cant_hoteles'],
             );
         }
         return null;

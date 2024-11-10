@@ -1,0 +1,94 @@
+.wrapp-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-direction: row;
+  margin-bottom: 2rem;
+
+}
+.title {
+  width: 100%;
+  color: var(--text-color);
+  display: flex;
+  align-items: center;
+}
+
+.wrapp-vuelos {
+  padding: 1rem 0;
+  border-radius: 0.75rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, max(300px, calc(25% - 1rem))), 1fr));
+  gap: 1rem;
+}
+
+.flight-card {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 1rem;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+  width: 100%;
+  transition: box-shadow 0.3s ease;
+
+  span {
+    font-family: var(--font-body);
+  }
+}
+
+.flight-card:hover {
+  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+}
+
+.flight-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 0.8px solid var(--border-color);
+}
+
+.flight-number {
+  font-size: var(--font-md);
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+.flight-price {
+  font-size: var(--font-xl);
+  font-weight: 700;
+  color: #2563eb;
+}
+
+.flight-info {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+  gap: 0.75rem;
+}
+
+.flight-info i {
+  font-size: var(--font-xl);
+  color: var(--text-color-contrast);
+}
+
+.info-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.info-label {
+  font-size: var(--font-sm);
+  color: var(--text-color-contrast);
+}
+
+.info-value {
+  font-weight: 500;
+  font-size: var(--font-md);
+  color: var(--text-color);
+}
+
+.flight-times {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1rem;
+}

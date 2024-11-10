@@ -53,8 +53,20 @@
                     </li>
                     <li class="nav-link">
                         <a href="#viajes">
-                            <i class='bx bx-world icon'></i>
+                            <i class='bx bx-map icon'></i>
                             <span class="text nav-text">Viajes</span>
+                        </a>
+                    </li>
+                    <li class="nav-link">
+                         <a href="<?php echo URLROOT . "/admin/vuelos"?>">
+                            <i class='bx bxs-plane-take-off icon'></i>
+                            <span class="text nav-text">Vuelos</span>
+                        </a>
+                    </li>
+                    <li class="nav-link">
+                         <a href="<?php echo URLROOT . "/admin/ciudades"?>">
+                            <i class='bx bx-world icon'></i>
+                            <span class="text nav-text">Ciudades</span>
                         </a>
                     </li>
                 </ul>
