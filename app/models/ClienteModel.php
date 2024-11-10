@@ -24,10 +24,11 @@ class ClienteModel extends Model {
 
     public function crear(Cliente $cliente) {
         try {
-            $sql = "INSERT INTO cliente (Nombre, Apellidos, Telefono, Email, c_username, c_password) 
-                    VALUES (:nombre, :apellidos, :telefono, :email, :username, :password)";
+            $sql = "INSERT INTO cliente (DNI, Nombre, Apellidos, Telefono, Email, c_username, c_password) 
+                    VALUES (:dni, :nombre, :apellidos, :telefono, :email, :username, :password)";
             
             $params = [
+                ':dni' => $cliente->getID(),
                 ':nombre' => $cliente->getNombre(),
                 ':apellidos' => $cliente->getApellidos(),
                 ':telefono' => $cliente->getTelefono(),

@@ -19,6 +19,18 @@
     <!-- Contenido del Dashboard -->
     <div class="wrapp-clientes">
       <div class="form-group">
+            <label for="dni">DNI *</label>
+            <input type="text" 
+                   id="dni" 
+                   name="dni" 
+                   value="<?php echo isset($old['dni']) ? htmlspecialchars($old['dni']) : ''; ?>"
+                   class="form-control <?php echo isset($errors['dni']) ? 'is-invalid' : ''; ?>"
+                   required>
+            <?php if (isset($errors['dni'])): ?>
+                <div class="invalid-feedback"><?php echo $errors['dni']; ?></div>
+            <?php endif; ?>
+        </div>
+      <div class="form-group">
             <label for="nombre">Nombre *</label>
             <input type="text" 
                    id="nombre" 
@@ -70,13 +82,25 @@
         </div>
 
         <div class="form-group">
-            <label for="direccion">Dirección</label>
-            <textarea id="direccion" 
-                      name="direccion" 
-                      class="form-control <?php echo isset($errors['direccion']) ? 'is-invalid' : ''; ?>"
-                      rows="3"><?php echo isset($old['direccion']) ? htmlspecialchars($old['direccion']) : ''; ?></textarea>
-            <?php if (isset($errors['direccion'])): ?>
-                <div class="invalid-feedback"><?php echo $errors['direccion']; ?></div>
+            <label for="username">Nombre de usuario</label>
+            <input type="text" 
+                   id="username" 
+                   name="username" 
+                   value="<?php echo isset($old['username']) ? htmlspecialchars($old['username']) : ''; ?>"
+                   class="form-control <?php echo isset($errors['username']) ? 'is-invalid' : ''; ?>">
+            <?php if (isset($errors['username'])): ?>
+                <div class="invalid-feedback"><?php echo $errors['username']; ?></div>
+            <?php endif; ?>
+        </div>
+        <div class="form-group">
+            <label for="password">Contraseña</label>
+            <input type="password" 
+                   id="password" 
+                   name="password" 
+                   value="<?php echo isset($old['password']) ? htmlspecialchars($old['password']) : ''; ?>"
+                   class="form-control <?php echo isset($errors['password']) ? 'is-invalid' : ''; ?>">
+            <?php if (isset($errors['password'])): ?>
+                <div class="invalid-feedback"><?php echo $errors['password']; ?></div>
             <?php endif; ?>
         </div>
 

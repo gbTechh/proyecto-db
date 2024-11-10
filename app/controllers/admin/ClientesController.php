@@ -38,19 +38,17 @@ class ClientesController extends AdminController {
             try {
                 // Validar datos
                 $errors = $this->validarDatos($_POST);
-                
                 if (empty($errors)) {
                     // Crear cliente
                     $cliente = new Cliente(
                         $_POST['dni'],
                         $_POST['nombre'],
                         $_POST['apellidos'],
-                        $_POST['email'],
                         $_POST['telefono'],
+                        $_POST['email'],
                         $_POST['username'],
                         $_POST['password'],
                     );
-
                     $this->clienteModel->crear($cliente);
                     
                     // Redirigir con mensaje de éxito
