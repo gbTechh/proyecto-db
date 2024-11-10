@@ -22,6 +22,42 @@ class ClienteModel extends Model {
         return $clientes;
     }
 
+    public function crear(Cliente $cliente) {
+        try {
+            $sql = "INSERT INTO cliente (Nombre, Apellidos, Telefono, Email, c_username, c_password) 
+                    VALUES (:nombre, :apellidos, :telefono, :email, :username, :password)";
+            
+            $params = [
+                ':nombre' => $cliente->getNombre(),
+                ':apellidos' => $cliente->getApellidos(),
+                ':telefono' => $cliente->getTelefono(),
+                ':email' => $cliente->getEmail(),
+                ':username' => $cliente->getUsername(),
+                ':password' => $cliente->getPassword()
+            ];
+
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute($params);
+            
+            return $this->db->lastInsertId();
+        } catch (PDOException $e) {
+            throw new Exception("Error al crear cliente: " . $e->getMessage());
+        }    
+    }
+
+    public function existeEmail($email, $excludeId = null) {
+        $sql = "SELECT COUNT(*) FROM cliente WHERE email = :email";
+        $params = [':email' => $email];
+        
+        if ($excludeId !== null) {
+            $sql .= " AND id != :id";
+            $params[':id'] = $excludeId;
+        }
+        
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute($params);
+        return $stmt->fetchColumn() > 0;
+    }
    
 
 }

@@ -2,7 +2,7 @@
 <div class="clientes">
   <div class="wrapp-title">
     <h1 class="title"><?php echo $title; ?></h1>
-    <a class="btn btn-primary">
+    <a class="btn btn-primary" href="clientes/crear">
     Agregar cliente
     </a>
 
