@@ -317,6 +317,29 @@ CREATE TABLE `viaje` (
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `transporte`
+--
+
+CREATE TABLE `transporte` (
+  `ID_transporte` int(11) NOT NULL,
+  `Telefono` varchar(20) DEFAULT NULL,
+  `empresa` varchar(50) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `transporte_paquete`
+--
+
+CREATE TABLE `transporte_paquete` (
+  `ID_transporte` int(11) NOT NULL,
+  `ID_Paquete` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `viaje_vuelo`
 --
 
@@ -460,6 +483,12 @@ ALTER TABLE `viaje`
   ADD PRIMARY KEY (`ID_Viaje`);
 
 --
+-- Indices de la tabla `transporte`
+--
+ALTER TABLE `transporte`
+  ADD PRIMARY KEY (`ID_transporte`);
+
+--
 -- Indices de la tabla `viaje_vuelo`
 --
 ALTER TABLE `viaje_vuelo`
@@ -489,6 +518,13 @@ ALTER TABLE `empleado`
 --
 ALTER TABLE `guia_turistico`
   ADD CONSTRAINT `guia_turistico_ibfk_1` FOREIGN KEY (`ID_Ciudad`) REFERENCES `ciudad` (`ID_Ciudad`);
+
+--
+-- Filtros para la tabla `transporte_paquete`
+--
+ALTER TABLE `transporte_paquete`
+  ADD CONSTRAINT `transporte_paquete_ibfk_1` FOREIGN KEY (`ID_transporte`) REFERENCES `transporte` (`ID_transporte`),
+  ADD CONSTRAINT `transporte_paquete_ibfk_2` FOREIGN KEY (`ID_Paquete`) REFERENCES `paquete_turistico` (`ID_Paquete`);
 
 --
 -- Filtros para la tabla `hotel`
