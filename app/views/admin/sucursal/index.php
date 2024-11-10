@@ -12,16 +12,14 @@
     <table id="miTabla" class="display table">
     <thead>
         <tr>
-            <th>ID</th>
             <th>Nombre</th>
             <th>Teléfono</th>
-            <th>Email</th>
+            <th>Dirección</th>
         </tr>
     </thead>
     <tbody>
         <?php foreach ($sucursales as $sucursal) {
-           echo "<tr>";
-            echo "<td>" . $sucursal->getID() . "</td>";
+            echo "<tr>";
             echo "<td>" . $sucursal->getNombre()  . "</td>";
             echo "<td>" . $sucursal->getTelefono()  . "</td>";
             echo "<td>" . $sucursal->getDireccion()  . "</td>";

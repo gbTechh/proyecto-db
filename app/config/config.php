@@ -1,9 +1,9 @@
 <?php
 // Configuración de base de datos
 define('DB_HOST', 'localhost');
-define('DB_USER', 'enkit');
-define('DB_PASS', '123');
-define('DB_NAME', 'agencia');
+define('DB_USER', 'root');
+define('DB_PASS', 'root');
+define('DB_NAME', 'agenciaviajes');
 
 // URL raíz
 define('URLROOT', 'http://localhost/agencia');

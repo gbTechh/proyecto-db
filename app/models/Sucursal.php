@@ -20,7 +20,7 @@ class Sucursal {
   public function getTelefono() { return $this->telefono; }
 
   // Setters
-  public function setID($id) { $this->ID_sucursal = $id; }
+  //public function setID($id) { $this->ID_sucursal = $id; } no debe modificarse
   public function setNombre($nombre) { $this->nombre = $nombre; }
   public function setTelefono($telefono) { $this->telefono = $telefono; }
   public function setDireccion($direccion) { $this->direccion = $direccion; }
