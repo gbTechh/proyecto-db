@@ -8,8 +8,8 @@
 
   </div>
   <!-- Contenido del Dashboard -->
-  <div class="wrapp-clientes">
-     <table id="miTabla" class="display table">
+  <div class="wrapp-sucursal">
+    <table id="miTabla" class="display table">
     <thead>
         <tr>
             <th>ID</th>
