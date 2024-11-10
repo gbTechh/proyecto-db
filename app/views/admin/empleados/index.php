@@ -4,7 +4,7 @@ require_once ROOT . '/app/views/templates/TableHelper.php';
 ?>
 
 <div class="dashboard">
-  <h1><?php echo $title; ?></h1>
+  <h1 class="title"><?php echo $title; ?></h1>
   <!-- Contenido del Dashboard -->
   <table id="miTabla" class="display table">
     <thead>

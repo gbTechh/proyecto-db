@@ -15,7 +15,12 @@
     <div class="container">
         <?php include ROOT . '/app/views/templates/navbar-admin.php'; ?>
         <main class="main-admin">
-            <?php echo $content; ?>
+            <div class="header">
+                as
+            </div>
+            <div class="body">
+                <?php echo $content; ?>
+            </div>
         </main>
     </div>
 
