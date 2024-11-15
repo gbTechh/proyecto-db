@@ -34,7 +34,6 @@ switch($action) {
                 $_POST['nombre'],
             );
 
-            var_dump($errors);
           
             if (empty($errors) && $sucursalModel->crear($nuevaSucursal)) { 
                 header('Location: ' . URLROOT . '/admin/sucursales.php');
