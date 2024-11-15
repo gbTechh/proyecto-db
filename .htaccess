@@ -1,0 +1,12 @@
+# .htaccess en la raíz
+RewriteEngine On
+
+# Si la petición es para admin, déjala pasar
+RewriteRule ^admin/ - [L]
+
+# Si no es admin, redirige todo a la carpeta public
+# pero mantén la URL original sin mostrar "public"
+RewriteCond %{REQUEST_URI} !^/admin/
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ public/$1 [L]
