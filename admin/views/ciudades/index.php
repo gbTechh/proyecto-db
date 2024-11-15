@@ -1,4 +1,4 @@
- <?php include ROOT . '/app/views/templates/formateDate.php'; ?>
+
 <div class="vuelos">
   <div class="wrapp-title">
     <h1 class="title"><?php echo $title; ?></h1>
