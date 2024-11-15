@@ -7,8 +7,8 @@ $data = [
   'description' => 'Página de inicio'
 ];
 
-$styles = ['home']; // Cargará /assets/admin/css/home.css
-$scripts = ['home']; // Cargará /assets/admin/js/sucursal.js
+$styles = ['home']; // Cargará /assets/public/css/home.css
+$scripts = ['home']; // Cargará /assets/public/js/home.js
 
 
 //RUTAS
