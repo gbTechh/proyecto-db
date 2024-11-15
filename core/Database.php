@@ -1,98 +1,54 @@
 <?php
 class Database {
     private static $instance = null;
-    private $connection;
-    private $statement;
+    private $conn;
 
     private function __construct() {
         try {
-            $dsn = "mysql:host=" . DB_HOST . ";dbname=" . DB_NAME . ";charset=utf8mb4";
-            $options = [
-                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-                PDO::ATTR_EMULATE_PREPARES => false
-            ];
-            
-            $this->connection = new PDO($dsn, DB_USER, DB_PASS, $options);
+            $this->conn = new PDO(
+                "mysql:host=" . DB_HOST . ";dbname=" . DB_NAME . ";charset=utf8mb4",
+                DB_USER, 
+                DB_PASS,
+                [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]
+            );
         } catch(PDOException $e) {
-            throw new Exception("Error de conexión: " . $e->getMessage());
+            die("Error de conexión: " . $e->getMessage());
         }
     }
 
-    // Patrón Singleton
     public static function getInstance() {
-        if (self::$instance === null) {
+        if (!self::$instance) {
             self::$instance = new self();
         }
         return self::$instance;
     }
 
-    // Preparar consulta
-    public function query($sql) {
-        $this->statement = $this->connection->prepare($sql);
-        return $this;
+    public function query($sql, $params = []) {
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute($params);
+        return $stmt;
     }
 
-    // Vincular valores
-    public function bind($param, $value, $type = null) {
-        if (is_null($type)) {
-            switch (true) {
-                case is_int($value):
-                    $type = PDO::PARAM_INT;
-                    break;
-                case is_bool($value):
-                    $type = PDO::PARAM_BOOL;
-                    break;
-                case is_null($value):
-                    $type = PDO::PARAM_NULL;
-                    break;
-                default:
-                    $type = PDO::PARAM_STR;
-            }
+    public function getAll($sql, $params = []) {
+        return $this->query($sql, $params)->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getOne($sql, $params = []) {
+        return $this->query($sql, $params)->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public function insert($sql, $params = []) {
+        $this->query($sql, $params);
+        return $this->conn->lastInsertId();
+    }
+
+    public function executeQuery($sql, $params = []) {
+        try {
+            $stmt = $this->conn->prepare($sql);
+            $stmt->execute($params);
+            return $stmt;
+        } catch (PDOException $e) {
+            die("Error en la consulta: " . $e->getMessage());
         }
-        $this->statement->bindValue($param, $value, $type);
-        return $this;
-    }
-
-    // Ejecutar consulta
-    public function execute() {
-        return $this->statement->execute();
-    }
-
-    // Obtener un solo registro
-    public function single() {
-        $this->execute();
-        return $this->statement->fetch();
-    }
-
-    // Obtener todos los registros
-    public function all() {
-        $this->execute();
-        return $this->statement->fetchAll();
-    }
-
-    // Obtener cantidad de filas afectadas
-    public function rowCount() {
-        return $this->statement->rowCount();
-    }
-
-    // Obtener último ID insertado
-    public function lastInsertId() {
-        return $this->connection->lastInsertId();
-    }
-
-    // Iniciar transacción
-    public function beginTransaction() {
-        return $this->connection->beginTransaction();
-    }
-
-    // Confirmar transacción
-    public function commit() {
-        return $this->connection->commit();
-    }
-
-    // Revertir transacción
-    public function rollBack() {
-        return $this->connection->rollBack();
     }
 }

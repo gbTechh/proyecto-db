@@ -1,34 +1,13 @@
--- phpMyAdmin SQL Dump
--- version 5.2.1
--- https://www.phpmyadmin.net/
---
--- Servidor: 127.0.0.1
--- Tiempo de generación: 09-11-2024 a las 20:05:09
--- Versión del servidor: 10.4.32-MariaDB
--- Versión de PHP: 8.2.12
-
-SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-START TRANSACTION;
-SET time_zone = "+00:00";
 
 
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8mb4 */;
-
---
--- Base de datos: `agenciaviajes`
---
-
--- --------------------------------------------------------
+------------------------------------------------------
 
 --
 -- Estructura de tabla para la tabla `ciudad`
 --
 
 CREATE TABLE `ciudad` (
-  `ID_Ciudad` int(11) NOT NULL,
+  `ID_Ciudad` int(11) NOT NULL AUTO_INCREMENT,
   `Nombre` varchar(100) DEFAULT NULL,
   `Pais` varchar(100) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -124,7 +103,7 @@ INSERT INTO `empleado` (`DNI`, `Nombre`, `Apellidos`, `Telefono`, `ID_Sucursal`,
 --
 
 CREATE TABLE `guia_turistico` (
-  `ID_Guia` int(11) NOT NULL,
+  `ID_Guia` int(11) NOT NULL AUTO_INCREMENT,
   `Nombre` varchar(100) DEFAULT NULL,
   `Telefono` varchar(20) DEFAULT NULL,
   `Idioma` varchar(50) DEFAULT NULL,
@@ -138,7 +117,7 @@ CREATE TABLE `guia_turistico` (
 --
 
 CREATE TABLE `hotel` (
-  `ID_Hotel` int(11) NOT NULL,
+  `ID_Hotel` int(11) NOT NULL AUTO_INCREMENT,
   `Nombre` varchar(100) DEFAULT NULL,
   `Direccion` varchar(255) DEFAULT NULL,
   `Categoria` varchar(50) DEFAULT NULL,
@@ -154,7 +133,7 @@ CREATE TABLE `hotel` (
 --
 
 CREATE TABLE `pago` (
-  `ID_Pago` int(11) NOT NULL,
+  `ID_Pago` int(11) NOT NULL AUTO_INCREMENT,
   `Monto` decimal(10,2) DEFAULT NULL,
   `Fecha` date DEFAULT NULL,
   `Estado` varchar(50) DEFAULT NULL,
@@ -191,7 +170,7 @@ CREATE TABLE `paquete_servicio` (
 --
 
 CREATE TABLE `paquete_turistico` (
-  `ID_Paquete` int(11) NOT NULL,
+  `ID_Paquete` int(11) NOT NULL AUTO_INCREMENT,
   `Nombre` varchar(100) DEFAULT NULL,
   `Descripcion` text DEFAULT NULL,
   `Precio` decimal(10,2) DEFAULT NULL
@@ -204,7 +183,7 @@ CREATE TABLE `paquete_turistico` (
 --
 
 CREATE TABLE `promocion` (
-  `ID_Promocion` int(11) NOT NULL,
+  `ID_Promocion` int(11) NOT NULL AUTO_INCREMENT,
   `Descripcion` text DEFAULT NULL,
   `Descuento` decimal(5,2) DEFAULT NULL,
   `Periodo_Validez` varchar(50) DEFAULT NULL,
@@ -218,7 +197,7 @@ CREATE TABLE `promocion` (
 --
 
 CREATE TABLE `proveedor` (
-  `ID_Proveedor` int(11) NOT NULL,
+  `ID_Proveedor` int(11) NOT NULL AUTO_INCREMENT,
   `Nombre` varchar(100) DEFAULT NULL,
   `Direccion` varchar(255) DEFAULT NULL,
   `Telefono` varchar(20) DEFAULT NULL,
@@ -254,7 +233,7 @@ CREATE TABLE `proveedor_servicio` (
 --
 
 CREATE TABLE `reserva` (
-  `ID_Reserva` int(11) NOT NULL,
+  `ID_Reserva` int(11) NOT NULL AUTO_INCREMENT,
   `Fecha` date DEFAULT NULL,
   `Num_Personas` int(11) DEFAULT NULL,
   `Estado` varchar(50) DEFAULT NULL,
@@ -270,7 +249,7 @@ CREATE TABLE `reserva` (
 --
 
 CREATE TABLE `servicio` (
-  `ID_Servicio` int(11) NOT NULL,
+  `ID_Servicio` int(11) NOT NULL AUTO_INCREMENT,
   `Tipo_Transporte` varchar(100) DEFAULT NULL,
   `Empresa` varchar(100) DEFAULT NULL,
   `Costo` decimal(10,2) DEFAULT NULL
@@ -283,7 +262,7 @@ CREATE TABLE `servicio` (
 --
 
 CREATE TABLE `sucursal` (
-  `ID_Sucursal` int(11) NOT NULL,
+  `ID_Sucursal` int(11) NOT NULL AUTO_INCREMENT,
   `Direccion` varchar(255) DEFAULT NULL,
   `Telefono` varchar(20) DEFAULT NULL,
   `nombre` varchar(50) DEFAULT NULL

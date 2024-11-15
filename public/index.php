@@ -1,20 +1,27 @@
 <?php
-// Definir la raíz del proyecto
-define('ROOT', dirname(__DIR__));
-ini_set('display_errors', 1);
-error_reporting(E_ALL);
-
-require_once dirname(__DIR__) . '/app/config/config.php';
-// Cargar el autoloader
-require_once ROOT . '/core/Controller.php';
-require_once ROOT . '/core/Router.php';
-require_once ROOT . '/core/Layout.php';
-require_once ROOT . '/core/Model.php';
-require_once ROOT . '/core/Database.php';
+require '../init.php';
 
 
-try {
-    $router = new Router();
-} catch (Exception $e) {
-    echo "Error: " . $e->getMessage();
+$data = [
+  'title' => 'Bienvenido',
+  'description' => 'Página de inicio'
+];
+
+$styles = ['home']; // Cargará /assets/admin/css/home.css
+$scripts = ['home']; // Cargará /assets/admin/js/sucursal.js
+
+
+//RUTAS
+$action = $_GET['action'] ?? 'index';
+
+switch($action) {
+    case 'crear':
+        renderFront('public/views/home/crear.php', $data, $styles, $scripts);
+        break;
+    case 'editar':
+        renderFront('public/views/home/editar.php', $data, $styles, $scripts);
+        break;
+    default:
+        renderFront('public/views/home/index.php', $data, $styles, $scripts);
 }
+
