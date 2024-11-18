@@ -72,4 +72,13 @@ class CiudadModel extends Model {
     public function eliminar($ID_ciudad) {
         return $this->db->query("DELETE FROM Ciudad WHERE ID_ciudad = ?", [$ID_ciudad]);
     }
+
+    // Obtener el ID de la ciudad por su nombre
+    public function getCiudadIdPorNombre($nombreCiudad) {
+        $sql = "SELECT ID_ciudad FROM Ciudad WHERE nombre = ?";
+        $stmt = $this->db->executeQuery($sql, [$nombreCiudad]);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $row ? $row['ID_ciudad'] : null;
+    }
+
 }
