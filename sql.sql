@@ -1,358 +1,342 @@
-CREATE TABLE Ciudad (
-    ID_Ciudad INT PRIMARY KEY AUTO_INCREMENT,
-    Nombre VARCHAR(100) NOT NULL,
-    Tipo_Transporte VARCHAR(100),
-    Pais VARCHAR(100) NOT NULL
+CREATE TABLE ciudad (
+    id_ciudad INT PRIMARY KEY AUTO_INCREMENT,
+    nombre VARCHAR(100) NOT NULL,
+    pais VARCHAR(100) NOT NULL
 );
 
-CREATE TABLE Sucursal (
-    ID_Sucursal INT PRIMARY KEY AUTO_INCREMENT,
-    Direccion VARCHAR(255) NOT NULL,
-    Telefono VARCHAR(20) NOT NULL,
+CREATE TABLE sucursal (
+    id_sucursal INT PRIMARY KEY AUTO_INCREMENT,
+    direccion VARCHAR(255) NOT NULL,
+    telefono VARCHAR(20) NOT NULL,
     nombre Varchar(100) NOT NULL
 );
 
-CREATE TABLE Empleado (
-    DNI VARCHAR(15) PRIMARY KEY,
-    Nombre VARCHAR(100) NOT NULL,
-    Apellidos VARCHAR(100) NOT NULL,
-    Telefono VARCHAR(20),
-    ID_Sucursal INT,
-    Puesto VARCHAR(30),
+CREATE TABLE empleado (
+    dni VARCHAR(15) PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    apellidos VARCHAR(100) NOT NULL,
+    telefono VARCHAR(20),
+    id_sucursal INT,
+    puesto VARCHAR(30),
     e_username VARCHAR(10) UNIQUE,
     e_password VARCHAR(10),
-    FOREIGN KEY (ID_Sucursal) REFERENCES Sucursal(ID_Sucursal)
+    FOREIGN KEY (id_sucursal) REFERENCES sucursal(id_sucursal)
 );
 
-CREATE TABLE Cliente (
-    DNI VARCHAR(15) PRIMARY KEY,
-    Nombre VARCHAR(100) NOT NULL,
-    Apellidos VARCHAR(100) NOT NULL,
-    Telefono VARCHAR(20),
-    Email VARCHAR(100) UNIQUE,
+CREATE TABLE cliente (
+    dni VARCHAR(15) PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    apellidos VARCHAR(100) NOT NULL,
+    telefono VARCHAR(20),
+    email VARCHAR(100) UNIQUE,
     c_username VARCHAR(10) UNIQUE,
     c_password VARCHAR(10)
 );
 
-CREATE TABLE Viaje (
-    ID_Viaje INT PRIMARY KEY AUTO_INCREMENT,
-    Nombre VARCHAR(100) NOT NULL,
-    Descripcion TEXT,
-    Duracion INT,
-    Precio DECIMAL(10,2),
-    DNI_Cliente VARCHAR(15),
-    FOREIGN KEY (DNI_Cliente) REFERENCES Cliente(DNI)
+CREATE TABLE viaje (
+    id_viaje INT PRIMARY KEY AUTO_INCREMENT,
+    duracion INT,
+    precio DECIMAL(10,2),
+    dni_cliente VARCHAR(15),
+    FOREIGN KEY (dni_cliente) REFERENCES cliente(dni)
 );
 
-CREATE TABLE Reserva (
-    ID_Reserva INT PRIMARY KEY AUTO_INCREMENT,
-    Fecha DATE NOT NULL,
-    Estado VARCHAR(50) NOT NULL,
-    ID_Viaje INT,
-    ID_Sucursal INT,
-    DNI_Empleado VARCHAR(15),
-    FOREIGN KEY (ID_Viaje) REFERENCES Viaje(ID_Viaje),
-    FOREIGN KEY (ID_Sucursal) REFERENCES Sucursal(ID_Sucursal),
-    FOREIGN KEY (DNI_Empleado) REFERENCES Empleado(DNI)
+CREATE TABLE reserva (
+    id_reserva INT PRIMARY KEY AUTO_INCREMENT,
+    fecha DATE NOT NULL,
+    estado VARCHAR(50) NOT NULL,
+    id_viaje INT,
+    id_sucursal INT,
+    dni_empleado VARCHAR(15),
+    FOREIGN KEY (id_viaje) REFERENCES viaje(id_viaje),
+    FOREIGN KEY (id_sucursal) REFERENCES sucursal(id_sucursal),
+    FOREIGN KEY (dni_empleado) REFERENCES empleado(dni)
 );
 
-CREATE TABLE Pago (
-    ID_Pago INT PRIMARY KEY AUTO_INCREMENT,
-    Monto DECIMAL(10,2) NOT NULL,
-    Fecha DATE NOT NULL,
-    Estado VARCHAR(50) NOT NULL,
-    Metodo_Pago VARCHAR(50) NOT NULL,
-    ID_Reserva INT,
-    FOREIGN KEY (ID_Reserva) REFERENCES Reserva(ID_Reserva)
+CREATE TABLE pago (
+    id_pago INT PRIMARY KEY AUTO_INCREMENT,
+    monto DECIMAL(10,2) NOT NULL,
+    fecha DATE NOT NULL,
+    estado VARCHAR(50) NOT NULL,
+    metodo_pago VARCHAR(50) NOT NULL,
+    id_reserva INT,
+    FOREIGN KEY (id_reserva) REFERENCES reserva(id_reserva)
 );
 
-CREATE TABLE Hotel (
-    ID_Hotel INT PRIMARY KEY AUTO_INCREMENT,
-    Nombre VARCHAR(100) NOT NULL,
-    Direccion VARCHAR(255),
-    Categoria VARCHAR(50),
-    Telefono VARCHAR(20),
-    Precio_Por_Noche DECIMAL(10,2),
-    ID_Ciudad INT,
-    FOREIGN KEY (ID_Ciudad) REFERENCES Ciudad(ID_Ciudad)
+CREATE TABLE hotel (
+    id_hotel INT PRIMARY KEY AUTO_INCREMENT,
+    nombre VARCHAR(100) NOT NULL,
+    direccion VARCHAR(255),
+    categoria VARCHAR(50),
+    telefono VARCHAR(20),
+    precio_por_noche DECIMAL(10,2),
+    id_ciudad INT,
+    FOREIGN KEY (id_ciudad) REFERENCES ciudad(id_ciudad)
 );
 
-CREATE TABLE Proveedor (
-    ID_Proveedor INT PRIMARY KEY AUTO_INCREMENT,
-    Nombre VARCHAR(100) NOT NULL,
-    Direccion VARCHAR(255),
-    Telefono VARCHAR(20),
-    Email VARCHAR(100)
+CREATE TABLE proveedor (
+    id_proveedor INT PRIMARY KEY AUTO_INCREMENT,
+    nombre VARCHAR(100) NOT NULL,
+    direccion VARCHAR(255),
+    telefono VARCHAR(20),
+    email VARCHAR(100)
 );
 
-CREATE TABLE Proveedor_Hotel (
-    ID_Proveedor INT,
-    ID_Hotel INT,
-    PRIMARY KEY (ID_Proveedor, ID_Hotel),
-    FOREIGN KEY (ID_Proveedor) REFERENCES Proveedor(ID_Proveedor),
-    FOREIGN KEY (ID_Hotel) REFERENCES Hotel(ID_Hotel)
+CREATE TABLE proveedor_hotel (
+    id_proveedor INT,
+    id_hotel INT,
+    PRIMARY KEY (id_proveedor, id_hotel),
+    FOREIGN KEY (id_proveedor) REFERENCES proveedor(id_proveedor),
+    FOREIGN KEY (id_hotel) REFERENCES hotel(id_hotel)
 );
 
-CREATE TABLE Servicio (
-    ID_Servicio INT PRIMARY KEY AUTO_INCREMENT,
-    Tipo_Transporte VARCHAR(100),
-    Empresa VARCHAR(100),
-    Costo DECIMAL(10,2)
+CREATE TABLE servicio (
+    id_servicio INT PRIMARY KEY AUTO_INCREMENT,
+    id_proveedor INT,
+    descripcion VARCHAR(100),
+    costo DECIMAL(10,2),
+    FOREIGN KEY (id_proveedor) REFERENCES proveedor(id_proveedor)
 );
 
-CREATE TABLE Proveedor_Servicio (
-    ID_Proveedor INT,
-    ID_Servicio INT,
-    PRIMARY KEY (ID_Proveedor, ID_Servicio),
-    FOREIGN KEY (ID_Proveedor) REFERENCES Proveedor(ID_Proveedor),
-    FOREIGN KEY (ID_Servicio) REFERENCES Servicio(ID_Servicio)
+CREATE TABLE vuelo (
+    id_vuelo INT PRIMARY KEY AUTO_INCREMENT,
+    num_vuelo VARCHAR(50),
+    ciudad_origen INT,
+    ciudad_destino INT,
+    fecha_salida DATETIME,
+    fecha_llegada DATETIME,
+    precio DECIMAL(10,2),
+    FOREIGN KEY (ciudad_origen) REFERENCES ciudad(id_ciudad),
+    FOREIGN KEY (ciudad_destino) REFERENCES ciudad(id_ciudad)
 );
 
-CREATE TABLE Vuelo (
-    ID_Vuelo INT PRIMARY KEY AUTO_INCREMENT,
-    Num_Vuelo VARCHAR(50),
-    Ciudad_Origen INT,
-    Ciudad_Destino INT,
-    Fecha_Salida DATETIME,
-    Fecha_Llegada DATETIME,
-    Precio DECIMAL(10,2),
-    FOREIGN KEY (Ciudad_Origen) REFERENCES Ciudad(ID_Ciudad),
-    FOREIGN KEY (Ciudad_Destino) REFERENCES Ciudad(ID_Ciudad)
+CREATE TABLE viaje_vuelo (
+    id_viaje INT,
+    id_vuelo INT,
+    PRIMARY KEY (id_viaje, id_vuelo),
+    FOREIGN KEY (id_viaje) REFERENCES viaje(id_viaje),
+    FOREIGN KEY (id_vuelo) REFERENCES vuelo(id_vuelo)
 );
 
-CREATE TABLE Viaje_Vuelo (
-    ID_Viaje INT,
-    ID_Vuelo INT,
-    PRIMARY KEY (ID_Viaje, ID_Vuelo),
-    FOREIGN KEY (ID_Viaje) REFERENCES Viaje(ID_Viaje),
-    FOREIGN KEY (ID_Vuelo) REFERENCES Vuelo(ID_Vuelo)
+CREATE TABLE paquete_turistico (
+    id_paquete INT PRIMARY KEY AUTO_INCREMENT,
+    nombre VARCHAR(100) NOT NULL,
+    descripcion TEXT,
+    precio DECIMAL(10,2),
+    id_ciudad INT,
+    FOREIGN KEY (id_ciudad) REFERENCES ciudad(id_ciudad)
 );
 
-CREATE TABLE Paquete_Turistico (
-    ID_Paquete INT PRIMARY KEY AUTO_INCREMENT,
-    Nombre VARCHAR(100) NOT NULL,
-    Descripcion TEXT,
-    Precio DECIMAL(10,2),
-    ID_Ciudad INT,
-    FOREIGN KEY (ID_Ciudad) REFERENCES Ciudad(ID_Ciudad)
+
+
+
+CREATE TABLE guia_turistico (
+    id_guia INT PRIMARY KEY AUTO_INCREMENT,
+    nombre VARCHAR(100) NOT NULL,
+    telefono VARCHAR(20),
+    idioma VARCHAR(50),
+    id_ciudad INT,
+    FOREIGN KEY (id_ciudad) REFERENCES ciudad(id_ciudad)
 );
 
-CREATE TABLE Paquete_Hotel (
-    ID_Paquete INT,
-    ID_Hotel INT,
-    PRIMARY KEY (ID_Paquete, ID_Hotel),
-    FOREIGN KEY (ID_Paquete) REFERENCES Paquete_Turistico(ID_Paquete),
-    FOREIGN KEY (ID_Hotel) REFERENCES Hotel(ID_Hotel)
+CREATE TABLE promocion (
+    id_promocion INT PRIMARY KEY AUTO_INCREMENT,
+    descripcion TEXT,
+    descuento DECIMAL(5,2),
+    periodo_validez VARCHAR(50),
+    id_empleado VARCHAR(15),
+    FOREIGN KEY (id_empleado) REFERENCES empleado(dni)
 );
 
-CREATE TABLE Paquete_Servicio (
-    ID_Paquete INT,
-    ID_Servicio INT,
-    PRIMARY KEY (ID_Paquete, ID_Servicio),
-    FOREIGN KEY (ID_Paquete) REFERENCES Paquete_Turistico(ID_Paquete),
-    FOREIGN KEY (ID_Servicio) REFERENCES Servicio(ID_Servicio)
+CREATE TABLE transporte (
+    id_transporte INT PRIMARY KEY AUTO_INCREMENT,
+    tipo VARCHAR(50) NOT NULL,
+    costo DECIMAL(10,2) NOT NULL,
+    empresa VARCHAR(100) NOT NULL
 );
 
-CREATE TABLE Guia_Turistico (
-    ID_Guia INT PRIMARY KEY AUTO_INCREMENT,
-    Nombre VARCHAR(100) NOT NULL,
-    Telefono VARCHAR(20),
-    Idioma VARCHAR(50),
-    ID_Ciudad INT,
-    FOREIGN KEY (ID_Ciudad) REFERENCES Ciudad(ID_Ciudad)
-);
 
-CREATE TABLE Promocion (
-    ID_Promocion INT PRIMARY KEY AUTO_INCREMENT,
-    Descripcion TEXT,
-    Descuento DECIMAL(5,2),
-    Periodo_Validez VARCHAR(50),
-    ID_Empleado VARCHAR(15),
-    FOREIGN KEY (ID_Empleado) REFERENCES Empleado(DNI)
-);
 
-CREATE TABLE Transporte (
-    ID_Transporte INT PRIMARY KEY AUTO_INCREMENT,
-    Tipo VARCHAR(50) NOT NULL,
-    Costo DECIMAL(10,2) NOT NULL,
-    Empresa VARCHAR(100) NOT NULL
-);
 
-CREATE TABLE Paq_Turistico_Transporte (
-    ID_Paquete INT,
-    ID_Transporte INT,
-    PRIMARY KEY (ID_Paquete, ID_Transporte),
-    FOREIGN KEY (ID_Paquete) REFERENCES Paquete_Turistico(ID_Paquete),
-    FOREIGN KEY (ID_Transporte) REFERENCES Transporte(ID_Transporte)
-);
+/*AGREGAR FOREIGNS KEYS A vIAJES*/
+ALTER TABLE viaje ADD COLUMN vuelo_ida INT;
+ALTER TABLE viaje ADD COLUMN vuelo_regreso INT;
+ALTER TABLE viaje ADD FOREIGN KEY (vuelo_ida) REFERENCES vuelo(id_vuelo);
+ALTER TABLE viaje ADD FOREIGN KEY (vuelo_regreso) REFERENCES vuelo(id_vuelo);
 
--- 1. Primero las tablas independientes
--- Ciudad
-INSERT INTO Ciudad (Nombre, Pais, Tipo_Transporte) VALUES
-('Lima', 'Perú', 'Terrestre y Aéreo'),
-('Arequipa', 'Perú', 'Terrestre y Aéreo'),
-('Cusco', 'Perú', 'Terrestre y Aéreo'),
-('Santiago', 'Chile', 'Terrestre y Aéreo'),
-('Buenos Aires', 'Argentina', 'Terrestre y Aéreo');
+ALTER TABLE viaje ADD COLUMN paquete_turistico INT;
+ALTER TABLE viaje ADD FOREIGN KEY (paquete_turistico) REFERENCES paquete_turistico(id_paquete);
 
--- Sucursal
-INSERT INTO Sucursal (Direccion, Telefono, nombre) VALUES
-('Av. Principal 123, Lima', '123456789', 'Sucursal Central Lima'),
-('Jr. Comercio 456, Arequipa', '987654321', 'Sucursal Arequipa Centro'),
-('Calle Turismo 789, Cusco', '456789123', 'Sucursal Cusco Plaza'),
-('Av. Libertad 234, Santiago', '789123456', 'Sucursal Santiago Centro'),
-('Calle Mayo 567, Buenos Aires', '321654987', 'Sucursal Buenos Aires Norte');
+ALTER TABLE viaje ADD COLUMN hotel INT;
+ALTER TABLE viaje ADD FOREIGN KEY (hotel) REFERENCES hotel(id_hotel);
 
--- Cliente
-INSERT INTO Cliente (DNI, Nombre, Apellidos, Telefono, Email, c_username, c_password) VALUES
+ALTER TABLE viaje ADD COLUMN guia INT;
+ALTER TABLE viaje ADD FOREIGN KEY (guia) REFERENCES guia_turistico(id_guia);
+
+ALTER TABLE viaje ADD COLUMN servicio INT;
+ALTER TABLE viaje ADD FOREIGN KEY (servicio) REFERENCES servicio(id_servicio);
+
+ALTER TABLE viaje ADD COLUMN transporte INT;
+ALTER TABLE viaje ADD FOREIGN KEY (transporte) REFERENCES transporte(id_transporte);
+
+/*tRANSPORTE Y sERVICIO */
+
+ALTER TABLE servicio ADD COLUMN ciudad_int INT;
+ALTER TABLE servicio ADD FOREIGN KEY (ciudad_int) REFERENCES ciudad(id_ciudad);
+
+
+
+
+INSERT INTO ciudad (nombre, pais) VALUES
+-- Europa
+('Madrid', 'España'),
+('Barcelona', 'España'),
+('París', 'Francia'),
+('Londres', 'Inglaterra'),
+('Roma', 'Italia'),
+('Milán', 'Italia'),
+('Berlín', 'Alemania'),
+('Munich', 'Alemania'),
+('Ámsterdam', 'Países Bajos'),
+('Lisboa', 'Portugal'),
+('Viena', 'Austria'),
+('Praga', 'República Checa'),
+('Atenas', 'Grecia'),
+('Estocolmo', 'Suecia'),
+('Oslo', 'Noruega'),
+('Copenhague', 'Dinamarca'),
+('Helsinki', 'Finlandia'),
+('Varsovia', 'Polonia'),
+('Budapest', 'Hungría'),
+('Dubrovnik', 'Croacia'),
+
+-- Perú
+('Lima', 'Perú'),
+('Cusco', 'Perú'),
+('Arequipa', 'Perú'),
+('Trujillo', 'Perú'),
+('Iquitos', 'Perú'),
+('Piura', 'Perú'),
+('Puno', 'Perú'),
+
+-- Resto de América
+('Nueva York', 'Estados Unidos'),
+('Miami', 'Estados Unidos'),
+('Cancún', 'México'),
+('Ciudad de México', 'México'),
+('Buenos Aires', 'Argentina'),
+('Rio de Janeiro', 'Brasil'),
+('Santiago', 'Chile'),
+('Toronto', 'Canadá');
+
+
+-- sucursal
+INSERT INTO sucursal (direccion, telefono, nombre) VALUES
+('Av. Principal 123, Lima', '123456789', 'sucursal Central Lima'),
+('Jr. Comercio 456, Arequipa', '987654321', 'sucursal Arequipa Centro'),
+('Calle Turismo 789, Cusco', '456789123', 'sucursal Cusco Plaza'),
+('Av. Libertad 234, Santiago', '789123456', 'sucursal Santiago Centro'),
+('Calle Mayo 567, Buenos Aires', '321654987', 'sucursal Buenos Aires Norte');
+
+-- cliente
+INSERT INTO cliente (dni, nombre, apellidos, telefono, email, c_username, c_password) VALUES
 ('12345671', 'Luis', 'Rodríguez Pérez', '888777666', 'luis@email.com', 'lrodri', 'cpass123'),
 ('12345672', 'Carmen', 'Díaz García', '888777667', 'carmen@email.com', 'cdiaz', 'cpass124'),
 ('12345673', 'Jorge', 'Flores López', '888777668', 'jorge@email.com', 'jflores', 'cpass125'),
 ('12345674', 'Laura', 'Torres Ruiz', '888777669', 'laura@email.com', 'ltorres', 'cpass126'),
-('12345675', 'Miguel', 'Castro Silva', '888777670', 'miguel@email.com', 'mcastro', 'cpass127');
+('12345675', 'Miguel', 'Castro Silva', '888777670', 'miguel@email.com', 'mcastro', 'cpass127'),
+('12345676', 'Gabriel', 'Lopez Mendez', '888777670', 'gab@email.com', 'glopez', 'cpass127'),
+('12345677', 'Luis', 'Fernandez Calapuja', '888777670', 'lucho@email.com', 'luchito', 'cpass127');
 
 -- 2. Luego las que dependen de una tabla
--- Empleado (depende de Sucursal)
-INSERT INTO Empleado (DNI, Nombre, Apellidos, Telefono, ID_Sucursal, Puesto, e_username, e_password) VALUES
+-- empleado (depende de sucursal)
+INSERT INTO empleado (dni, nombre, apellidos, telefono, id_sucursal, puesto, e_username, e_password) VALUES
 ('45678901', 'Juan', 'Pérez López', '999888777', 1, 'Gerente', 'jperez', 'pass123'),
 ('45678902', 'María', 'García Ruiz', '999888778', 2, 'Vendedor', 'mgarcia', 'pass124'),
 ('45678903', 'Carlos', 'López Torres', '999888779', 3, 'Vendedor', 'clopez', 'pass125'),
 ('45678904', 'Ana', 'Martínez Silva', '999888780', 4, 'Supervisor', 'amartinez', 'pass126'),
 ('45678905', 'Pedro', 'Sánchez Vega', '999888781', 5, 'Vendedor', 'psanchez', 'pass127');
 
--- Viaje (depende de Cliente)
-INSERT INTO Viaje (Nombre, Descripcion, Duracion, Precio, DNI_Cliente) VALUES
-('Tour Machu Picchu', 'Visita a la ciudad inca', 5, 1500.00, '12345671'),
-('Tour Valle Sagrado', 'Recorrido por el valle sagrado de los incas', 3, 800.00, '12345672'),
-('City Tour Lima', 'Conoce la ciudad de los reyes', 1, 100.00, '12345673'),
-('Tour Vinicola', 'Recorrido por viñedos de Santiago', 2, 200.00, '12345674'),
-('Tour Buenos Aires', 'Conoce la ciudad del tango', 3, 300.00, '12345675');
 
--- 3. Ahora sí podemos insertar Reserva (depende de Viaje, Sucursal y Empleado)
-INSERT INTO Reserva (Fecha, Estado, ID_Viaje, ID_Sucursal, DNI_Empleado) VALUES
-('2024-01-15', 'Confirmado', 1, 1, '45678901'),
-('2024-01-16', 'Pendiente', 2, 2, '45678902'),
-('2024-01-17', 'Confirmado', 3, 3, '45678903'),
-('2024-01-18', 'Cancelada', 4, 4, '45678904'),
-('2024-01-19', 'Confirmado', 5, 5, '45678905');
+-- 5. hotel (depende de ciudad)
+INSERT INTO hotel (nombre, direccion, categoria, telefono, precio_por_noche, id_ciudad) VALUES
+('hotel Lima Plaza', 'Av. Lima 123', '4 estrellas', '111222333', 150.00, 1),
+('hotel Arequipa Real', 'Calle Real 456', '3 estrellas', '222333444', 100.00, 2),
+('hotel Cusco Imperial', 'Plaza Mayor 789', '5 estrellas', '333444555', 200.00, 3),
+('hotel Santiago View', 'Av. Central 234', '4 estrellas', '444555666', 180.00, 4),
+('hotel Buenos Aires Suites', 'Av. Mayo 567', '5 estrellas', '555666777', 220.00, 5);
 
--- 4. Pago (depende de Reserva)
-INSERT INTO Pago (Monto, Fecha, Estado, Metodo_Pago, ID_Reserva) VALUES
-(1500.00, '2024-01-15', 'Completado', 'Tarjeta', 1),
-(800.00, '2024-01-16', 'Pendiente', 'Transferencia', 2),
-(100.00, '2024-01-17', 'Completado', 'Efectivo', 3),
-(200.00, '2024-01-18', 'Reembolsado', 'Tarjeta', 4),
-(300.00, '2024-01-19', 'Completado', 'Transferencia', 5);
-
--- 5. Hotel (depende de Ciudad)
-INSERT INTO Hotel (Nombre, Direccion, Categoria, Telefono, Precio_Por_Noche, ID_Ciudad) VALUES
-('Hotel Lima Plaza', 'Av. Lima 123', '4 estrellas', '111222333', 150.00, 1),
-('Hotel Arequipa Real', 'Calle Real 456', '3 estrellas', '222333444', 100.00, 2),
-('Hotel Cusco Imperial', 'Plaza Mayor 789', '5 estrellas', '333444555', 200.00, 3),
-('Hotel Santiago View', 'Av. Central 234', '4 estrellas', '444555666', 180.00, 4),
-('Hotel Buenos Aires Suites', 'Av. Mayo 567', '5 estrellas', '555666777', 220.00, 5);
-
--- 6. Proveedor (independiente)
-INSERT INTO Proveedor (Nombre, Direccion, Telefono, Email) VALUES
-('Transportes Rápidos', 'Av. Transport 123', '666777888', 'transportes@email.com'),
-('Servicios Turísticos SA', 'Jr. Turismo 456', '777888999', 'servicios@email.com'),
-('Hoteles Unidos', 'Calle Hotel 789', '888999000', 'hoteles@email.com'),
-('Viajes Express', 'Av. Viajes 234', '999000111', 'viajes@email.com'),
+-- 6. proveedor (independiente)
+INSERT INTO proveedor (nombre, direccion, telefono, email) VALUES
+('transportes Rápidos', 'Av. Transport 123', '666777888', 'transportes@email.com'),
+('servicios Turísticos SA', 'Jr. Turismo 456', '777888999', 'servicios@email.com'),
+('hoteles Unidos', 'Calle hotel 789', '888999000', 'hoteles@email.com'),
+('viajes Express', 'Av. viajes 234', '999000111', 'viajes@email.com'),
 ('Tours & Más', 'Jr. Tours 567', '000111222', 'tours@email.com');
 
--- 7. Servicio (independiente)
-INSERT INTO Servicio (Tipo_Transporte, Empresa, Costo) VALUES
-('Bus', 'Transportes Rápidos', 50.00),
-('Van', 'Servicios Turísticos SA', 80.00),
-('Minibus', 'Viajes Express', 65.00),
-('Auto Privado', 'Tours & Más', 100.00),
-('Bus Ejecutivo', 'Transportes Rápidos', 120.00);
+-- 7. servicio (independiente)
+INSERT INTO servicio (id_proveedor, descripcion, costo) VALUES
+(1, 'Cita en el spa', 50.00),
+(2, 'Sesion e fotos', 80.00),
+(3, 'Paseo en lancha', 65.00),
+(4, 'Tour gastronomico', 100.00),
+(5, 'Excursion ecologica', 120.00);
 
--- 8. Vuelo (depende de Ciudad)
-INSERT INTO Vuelo (Num_Vuelo, Ciudad_Origen, Ciudad_Destino, Fecha_Salida, Fecha_Llegada, Precio) VALUES
-('VL001', 1, 2, '2024-01-20 08:00:00', '2024-01-20 09:30:00', 150.00),
-('VL002', 2, 3, '2024-01-20 10:00:00', '2024-01-20 11:30:00', 180.00),
-('VL003', 3, 4, '2024-01-20 13:00:00', '2024-01-20 15:30:00', 250.00),
-('VL004', 4, 5, '2024-01-20 16:00:00', '2024-01-20 18:30:00', 300.00),
-('VL005', 5, 1, '2024-01-20 19:00:00', '2024-01-20 21:30:00', 280.00);
 
--- 9. Paquete_Turistico (independiente)
-INSERT INTO Paquete_Turistico (Nombre, Descripcion, Precio) VALUES
-('Paquete Básico', 'Tour básico por la ciudad', 200.00),
-('Paquete Premium', 'Tour completo con hotel 5 estrellas', 500.00),
-('Paquete Familiar', 'Tour para toda la familia', 800.00),
-('Paquete Aventura', 'Tour de deportes extremos', 400.00),
-('Paquete Cultural', 'Tour por museos y sitios históricos', 300.00);
+-- 9. paquete_turistico (independiente)
+INSERT INTO paquete_turistico (nombre, descripcion, precio, id_ciudad) VALUES
+('Paquete Básico', 'Tour básico por la ciudad', 200.00, 1),
+('Paquete Premium', 'Tour completo con hotel 5 estrellas', 500.00, 2),
+('Paquete Familiar', 'Tour para toda la familia', 800.00, 3),
+('Paquete Aventura', 'Tour de deportes extremos', 400.00 ,1),
+('Paquete Cultural', 'Tour por museos y sitios históricos', 300.00, 4);
 
--- 10. Guia_Turistico (depende de Ciudad)
-INSERT INTO Guia_Turistico (Nombre, Telefono, Idioma, ID_Ciudad) VALUES
+-- 10. guia_turistico (depende de ciudad)
+INSERT INTO guia_turistico (nombre, telefono, idioma, id_ciudad) VALUES
 ('Pablo Ruiz', '123123123', 'Español, Inglés', 1),
 ('Ana Torres', '234234234', 'Español, Portugués', 2),
 ('Carlos López', '345345345', 'Español, Francés', 3),
 ('María García', '456456456', 'Español, Alemán', 4),
 ('Juan Pérez', '567567567', 'Español, Italiano', 5);
 
--- 11. Promocion (depende de Empleado)
-INSERT INTO Promocion (Descripcion, Descuento, Periodo_Validez, ID_Empleado) VALUES
-('Descuento Verano', 15.00, 'Enero 2024', '45678901'),
+-- 11. promocion (depende de empleado)
+INSERT INTO promocion (descripcion, descuento, periodo_validez, id_empleado) VALUES
+('descuento Verano', 15.00, 'Enero 2024', '45678901'),
 ('Oferta Familias', 20.00, 'Febrero 2024', '45678902'),
 ('Early Bird', 10.00, 'Marzo 2024', '45678903'),
-('Descuento Grupos', 25.00, 'Abril 2024', '45678904'),
+('descuento Grupos', 25.00, 'Abril 2024', '45678904'),
 ('Oferta Flash', 30.00, 'Mayo 2024', '45678905');
 
--- 12. Transporte (independiente)
-INSERT INTO Transporte (Tipo, Costo, Empresa) VALUES
-('Bus Turístico', 100.00, 'Transportes Turísticos SA'),
+-- 12. transporte (independiente)
+INSERT INTO transporte (tipo, costo, empresa) VALUES
+('Bus Turístico', 100.00, 'transportes Turísticos SA'),
 ('Minivan', 150.00, 'Mobility Tours'),
 ('Auto Privado', 200.00, 'Car Service Plus'),
 ('Bus Ejecutivo', 180.00, 'Executive Travel'),
-('Transporte VIP', 300.00, 'VIP Mobility');
+('transporte VIP', 300.00, 'VIP Mobility');
 
--- 13. Tablas de relación (muchos a muchos)
-INSERT INTO Proveedor_Hotel (ID_Proveedor, ID_Hotel) VALUES
-(1, 1), (1, 2), (2, 3), (3, 4), (3, 5);
-
-INSERT INTO Proveedor_Servicio (ID_Proveedor, ID_Servicio) VALUES
-(1, 1), (2, 2), (3, 3), (4, 4), (5, 5);
-
-INSERT INTO Viaje_Vuelo (ID_Viaje, ID_Vuelo) VALUES
-(1, 1), (2, 2), (3, 3), (4, 4), (5, 5);
-
-INSERT INTO Paquete_Hotel (ID_Paquete, ID_Hotel) VALUES
-(1, 1), (2, 2), (3, 3), (4, 4), (5, 5);
-
-INSERT INTO Paquete_Servicio (ID_Paquete, ID_Servicio) VALUES
-(1, 1), (2, 2), (3, 3), (4, 4), (5, 5);
-
-INSERT INTO Paq_Turistico_Transporte (ID_Paquete, ID_Transporte) VALUES
-(1, 1), (2, 2), (3, 3), (4, 4), (5, 5);
-
--- Primero actualizamos las ciudades (desde ID 6)
-INSERT INTO Ciudad (Nombre, Pais, Tipo_Transporte) VALUES
-('Madrid', 'España', 'Terrestre y Aéreo'),
-('Barcelona', 'España', 'Terrestre y Aéreo'),
-('París', 'Francia', 'Terrestre y Aéreo'),
-('Londres', 'Inglaterra', 'Terrestre y Aéreo'),
-('Roma', 'Italia', 'Terrestre y Aéreo'),
-('Milán', 'Italia', 'Terrestre y Aéreo'),
-('Berlín', 'Alemania', 'Terrestre y Aéreo'),
-('Munich', 'Alemania', 'Terrestre y Aéreo'),
-('Ámsterdam', 'Países Bajos', 'Terrestre y Aéreo'),
-('Lisboa', 'Portugal', 'Terrestre y Aéreo'),
-('Viena', 'Austria', 'Terrestre y Aéreo'),
-('Praga', 'República Checa', 'Terrestre y Aéreo'),
-('Atenas', 'Grecia', 'Terrestre y Aéreo'),
-('Estocolmo', 'Suecia', 'Terrestre y Aéreo'),
-('Oslo', 'Noruega', 'Terrestre y Aéreo'),
-('Copenhague', 'Dinamarca', 'Terrestre y Aéreo'),
-('Helsinki', 'Finlandia', 'Terrestre y Aéreo'),
-('Varsovia', 'Polonia', 'Terrestre y Aéreo'),
-('Budapest', 'Hungría', 'Terrestre y Aéreo'),
-('Dubrovnik', 'Croacia', 'Terrestre y Aéreo');
+-- 8. vuelo (depende de ciudad)
+INSERT INTO vuelo (num_vuelo, ciudad_origen, ciudad_destino, fecha_salida, fecha_llegada, precio) VALUES
+('VL001', 1, 2, '2024-01-20 08:00:00', '2024-01-20 09:30:00', 150.00),
+('VL002', 2, 3, '2024-01-20 10:00:00', '2024-01-20 11:30:00', 180.00),
+('VL003', 3, 4, '2024-01-20 13:00:00', '2024-01-20 15:30:00', 250.00),
+('VL004', 4, 5, '2024-01-20 16:00:00', '2024-01-20 18:30:00', 300.00),
+('VL005', 5, 1, '2024-01-20 19:00:00', '2024-01-20 21:30:00', 280.00);
 
 
--- Vuelos internacionales desde Lima (ID 1)
-INSERT INTO Vuelo (Num_Vuelo, Ciudad_Origen, Ciudad_Destino, Fecha_Salida, Fecha_Llegada, Precio) VALUES
+INSERT INTO viaje (duracion, precio, dni_cliente, vuelo_ida, vuelo_regreso, paquete_turistico, hotel, guia, transporte) VALUES
+(7, 1200.00, '12345672', 1, 2, 1, 1, 1, 1),
+(5, 900.00, '12345673', 2, null, 2, 2, 2, 2),
+(3, 600.00, '12345674', 3, null, null, 3, null, 3),
+(7, 1200.00, '12345675', 1, 2, 1, 1, 1, 1),
+(5, 900.00, '12345677', 2, null, 2, 2, 2, 2),
+(3, 600.00, '12345676', 3, null, null, 3, null, 3);
+
+
+
+
+-- vuelos internacionales desde Lima (ID 1)
+INSERT INTO vuelo (num_vuelo, ciudad_origen, ciudad_destino, fecha_salida, fecha_llegada, precio) VALUES
 -- Enero 15
 ('LA2001', 1, 2, '2024-01-15 08:00:00', '2024-01-15 09:30:00', 150.00),
 ('LA2002', 1, 3, '2024-01-15 10:00:00', '2024-01-15 11:30:00', 180.00),
@@ -364,7 +348,7 @@ INSERT INTO Vuelo (Num_Vuelo, Ciudad_Origen, Ciudad_Destino, Fecha_Salida, Fecha
 ('IB3202', 1, 7, '2024-01-16 23:00:00', '2024-01-17 20:30:00', 955.00),
 ('AF2102', 1, 9, '2024-01-16 22:00:00', '2024-01-17 19:30:00', 985.00),
 
--- Vuelos desde Madrid (ID 6)
+-- vuelos desde Madrid (ID 6)
 -- Enero 15
 ('IB3301', 6, 7, '2024-01-15 07:00:00', '2024-01-15 08:30:00', 120.00),
 ('IB3302', 6, 8, '2024-01-15 10:00:00', '2024-01-15 12:00:00', 180.00),
@@ -376,7 +360,7 @@ INSERT INTO Vuelo (Num_Vuelo, Ciudad_Origen, Ciudad_Destino, Fecha_Salida, Fecha
 ('IB3307', 6, 9, '2024-01-16 14:00:00', '2024-01-16 15:30:00', 155.00),
 ('IB3308', 6, 10, '2024-01-16 17:00:00', '2024-01-16 19:00:00', 195.00),
 
--- Vuelos desde París (ID 8)
+-- vuelos desde París (ID 8)
 -- Enero 15
 ('AF4401', 8, 6, '2024-01-15 08:00:00', '2024-01-15 10:00:00', 170.00),
 ('AF4402', 8, 7, '2024-01-15 11:30:00', '2024-01-15 13:00:00', 160.00),
@@ -388,7 +372,7 @@ INSERT INTO Vuelo (Num_Vuelo, Ciudad_Origen, Ciudad_Destino, Fecha_Salida, Fecha
 ('AF4407', 8, 9, '2024-01-16 15:00:00', '2024-01-16 16:15:00', 145.00),
 ('AF4408', 8, 10, '2024-01-16 18:00:00', '2024-01-16 19:30:00', 185.00),
 
--- Vuelos desde Londres (ID 9)
+-- vuelos desde Londres (ID 9)
 -- Enero 15
 ('BA5501', 9, 6, '2024-01-15 07:30:00', '2024-01-15 09:30:00', 175.00),
 ('BA5502', 9, 7, '2024-01-15 11:00:00', '2024-01-15 12:30:00', 165.00),
@@ -401,8 +385,8 @@ INSERT INTO Vuelo (Num_Vuelo, Ciudad_Origen, Ciudad_Destino, Fecha_Salida, Fecha
 ('BA5508', 9, 10, '2024-01-16 17:30:00', '2024-01-16 19:00:00', 190.00);
 
 -- Bloque 1 de 450 vuelos adicionales
-INSERT INTO Vuelo (Num_Vuelo, Ciudad_Origen, Ciudad_Destino, Fecha_Salida, Fecha_Llegada, Precio) VALUES
--- Enero 17 - 20 (Vuelos desde Lima)
+INSERT INTO vuelo (num_vuelo, ciudad_origen, ciudad_destino, fecha_salida, fecha_llegada, precio) VALUES
+-- Enero 17 - 20 (vuelos desde Lima)
 ('LA2005', 1, 2, '2024-01-17 08:00:00', '2024-01-17 09:30:00', 152.00),
 ('LA2006', 1, 3, '2024-01-17 10:00:00', '2024-01-17 11:30:00', 182.00),
 ('IB3203', 1, 6, '2024-01-17 23:00:00', '2024-01-18 20:30:00', 952.00),
@@ -412,7 +396,7 @@ INSERT INTO Vuelo (Num_Vuelo, Ciudad_Origen, Ciudad_Destino, Fecha_Salida, Fecha
 ('IB3204', 1, 6, '2024-01-18 23:00:00', '2024-01-19 20:30:00', 953.00),
 ('AF2104', 1, 8, '2024-01-18 22:00:00', '2024-01-19 19:30:00', 983.00),
 
--- Enero 17 - 20 (Vuelos desde Madrid)
+-- Enero 17 - 20 (vuelos desde Madrid)
 ('IB3309', 6, 7, '2024-01-17 07:00:00', '2024-01-17 08:30:00', 122.00),
 ('IB3310', 6, 8, '2024-01-17 10:00:00', '2024-01-17 12:00:00', 182.00),
 ('IB3311', 6, 9, '2024-01-17 14:00:00', '2024-01-17 15:30:00', 152.00),
@@ -427,7 +411,7 @@ INSERT INTO Vuelo (Num_Vuelo, Ciudad_Origen, Ciudad_Destino, Fecha_Salida, Fecha
 ('IB3319', 6, 13, '2024-01-19 14:00:00', '2024-01-19 15:30:00', 154.00),
 ('IB3320', 6, 14, '2024-01-19 17:00:00', '2024-01-19 19:00:00', 194.00),
 
--- Vuelos desde París (Enero 17-20)
+-- vuelos desde París (Enero 17-20)
 ('AF4409', 8, 6, '2024-01-17 08:00:00', '2024-01-17 10:00:00', 172.00),
 ('AF4410', 8, 7, '2024-01-17 11:30:00', '2024-01-17 13:00:00', 162.00),
 ('AF4411', 8, 9, '2024-01-17 15:00:00', '2024-01-17 16:15:00', 142.00),
@@ -437,7 +421,7 @@ INSERT INTO Vuelo (Num_Vuelo, Ciudad_Origen, Ciudad_Destino, Fecha_Salida, Fecha
 ('AF4415', 8, 9, '2024-01-18 15:00:00', '2024-01-18 16:15:00', 143.00),
 ('AF4416', 8, 10, '2024-01-18 18:00:00', '2024-01-18 19:30:00', 183.00),
 
--- Vuelos desde Londres (Enero 17-20)
+-- vuelos desde Londres (Enero 17-20)
 ('BA5509', 9, 6, '2024-01-17 07:30:00', '2024-01-17 09:30:00', 177.00),
 ('BA5510', 9, 7, '2024-01-17 11:00:00', '2024-01-17 12:30:00', 167.00),
 ('BA5511', 9, 8, '2024-01-17 14:30:00', '2024-01-17 15:45:00', 147.00),
@@ -447,7 +431,7 @@ INSERT INTO Vuelo (Num_Vuelo, Ciudad_Origen, Ciudad_Destino, Fecha_Salida, Fecha
 ('BA5515', 9, 8, '2024-01-18 14:30:00', '2024-01-18 15:45:00', 148.00),
 ('BA5516', 9, 10, '2024-01-18 17:30:00', '2024-01-18 19:00:00', 188.00),
 
--- Vuelos desde Roma (Enero 17-20)
+-- vuelos desde Roma (Enero 17-20)
 ('AZ6601', 10, 6, '2024-01-17 08:30:00', '2024-01-17 10:30:00', 165.00),
 ('AZ6602', 10, 7, '2024-01-17 12:00:00', '2024-01-17 13:30:00', 155.00),
 ('AZ6603', 10, 8, '2024-01-17 15:30:00', '2024-01-17 16:45:00', 135.00),
@@ -457,7 +441,7 @@ INSERT INTO Vuelo (Num_Vuelo, Ciudad_Origen, Ciudad_Destino, Fecha_Salida, Fecha
 ('AZ6607', 10, 8, '2024-01-18 15:30:00', '2024-01-18 16:45:00', 136.00),
 ('AZ6608', 10, 9, '2024-01-18 18:30:00', '2024-01-18 20:00:00', 176.00),
 
--- Vuelos desde Berlín (Enero 17-20)
+-- vuelos desde Berlín (Enero 17-20)
 ('LH7701', 11, 6, '2024-01-17 07:00:00', '2024-01-17 09:00:00', 158.00),
 ('LH7702', 11, 7, '2024-01-17 10:30:00', '2024-01-17 12:00:00', 148.00),
 ('LH7703', 11, 8, '2024-01-17 14:00:00', '2024-01-17 15:15:00', 128.00),
@@ -467,7 +451,7 @@ INSERT INTO Vuelo (Num_Vuelo, Ciudad_Origen, Ciudad_Destino, Fecha_Salida, Fecha
 ('LH7707', 11, 8, '2024-01-18 14:00:00', '2024-01-18 15:15:00', 129.00),
 ('LH7708', 11, 9, '2024-01-18 17:00:00', '2024-01-18 18:30:00', 169.00),
 
--- Vuelos desde Amsterdam (Enero 17-20)
+-- vuelos desde Amsterdam (Enero 17-20)
 ('KL8801', 12, 6, '2024-01-17 08:15:00', '2024-01-17 10:15:00', 162.00),
 ('KL8802', 12, 7, '2024-01-17 11:45:00', '2024-01-17 13:15:00', 152.00),
 ('KL8803', 12, 8, '2024-01-17 15:15:00', '2024-01-17 16:30:00', 132.00),
@@ -483,7 +467,7 @@ INSERT INTO Vuelo (Num_Vuelo, Ciudad_Origen, Ciudad_Destino, Fecha_Salida, Fecha
 ('IB3205', 1, 6, '2024-01-19 23:00:00', '2024-01-20 20:30:00', 954.00),
 ('AF2105', 1, 8, '2024-01-19 22:00:00', '2024-01-20 19:30:00', 984.00),
 -- Bloque 2 (Continuación de vuelos)
--- Vuelos desde Lisboa (Enero 17-20)
+-- vuelos desde Lisboa (Enero 17-20)
 ('TP9901', 13, 6, '2024-01-17 07:45:00', '2024-01-17 09:45:00', 145.00),
 ('TP9902', 13, 7, '2024-01-17 11:15:00', '2024-01-17 12:45:00', 135.00),
 ('TP9903', 13, 8, '2024-01-17 14:45:00', '2024-01-17 16:00:00', 115.00),
@@ -493,7 +477,7 @@ INSERT INTO Vuelo (Num_Vuelo, Ciudad_Origen, Ciudad_Destino, Fecha_Salida, Fecha
 ('TP9907', 13, 8, '2024-01-18 14:45:00', '2024-01-18 16:00:00', 116.00),
 ('TP9908', 13, 9, '2024-01-18 17:45:00', '2024-01-18 19:15:00', 156.00),
 
--- Vuelos desde Viena (Enero 17-20)
+-- vuelos desde Viena (Enero 17-20)
 ('OS1001', 14, 6, '2024-01-17 08:30:00', '2024-01-17 10:30:00', 175.00),
 ('OS1002', 14, 7, '2024-01-17 12:00:00', '2024-01-17 13:30:00', 165.00),
 ('OS1003', 14, 8, '2024-01-17 15:30:00', '2024-01-17 16:45:00', 145.00),
@@ -503,7 +487,7 @@ INSERT INTO Vuelo (Num_Vuelo, Ciudad_Origen, Ciudad_Destino, Fecha_Salida, Fecha
 ('OS1007', 14, 8, '2024-01-18 15:30:00', '2024-01-18 16:45:00', 146.00),
 ('OS1008', 14, 9, '2024-01-18 18:30:00', '2024-01-18 20:00:00', 186.00),
 
--- Vuelos desde Zurich (Enero 17-20)
+-- vuelos desde Zurich (Enero 17-20)
 ('LX1101', 15, 6, '2024-01-17 07:15:00', '2024-01-17 09:15:00', 185.00),
 ('LX1102', 15, 7, '2024-01-17 10:45:00', '2024-01-17 12:15:00', 175.00),
 ('LX1103', 15, 8, '2024-01-17 14:15:00', '2024-01-17 15:30:00', 155.00),
@@ -513,7 +497,7 @@ INSERT INTO Vuelo (Num_Vuelo, Ciudad_Origen, Ciudad_Destino, Fecha_Salida, Fecha
 ('LX1107', 15, 8, '2024-01-18 14:15:00', '2024-01-18 15:30:00', 156.00),
 ('LX1108', 15, 9, '2024-01-18 17:15:00', '2024-01-18 18:45:00', 196.00),
 
--- Vuelos desde Oslo (Enero 17-20)
+-- vuelos desde Oslo (Enero 17-20)
 ('SK1201', 16, 6, '2024-01-17 09:00:00', '2024-01-17 11:00:00', 195.00),
 ('SK1202', 16, 7, '2024-01-17 12:30:00', '2024-01-17 14:00:00', 185.00),
 ('SK1203', 16, 8, '2024-01-17 16:00:00', '2024-01-17 17:15:00', 165.00),
@@ -523,7 +507,7 @@ INSERT INTO Vuelo (Num_Vuelo, Ciudad_Origen, Ciudad_Destino, Fecha_Salida, Fecha
 ('SK1207', 16, 8, '2024-01-18 16:00:00', '2024-01-18 17:15:00', 166.00),
 ('SK1208', 16, 9, '2024-01-18 19:00:00', '2024-01-18 20:30:00', 206.00),
 
--- Vuelos desde Estocolmo (Enero 17-20)
+-- vuelos desde Estocolmo (Enero 17-20)
 ('SK1301', 17, 6, '2024-01-17 08:45:00', '2024-01-17 10:45:00', 198.00),
 ('SK1302', 17, 7, '2024-01-17 12:15:00', '2024-01-17 13:45:00', 188.00),
 ('SK1303', 17, 8, '2024-01-17 15:45:00', '2024-01-17 17:00:00', 168.00),
@@ -535,7 +519,7 @@ INSERT INTO Vuelo (Num_Vuelo, Ciudad_Origen, Ciudad_Destino, Fecha_Salida, Fecha
 
 -- Continuando con más fechas y rutas...
 -- Bloque 3 (Continuación de vuelos)
--- Vuelos desde Copenhague (Enero 17-20)
+-- vuelos desde Copenhague (Enero 17-20)
 ('SK1401', 18, 6, '2024-01-17 07:30:00', '2024-01-17 09:30:00', 192.00),
 ('SK1402', 18, 7, '2024-01-17 11:00:00', '2024-01-17 12:30:00', 182.00),
 ('SK1403', 18, 8, '2024-01-17 14:30:00', '2024-01-17 15:45:00', 162.00),
@@ -545,7 +529,7 @@ INSERT INTO Vuelo (Num_Vuelo, Ciudad_Origen, Ciudad_Destino, Fecha_Salida, Fecha
 ('SK1407', 18, 8, '2024-01-18 14:30:00', '2024-01-18 15:45:00', 163.00),
 ('SK1408', 18, 9, '2024-01-18 17:30:00', '2024-01-18 19:00:00', 203.00),
 
--- Vuelos desde Helsinki (Enero 17-20)
+-- vuelos desde Helsinki (Enero 17-20)
 ('AY1501', 19, 6, '2024-01-17 08:15:00', '2024-01-17 10:15:00', 205.00),
 ('AY1502', 19, 7, '2024-01-17 11:45:00', '2024-01-17 13:15:00', 195.00),
 ('AY1503', 19, 8, '2024-01-17 15:15:00', '2024-01-17 16:30:00', 175.00),
@@ -555,7 +539,7 @@ INSERT INTO Vuelo (Num_Vuelo, Ciudad_Origen, Ciudad_Destino, Fecha_Salida, Fecha
 ('AY1507', 19, 8, '2024-01-18 15:15:00', '2024-01-18 16:30:00', 176.00),
 ('AY1508', 19, 9, '2024-01-18 18:15:00', '2024-01-18 19:45:00', 216.00),
 
--- Vuelos intercontinentales desde Lima (Enero 19-22)
+-- vuelos intercontinentales desde Lima (Enero 19-22)
 ('LA2011', 1, 6, '2024-01-19 23:30:00', '2024-01-20 20:00:00', 958.00),
 ('LA2012', 1, 7, '2024-01-19 22:30:00', '2024-01-20 19:00:00', 948.00),
 ('LA2013', 1, 8, '2024-01-20 23:30:00', '2024-01-21 20:00:00', 968.00),
@@ -563,14 +547,14 @@ INSERT INTO Vuelo (Num_Vuelo, Ciudad_Origen, Ciudad_Destino, Fecha_Salida, Fecha
 ('LA2015', 1, 10, '2024-01-21 23:30:00', '2024-01-22 20:00:00', 988.00),
 ('LA2016', 1, 11, '2024-01-21 22:30:00', '2024-01-22 19:00:00', 998.00),
 
--- Vuelos desde Madrid a Sudamérica (Enero 19-22)
+-- vuelos desde Madrid a Sudamérica (Enero 19-22)
 ('IB3321', 6, 1, '2024-01-19 23:00:00', '2024-01-20 19:30:00', 962.00),
 ('IB3322', 6, 2, '2024-01-19 22:00:00', '2024-01-20 18:30:00', 942.00),
 ('IB3323', 6, 3, '2024-01-20 23:00:00', '2024-01-21 19:30:00', 952.00),
 ('IB3324', 6, 4, '2024-01-20 22:00:00', '2024-01-21 18:30:00', 972.00),
 ('IB3325', 6, 5, '2024-01-21 23:00:00', '2024-01-22 19:30:00', 982.00),
 
--- Vuelos internos Europa (Enero 19-22)
+-- vuelos internos Europa (Enero 19-22)
 ('AF4417', 8, 11, '2024-01-19 08:30:00', '2024-01-19 10:30:00', 168.00),
 ('AF4418', 8, 12, '2024-01-19 12:00:00', '2024-01-19 13:30:00', 158.00),
 ('AF4419', 8, 13, '2024-01-19 15:30:00', '2024-01-19 16:45:00', 148.00),
@@ -580,7 +564,7 @@ INSERT INTO Vuelo (Num_Vuelo, Ciudad_Origen, Ciudad_Destino, Fecha_Salida, Fecha
 ('AF4423', 8, 17, '2024-01-20 15:30:00', '2024-01-20 16:45:00', 149.00),
 ('AF4424', 8, 18, '2024-01-20 18:30:00', '2024-01-20 20:00:00', 179.00),
 
--- Vuelos desde Londres a Europa (Enero 19-22)
+-- vuelos desde Londres a Europa (Enero 19-22)
 ('BA5517', 9, 11, '2024-01-19 07:45:00', '2024-01-19 09:45:00', 172.00),
 ('BA5518', 9, 12, '2024-01-19 11:15:00', '2024-01-19 12:45:00', 162.00),
 ('BA5519', 9, 13, '2024-01-19 14:45:00', '2024-01-19 16:00:00', 152.00),
@@ -604,9 +588,9 @@ INSERT INTO Vuelo (Num_Vuelo, Ciudad_Origen, Ciudad_Destino, Fecha_Salida, Fecha
 
 
 
--- Hoteles correspondientes a estas ciudades
-INSERT INTO Hotel (Nombre, Direccion, Categoria, Telefono, Precio_Por_Noche, ID_Ciudad) VALUES
-('Madrid Grand Hotel', 'Gran Vía 123', '5 estrellas', '34912345678', 250.00, 6),
+-- hoteles correspondientes a estas ciudades
+INSERT INTO hotel (nombre, direccion, categoria, telefono, precio_por_noche, id_ciudad) VALUES
+('Madrid Grand hotel', 'Gran Vía 123', '5 estrellas', '34912345678', 250.00, 6),
 ('Barcelona Plaza', 'Las Ramblas 456', '4 estrellas', '34934567890', 200.00, 7),
 ('Paris Luxe', 'Champs-Élysées 789', '5 estrellas', '33123456789', 300.00, 8),
 ('London Royal', 'Baker Street 221', '5 estrellas', '44123456789', 280.00, 9),
@@ -628,7 +612,7 @@ INSERT INTO Hotel (Nombre, Direccion, Categoria, Telefono, Precio_Por_Noche, ID_
 ('Dubrovnik Sea', 'Old Town 56', '4 estrellas', '385123456789', 170.00, 25);
 
 -- Guías Turísticos para estas ciudades
-INSERT INTO Guia_Turistico (Nombre, Telefono, Idioma, ID_Ciudad) VALUES
+INSERT INTO guia_turistico (nombre, telefono, idioma, id_ciudad) VALUES
 ('Carlos Martínez', '34611111111', 'Español, Inglés', 6),
 ('Ana García', '34622222222', 'Español, Francés, Inglés', 7),
 ('Pierre Dubois', '33633333333', 'Francés, Inglés, Español', 8),
@@ -651,7 +635,7 @@ INSERT INTO Guia_Turistico (Nombre, Telefono, Idioma, ID_Ciudad) VALUES
 ('Marko Kovačić', '385622222222', 'Croata, Inglés, Italiano', 25);
 
 
-INSERT INTO Hotel (Nombre, Direccion, Categoria, Telefono, Precio_Por_Noche, ID_Ciudad) VALUES
+INSERT INTO hotel (nombre, direccion, categoria, telefono, precio_por_noche, id_ciudad) VALUES
 -- Madrid (ID 6)
 ('Gran Vía Palace', 'Gran Vía 234', '5 estrellas', '+34913456789', 280.00, 6),
 ('Retiro Suites', 'Calle Alcalá 567', '4 estrellas', '+34914567890', 220.00, 6),
@@ -660,7 +644,7 @@ INSERT INTO Hotel (Nombre, Direccion, Categoria, Telefono, Precio_Por_Noche, ID_
 ('Madrid Rivers', 'Paseo del Prado 45', '3 estrellas', '+34917890123', 150.00, 6),
 
 -- Barcelona (ID 7)
-('Sagrada Hotel', 'Sagrada Familia 456', '5 estrellas', '+34931234567', 270.00, 7),
+('Sagrada hotel', 'Sagrada Familia 456', '5 estrellas', '+34931234567', 270.00, 7),
 ('Gothic Quarter Inn', 'Gothic Quarter 78', '4 estrellas', '+34932345678', 210.00, 7),
 ('Beach Resort BCN', 'Barceloneta 90', '4 estrellas', '+34933456789', 230.00, 7),
 ('Passeig Premium', 'Passeig de Gracia 123', '5 estrellas', '+34934567890', 290.00, 7),
@@ -677,7 +661,7 @@ INSERT INTO Hotel (Nombre, Direccion, Categoria, Telefono, Precio_Por_Noche, ID_
 ('Westminster Palace', 'Westminster Bridge Rd 123', '5 estrellas', '+44207123456', 380.00, 9),
 ('Piccadilly Grand', 'Piccadilly Circus 45', '4 estrellas', '+44207123457', 290.00, 9),
 ('Tower Bridge View', 'Tower Bridge Rd 67', '4 estrellas', '+44207123458', 270.00, 9),
-('Hyde Park Hotel', 'Hyde Park Corner 89', '5 estrellas', '+44207123459', 350.00, 9),
+('Hyde Park hotel', 'Hyde Park Corner 89', '5 estrellas', '+44207123459', 350.00, 9),
 ('Covent Garden Inn', 'Covent Garden 123', '3 estrellas', '+44207123460', 190.00, 9),
 
 -- Roma (ID 10)
@@ -723,7 +707,7 @@ INSERT INTO Hotel (Nombre, Direccion, Categoria, Telefono, Precio_Por_Noche, ID_
 ('Rossio Plaza', 'Rossio 123', '5 estrellas', '+351211234571', 250.00, 15);
 
 
-INSERT INTO Hotel (Nombre, Direccion, Categoria, Telefono, Precio_Por_Noche, ID_Ciudad) VALUES
+INSERT INTO hotel (nombre, direccion, categoria, telefono, precio_por_noche, id_ciudad) VALUES
 -- Viena (ID 16)
 ('Schönbrunn Palace', 'Schönbrunner Schlossstraße 123', '5 estrellas', '+43123457890', 310.00, 16),
 ('Opera House View', 'Opernring 45', '4 estrellas', '+43123457891', 260.00, 16),
@@ -794,23 +778,9 @@ INSERT INTO Hotel (Nombre, Direccion, Categoria, Telefono, Precio_Por_Noche, ID_
 ('Lokrum Island View', 'Frana Supila 89', '5 estrellas', '+385234567893', 270.00, 25),
 ('Cable Car View', 'Srđ 123', '3 estrellas', '+385234567894', 190.00, 25);
 
-INSERT INTO Viaje (Nombre, Descripcion, Duracion, Precio)
-VALUES 
-('Fiesta de playa', 'Un viaje emocionante a la playa', 5, 300.00),
-('Escalada', 'Aventura en la montaña', 5, 500.00),
-('Por las calles', 'Exploración urbana', 2, 200.00),
-('Escapada Rural', 'Descanso en el campo', 4, 400.00),
-('Naveguemos', 'Recorrido costero', 7, 700.00),
-('Dinosaurios', 'Un viaje en el tiempo', 5, 340.00),
-('Viaje espacial', 'Observemos las estrellas', 5, 510.00),
-('Por la historia', 'Viaje por las ruinas', 2, 300.00),
-('Volcan', 'Pompeya cuidad historica', 4, 490.00),
-('Poderosos Vientos', 'Traigan sus cometas', 4, 200.00),
-('Con la naturaleza', 'Descansa junto a los koalas', 7, 800.00);
 
 
-
-INSERT INTO Empleado (DNI, Nombre, Apellidos, Telefono, puesto, e_username, e_password)
+INSERT INTO empleado (dni, nombre, apellidos, telefono, puesto, e_username, e_password)
 VALUES 
 ('0000001', 'Juan', 'Pérez', '1122334455', 'Gerente', 'juanxp', 'pass123'),
 ('0000002', 'Ana', 'García', '2233445566', 'Recepcionista', 'aqnag', 'pass456'),
@@ -822,3 +792,36 @@ VALUES
 ('0000008', 'Carlos', 'Santos', '5566773344', 'Vendedor', 'carlossr', 'pass789'),
 ('0000009', 'Luis', 'Rodriguez', '6677884455', 'Atención al cliwente', 'luisam', 'pass101'),
 ('0000010', 'Pedro', 'Ruan', '7788995566', 'Administrador', 'pedroxl', 'pass202');
+
+/* INSERTANDO MAS PAQUETES */
+INSERT INTO paquete_turistico (nombre, descripcion, precio, id_ciudad) VALUES  
+('Colca Full Day', 'Disfruta del vuelo de Cóndor', 200.00, 2),
+('Cañon de Cotahuasi', 'Disfruta del cañon mas profundo del Peru', 250.00, 2),
+('Laguna Salinas', 'Disfruta de la laguna', 150.00, 2);
+
+
+
+-- 13. Tablas de relación (muchos a muchos)
+INSERT INTO proveedor_hotel (id_proveedor, id_hotel) VALUES
+(1, 1), (1, 2), (2, 3), (3, 4), (3, 5);
+
+INSERT INTO viaje_vuelo (id_viaje, id_vuelo) VALUES
+(1, 1), (2, 2), (3, 3), (4, 4), (5, 5);
+
+
+
+-- 3. Ahora sí podemos insertar reserva (depende de viaje, sucursal y empleado)
+INSERT INTO reserva (fecha, estado, id_viaje, id_sucursal, dni_empleado) VALUES
+('2024-01-15', 'Confirmado', 1, 1, '45678901'),
+('2024-01-16', 'Pendiente', 2, 2, '45678902'),
+('2024-01-17', 'Confirmado', 3, 3, '45678903'),
+('2024-01-18', 'Cancelada', 4, 4, '45678904'),
+('2024-01-19', 'Confirmado', 5, 5, '45678905');
+
+-- 4. pago (depende de reserva)
+INSERT INTO pago (monto, fecha, estado, metodo_pago, id_reserva) VALUES
+(1500.00, '2024-01-15', 'Completado', 'Tarjeta', 1),
+(800.00, '2024-01-16', 'Pendiente', 'Transferencia', 2),
+(100.00, '2024-01-17', 'Completado', 'Efectivo', 3),
+(200.00, '2024-01-18', 'Reembolsado', 'Tarjeta', 4),
+(300.00, '2024-01-19', 'Completado', 'Transferencia', 5);
