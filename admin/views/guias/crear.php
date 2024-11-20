@@ -1,4 +1,4 @@
-<div class="hoteles">
+<div class="guias">
     <div class="wrapp-title">
         <h1 class="title">Crear Nuevo Guía</h1>
         <a href="guia_turistico.php" class="btn btn-secondary">
