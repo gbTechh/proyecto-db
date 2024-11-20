@@ -3,17 +3,19 @@ class GuiaTuristicoModel extends Model {
 
     // Obtener todos los guías turísticos
     public function getAll() {
-        $sql = "SELECT ID_guia, nombre, telefono, idioma, ID_ciudad FROM guia_turistico";
-        $stmt = $this->executeQuery($sql);
+        $sql = "SELECT g.id_guia, g.nombre, g.telefono, g.idioma, c.nombre AS 'ciudad' FROM guia_turistico g
+                INNER JOIN ciudad c ON c.id_ciudad = g.id_ciudad";
+
+        $stmt = $this->db->executeQuery($sql);
         $guias = [];
         
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $guias[] = new GuiaTuristico(
-                $row['ID_guia'],
+                $row['id_guia'],
                 $row['nombre'],
                 $row['telefono'],
                 $row['idioma'],
-                $row['ID_ciudad']
+                $row['ciudad']
             );
         }
         
@@ -21,33 +23,32 @@ class GuiaTuristicoModel extends Model {
     }
 
     // Obtener guía por ID
-    public function getByID($ID_guia) {
-        $sql = "SELECT * FROM guia_turistico WHERE ID_guia = ?";
-        $stmt = $this->executeQuery($sql, [$ID_guia]);
+    public function getByID($id_guia) {
+        $sql = "SELECT * FROM guia_turistico WHERE id_guia = ?";
+        $stmt = $this->db->executeQuery($sql, [$id_guia]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         
         if ($row) {
             return new GuiaTuristico(
-                $row['ID_guia'],
+                $row['id_guia'],
                 $row['nombre'],
                 $row['telefono'],
                 $row['idioma'],
-                $row['ID_ciudad']
+                $row['id_ciudad']
             );
         }
         return null;
     }
-
     // Crear nuevo guía turístico
     public function crear(GuiaTuristico $guia) {
-        $sql = "INSERT INTO guia_turistico (ID_guia, nombre, telefono, idioma, ID_ciudad) 
+        $sql = "INSERT INTO guia_turistico (id_guia, nombre, telefono, idioma, id_ciudad) 
                 VALUES (?, ?, ?, ?, ?)";
         
-        return $this->executeQuery($sql, [
+        return $this->db->executeQuery($sql, [
             $guia->getID(),
             $guia->getNombre(),
             $guia->getTelefono(),
-            $guia->getIdioma(),
+            $guia->getIdiomas(),
             $guia->getCiudad()
         ]);
     }
@@ -55,40 +56,112 @@ class GuiaTuristicoModel extends Model {
     // Actualizar guía turístico
     public function actualizar(GuiaTuristico $guia) {
         $sql = "UPDATE guia_turistico 
-                SET nombre = ?, telefono = ?, idioma = ?, ID_ciudad = ? 
-                WHERE ID_guia = ?";
+                SET nombre = ?, telefono = ?, idioma = ?, id_ciudad = ? 
+                WHERE id_guia = ?";
         
-        return $this->executeQuery($sql, [
+        return $this->db->executeQuery($sql, [
             $guia->getNombre(),
             $guia->getTelefono(),
-            $guia->getIdioma(),
+            $guia->getIdiomas(),
             $guia->getCiudad(),
             $guia->getID()
         ]);
     }
 
     // Eliminar guía turístico
-    public function eliminar($ID_guia) {
-        $sql = "DELETE FROM guia_turistico WHERE ID_guia = ?";
-        return $this->executeQuery($sql, [$ID_guia]);
+    public function eliminar($id_guia) {
+        $sql = "DELETE FROM guia_turistico WHERE id_guia = ?";
+        return $this->executeQuery($sql, [$id_guia]);
     }
 
     // Buscar guías por ciudad
-    public function getByCiudad($ID_ciudad) {
-        $sql = "SELECT * FROM guia_turistico WHERE ID_ciudad = ?";
-        $stmt = $this->executeQuery($sql, [$ID_ciudad]);
+    public function getByCiudad($id_ciudad) {
+        $sql = "SELECT * FROM guia_turistico WHERE id_ciudad = ?";
+        $stmt = $this->executeQuery($sql, [$id_ciudad]);
         $guias = [];
         
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $guias[] = new GuiaTuristico(
-                $row['ID_guia'],
+                $row['id_guia'],
                 $row['nombre'],
                 $row['telefono'],
                 $row['idioma'],
-                $row['ID_ciudad']
+                $row['id_ciudad']
             );
         }
         
         return $guias;
     }
+
+    public function getPaginated($page = 1, $limit = 10, $search = '') { 
+        try {
+            $offset = ($page - 1) * $limit;
+    
+            // Consulta base
+            $sql = "SELECT id_guia, nombre, telefono, idioma, id_ciudad FROM guia_turistico";
+            $countSql = "SELECT COUNT(*) as total FROM guia_turistico";
+            $params = [];
+    
+            // Si hay búsqueda, agregarla a las consultas
+            if (!empty($search)) {
+                $searchWhere = " WHERE nombre LIKE :search OR telefono LIKE :search OR idioma LIKE :search";
+                $sql .= $searchWhere;
+                $countSql .= $searchWhere;
+                $params[':search'] = "%$search%";
+            }
+    
+            // Agregar limit y offset para paginación
+            $sql .= " LIMIT :limit OFFSET :offset";
+    
+            // Obtener total de guías turísticos
+            $stmt = $this->db->prepare($countSql);
+            if (!empty($search)) {
+                $stmt->bindValue(':search', "%$search%", PDO::PARAM_STR);
+            }
+            $stmt->execute();
+            $total = $stmt->fetch(PDO::FETCH_ASSOC)['total'];
+    
+            // Ejecutar la consulta principal para obtener los guías turísticos
+            $stmt = $this->db->prepare($sql);
+            if (!empty($search)) {
+                $stmt->bindValue(':search', "%$search%", PDO::PARAM_STR);
+            }
+            $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+            $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+            $stmt->execute();
+    
+            $guias = [];
+            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                $guias[] = new GuiaTuristico(
+                    $row['id_guia'],
+                    $row['nombre'],
+                    $row['telefono'],
+                    $row['idioma'],
+                    $row['id_ciudad']
+                );
+            }
+    
+            // Convertir los objetos GuiaTuristico a arrays para JSON
+            $guiasArray = array_map(function($guia) {
+                return [
+                    'id_guia' => $guia->getID(),
+                    'nombre' => $guia->getNombre(),
+                    'telefono' => $guia->getTelefono(),
+                    'idioma' => $guia->getIdioma(),
+                    'id_ciudad' => $guia->getCiudad()
+                ];
+            }, $guias);
+    
+            return [
+                'data' => $guiasArray,
+                'total' => $total,
+                'totalPages' => ceil($total / $limit),
+                'currentPage' => $page
+            ];
+    
+        } catch (PDOException $e) {
+            throw new Exception("Error en la consulta: " . $e->getMessage());
+        }
+    }
+    
 }

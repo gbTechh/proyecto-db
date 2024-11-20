@@ -3,20 +3,21 @@ class ProveedorModel extends Model {
 
     // Obtener todos los proveedores
     public function getAll() {
-        $sql = "SELECT ID_proveedor, nombre, direccion, telefono, email FROM proveedor";
-        $stmt = $this->executeQuery($sql);
+        $sql = "SELECT id_proveedor, nombre, direccion, telefono, email FROM proveedor";
+
+        $rows = $this->db->getAll($sql);
         $proveedores = [];
         
-        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+        foreach ($rows as $row) {
             $proveedores[] = new Proveedor(
-                $row['ID_proveedor'],
+                $row['id_proveedor'],
                 $row['nombre'],
                 $row['direccion'],
                 $row['telefono'],
                 $row['email']
             );
         }
-        
+
         return $proveedores;
     }
 
@@ -26,7 +27,7 @@ class ProveedorModel extends Model {
             $offset = ($page - 1) * $limit;
             
             // Consulta base
-            $sql = "SELECT ID_proveedor, nombre, direccion, telefono, email FROM proveedor";
+            $sql = "SELECT id_proveedor, nombre, direccion, telefono, email FROM proveedor";
             $countSql = "SELECT COUNT(*) as total FROM proveedor";
             $params = [];
 
@@ -61,7 +62,7 @@ class ProveedorModel extends Model {
             $proveedores = [];
             while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
                 $proveedores[] = new Proveedor(
-                    $row['ID_proveedor'],
+                    $row['id_proveedor'],
                     $row['nombre'],
                     $row['direccion'],
                     $row['telefono'],
@@ -72,7 +73,7 @@ class ProveedorModel extends Model {
             // Convertir los objetos Proveedor a arrays para JSON
             $proveedoresArray = array_map(function($proveedor) {
                 return [
-                    'ID_proveedor' => $proveedor->getID(),
+                    'id_proveedor' => $proveedor->getID(),
                     'nombre' => $proveedor->getNombre(),
                     'direccion' => $proveedor->getDireccion(),
                     'telefono' => $proveedor->getTelefono(),
@@ -93,14 +94,14 @@ class ProveedorModel extends Model {
     }
 
     // Obtener proveedor por ID
-    public function getByID($ID_proveedor) {
-        $sql = "SELECT * FROM proveedor WHERE ID_proveedor = ?";
-        $stmt = $this->executeQuery($sql, [$ID_proveedor]);
+    public function getByID($id_proveedor) {
+        $sql = "SELECT * FROM proveedor WHERE id_proveedor = ?";
+        $stmt = $this->db->executeQuery($sql, [$id_proveedor]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         
         if ($row) {
             return new Proveedor(
-                $row['ID_proveedor'],
+                $row['id_proveedor'],
                 $row['nombre'],
                 $row['direccion'],
                 $row['telefono'],
@@ -110,9 +111,31 @@ class ProveedorModel extends Model {
         return null;
     }
 
+    public function getProveedoresByHotel($id_hotel) {
+        $sql = "SELECT p.id_proveedor, p.nombre, p.direccion, p.telefono, p.email
+                FROM proveedor p
+                INNER JOIN proveedor_hotel ph ON p.id_proveedor = ph.id_proveedor
+                WHERE ph.id_hotel = ?";
+
+        $rows = $this->db->executeQuery($sql, [$id_hotel]);
+
+        $proveedores = [];
+        
+        foreach ($rows as $row) {
+            $proveedores[] = new Proveedor(
+                $row['id_proveedor'],
+                $row['nombre'],
+                $row['direccion'],
+                $row['telefono'],
+                $row['email']
+            );
+        }
+
+        return $proveedores;
+    }
     // Crear un nuevo proveedor
     public function crear(Proveedor $proveedor) {
-        $sql = "INSERT INTO proveedor (ID_proveedor, nombre, direccion, telefono, email) 
+        $sql = "INSERT INTO proveedor (id_proveedor, nombre, direccion, telefono, email) 
                 VALUES (?, ?, ?, ?, ?)";
         
         return $this->executeQuery($sql, [
@@ -128,7 +151,7 @@ class ProveedorModel extends Model {
     public function actualizar(Proveedor $proveedor) {
         $sql = "UPDATE proveedor 
                 SET nombre = ?, direccion = ?, telefono = ?, email = ? 
-                WHERE ID_proveedor = ?";
+                WHERE id_proveedor = ?";
         
         return $this->executeQuery($sql, [
             $proveedor->getNombre(),
@@ -140,8 +163,8 @@ class ProveedorModel extends Model {
     }
 
     // Eliminar un proveedor
-    public function eliminar($ID_proveedor) {
-        $sql = "DELETE FROM proveedor WHERE ID_proveedor = ?";
-        return $this->executeQuery($sql, [$ID_proveedor]);
+    public function eliminar($id_proveedor) {
+        $sql = "DELETE FROM proveedor WHERE id_proveedor = ?";
+        return $this->executeQuery($sql, [$id_proveedor]);
     }
 }

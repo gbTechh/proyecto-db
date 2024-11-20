@@ -30,7 +30,7 @@
                     <li class="nav-link">
                         <a href="<?php echo URLROOT . "/admin/empleados.php"?>">
                             <i class='bx bx-briefcase icon'></i>
-                            <span class="text nav-text">Empleadoss</span>
+                            <span class="text nav-text">Empleados</span>
                         </a>
                     </li>
                     <li class="nav-link">
@@ -47,7 +47,7 @@
                     </li>
                     
                     <li class="nav-link">
-                        <a href="#hoteles">
+                    <a href="<?php echo URLROOT . "/admin/hoteles.php"?>">
                             <i class='bx bx-hotel icon'></i>
                             <span class="text nav-text">Hoteles</span>
                         </a>
@@ -66,8 +66,14 @@
                     </li>
                     <li class="nav-link">
                          <a href="<?php echo URLROOT . "/admin/ciudades.php"?>">
-                            <i class='bx bx-world icon'></i>
+                            <i class='bx bxs-city icon' ></i>
                             <span class="text nav-text">Ciudades</span>
+                        </a>
+                    </li>
+                    <li class="nav-link">
+                         <a href="<?php echo URLROOT . "/admin/guia_turistico.php"?>">
+                            <i class='bx bx-world icon'></i>
+                            <span class="text nav-text">Guías Turísticos</span>
                         </a>
                     </li>
                 </ul>
