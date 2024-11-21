@@ -9,7 +9,7 @@ class ClienteModel extends Model {
 
     // Obtener todos los clientes
     public function getAll() {
-        $sql = "SELECT DNI as 'id', Nombre as 'nombre', Apellidos as 'apellidos', Telefono as 'telefono', Email as 'email',c_username,c_password FROM Cliente";
+        $sql = "SELECT dni as 'id', nombre as 'nombre', apellidos as 'apellidos', telefono as 'telefono', email as 'email',c_username,c_password FROM cliente";
        
         $rows = $this->db->getAll($sql);
         $clientes = [];
@@ -32,7 +32,7 @@ class ClienteModel extends Model {
 
     public function crear(Cliente $cliente) {
         try { 
-            $sql = "INSERT INTO Cliente (DNI, Nombre, Apellidos, Telefono, Email, c_username, c_password) 
+            $sql = "INSERT INTO cliente (dni, nombre, apellidos, telefono, email, c_username, c_password) 
                     VALUES (:dni, :nombre, :apellidos, :telefono, :email, :username, :password)";
             
             $params = [
@@ -54,7 +54,7 @@ class ClienteModel extends Model {
     }
 
     public function existeEmail($email, $excludeId = null) {
-        $sql = "SELECT COUNT(*) FROM Cliente WHERE Email = :email";
+        $sql = "SELECT COUNT(*) FROM cliente WHERE email = :email";
         $params = [':email' => $email];
         
         if ($excludeId !== null) {

@@ -3,13 +3,13 @@ class ReservaModel extends Model {
 
     // Obtener todas las reservas
     public function getAll() {
-        $sql = "SELECT ID_reserva, fecha, num_personas, estado, ID_cliente, ID_empleado, ID_viaje FROM reserva";
-        $stmt = $this->executeQuery($sql);
+        $sql = "SELECT id_reserva, fecha, num_personas, estado, ID_cliente, ID_empleado, ID_viaje FROM reserva";
+        $stmt = $this->db->executeQuery($sql);
         $reservas = [];
         
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $reservas[] = new Reserva(
-                $row['ID_reserva'],
+                $row['id_reserva'],
                 $row['fecha'],
                 $row['num_personas'],
                 $row['estado'],
@@ -19,6 +19,8 @@ class ReservaModel extends Model {
             );
         }
         
+        $stmt = $this->db->executeQuery($sql);
+      
         return $reservas;
     }
 

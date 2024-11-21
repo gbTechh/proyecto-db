@@ -93,6 +93,36 @@ class GuiaTuristicoModel extends Model {
         return $guias;
     }
 
+    private function getciudadIdPornombre($nombre) {
+        $sql = "SELECT id_ciudad FROM ciudad WHERE nombre = ?";
+        $stmt = $this->db->executeQuery($sql, [$nombre]);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $row ? $row['id_ciudad'] : null; 
+    }
+
+    public function buscarGuias($nombreciudad) {
+        $idciudad = $this->getciudadIdPornombre($nombreciudad);
+        $sql = "SELECT g.id_guia, g.nombre, g.telefono, g.idioma, c.nombre as 'ciudad' FROM guia_turistico g
+        INNER JOIN ciudad c ON g.id_ciudad = c.id_ciudad
+        WHERE c.id_ciudad = ?";
+    
+        $stmt = $this->db->executeQuery($sql, [$idciudad]);
+        $guiasturisticos = [];
+        
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $guiasturisticos[] = new GuiaTuristico(
+
+                ID_guia: $row['id_guia'],
+                nombre: $row['nombre'],
+                telefono: $row['telefono'],
+                idioma: $row['idioma'],
+                ID_ciudad: $row['ciudad']
+            );
+        }
+        
+        return $guiasturisticos;
+    }
+
     public function getPaginated($page = 1, $limit = 10, $search = '') { 
         try {
             $offset = ($page - 1) * $limit;

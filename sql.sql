@@ -825,3 +825,51 @@ INSERT INTO pago (monto, fecha, estado, metodo_pago, id_reserva) VALUES
 (100.00, '2024-01-17', 'Completado', 'Efectivo', 3),
 (200.00, '2024-01-18', 'Reembolsado', 'Tarjeta', 4),
 (300.00, '2024-01-19', 'Completado', 'Transferencia', 5);
+
+INSERT INTO vuelo (num_vuelo, ciudad_origen, ciudad_destino, fecha_salida, fecha_llegada, precio) VALUES
+('VL002', 2, 1, '2024-01-23 10:00:00', '2024-01-23 11:30:00', 180.00);
+
+INSERT INTO vuelo (num_vuelo, ciudad_origen, ciudad_destino, fecha_salida, fecha_llegada, precio) VALUES
+('VL003', 1, 2, '2024-01-19 10:00:00', '2024-01-19 11:30:00', 180.00);
+
+
+
+INSERT INTO paquete_turistico (nombre, descripcion, precio, id_ciudad) VALUES  
+('Colca Full Day', 'Disfruta del vuelo de Cóndor', 200.00, 2),
+('Cañon de Cotahuasi', 'Disfruta del cañon mas profundo del Peru', 250.00, 2),
+('Laguna Salinas', 'Disfruta de la laguna', 150.00, 2);
+/**********+procedimientos:********/
+
+DROP PROCEDURE `VerificarUsuario`;
+CREATE DEFINER=`enkit`@`%` PROCEDURE `VerificarUsuario`(IN `p_username` VARCHAR(50), IN `p_password` VARCHAR(50), OUT `p_tipo_usuario` VARCHAR(10), OUT `p_nombre` VARCHAR(50), OUT `p_apellidos` VARCHAR(50), OUT `p_dni` VARCHAR(20), OUT `p_telefono` VARCHAR(20), OUT `p_email` VARCHAR(50), OUT `p_id_sucursal` INT, OUT `p_puesto` VARCHAR(50)) NOT DETERMINISTIC CONTAINS SQL SQL SECURITY DEFINER BEGIN
+    DECLARE v_password VARCHAR(50);
+    DECLARE v_found BOOLEAN DEFAULT FALSE;
+
+    SELECT nombre, apellidos, e_password, dni, telefono, id_sucursal, puesto 
+    INTO p_nombre, p_apellidos, v_password, p_dni, p_telefono, p_id_sucursal, p_puesto
+    FROM empleado
+    WHERE e_username = p_username;
+
+    IF v_password = p_password THEN
+        SET p_tipo_usuario = 'Empleado';
+        SET v_found = TRUE;
+    END IF;
+
+    IF v_found = FALSE THEN
+        SELECT nombre, apellidos, c_password, dni, telefono, email
+        INTO p_nombre, p_apellidos, v_password, p_dni, p_telefono, p_email
+        FROM cliente
+        WHERE c_username = p_username;
+
+        IF v_password = p_password THEN
+            SET p_tipo_usuario = 'Cliente';
+            SET v_found = TRUE;
+        END IF;
+    END IF;
+
+    IF v_found = FALSE THEN
+        SET p_tipo_usuario = 'No encontrado';
+    END IF;
+END
+
+

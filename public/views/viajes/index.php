@@ -1,26 +1,12 @@
-<?php
-session_start();
-?>
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-	<meta charset="UTF-8" />
-	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-	<meta
-		name="viewport"
-		content="width=device-width, initial-scale=1.0"
-	/>
-	<title>Around the world</title>
-	<link rel="stylesheet" href="style2.css" />
-	<link href="https://fonts.googleapis.com/css2?family=Lobster&display=swap" rel="stylesheet">
-    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-</head>
-<body>
+
+
+	
+
 	<main class="main-content">
 		<section class="container top-trips">
 			<h1 class="heading-1">Plan your next adventure</h1>
-			<p class="parrafo">¿A dónde te gustaría ir??</p>
+			<p class="parrafo">¿A dónde te gustaría ir?</p>
 
             <form id="search-form" class="date-inputs">
                 <div>
@@ -67,29 +53,20 @@ session_start();
                 </div>
             </form>
 
-            <section>
+            <section >
                 <div id="results">
                 </div>
+                <div class="container confirm-trip">
+                    <a href="<?php echo URLROOT . "/public/views/viajes/confirmar2.php"?>">confirmar</a>
+                    <!--<button type="button" id="confirm-button" class="confirm-button">Confirmar</button>-->
+                </div>
+
                 <!-- Aquí aparecerán los vuelos -->
             </section>	
 
-            <section class="container-trips" id="trips-container">
-                <!-- Aquí aparecerán los paquetes de turismo -->
-            </section>
+            
 
 		</section>
 
 	</main>
 	
-
-
-	<script
-		src="https://kit.fontawesome.com/81581fb069.js"
-		crossorigin="anonymous"
-	></script>
-
-
-	<script src="script.js?v=1.0"></script>
-	
-</body>
-</html>

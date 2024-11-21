@@ -3,19 +3,19 @@ class HotelModel extends Model {
 
     // Obtener todos los hoteles
     public function getAll() {
-        $sql = "SELECT ID_hotel, nombre, direccion, categoria, telefono, precio_por_noche, ID_ciudad FROM Hotel";
+        $sql = "SELECT id_hotel, nombre, direccion, categoria, telefono, precio_por_noche, id_ciudad FROM hotel";
         $stmt = $this->executeQuery($sql);
         $hoteles = [];
         
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $hoteles[] = new Hotel(
-                $row['ID_hotel'],
+                $row['id_hotel'],
                 $row['nombre'],
                 $row['direccion'],
                 $row['categoria'],
                 $row['telefono'],
                 $row['precio_por_noche'],
-                $row['ID_ciudad']
+                $row['id_ciudad']
             );
         }
         
@@ -23,28 +23,28 @@ class HotelModel extends Model {
     }
 
     private function getCiudadIdPorNombre($nombre) {
-        $sql = "SELECT ID_ciudad FROM Ciudad WHERE nombre = ?";
+        $sql = "SELECT id_ciudad FROM ciudad WHERE nombre = ?";
         $stmt = $this->db->executeQuery($sql, [$nombre]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        return $row ? $row['ID_ciudad'] : null; 
+        return $row ? $row['id_ciudad'] : null; 
     }
 
     public function buscarHoteles($nombreCiudad) {
         $idCiudad = $this->getCiudadIdPorNombre($nombreCiudad);
 
-        $sql = "SELECT ID_hotel, nombre, direccion, categoria, telefono, precio_por_noche, ID_ciudad FROM Hotel WHERE ID_ciudad = ?";
+        $sql = "SELECT id_hotel, nombre, direccion, categoria, telefono, precio_por_noche, id_ciudad FROM hotel WHERE id_ciudad = ?";
         $stmt = $this->executeQuery($sql, [$idCiudad]);
         $hoteles = [];
         
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $hoteles[] = new Hotel(
-                $row['ID_hotel'],
+                $row['id_hotel'],
                 $row['nombre'],
                 $row['direccion'],
                 $row['categoria'],
                 $row['telefono'],
                 $row['precio_por_noche'],
-                $row['ID_ciudad']
+                $row['id_ciudad']
             );
         }
         
@@ -129,19 +129,19 @@ class HotelModel extends Model {
 
     // Obtener un hotel por ID
     public function getByID($ID_hotel) {
-        $sql = "SELECT * FROM Hotel WHERE ID_hotel = ?";
+        $sql = "SELECT * FROM hotel WHERE id_hotel = ?";
         $stmt = $this->executeQuery($sql, [$ID_hotel]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         
         if ($row) {
             return new Hotel(
-                $row['ID_hotel'],
+                $row['id_hotel'],
                 $row['nombre'],
                 $row['direccion'],
                 $row['categoria'],
                 $row['telefono'],
                 $row['precio_por_noche'],
-                $row['ID_ciudad']
+                $row['id_ciudad']
             );
         }
         return null;

@@ -25,7 +25,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $stmt->bind_param("sssssss", $nombre, $apellido, $username, $password, $dni, $telefono, $email);
 
     if ($stmt->execute()) {
-        header("Location: login.php");
+        header("Location: /proyecto-db/public/login.php");
         echo "Registro exitoso.";
         exit();
     } else {
@@ -65,7 +65,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <input type="email" id="email" name="email" required><br><br>
             <input type="submit" value="Registrarse">
         </form>
-        <a href="public">Continuar sin iniciar sesión</a>
+        <a href="<?php echo URLROOT . "/login.php"?>">Continuar sin iniciar sesión</a></span>
         <a href="login.php">Regresar a Login</a>
     </div>
 </body>

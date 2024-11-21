@@ -3,13 +3,13 @@ class SucursalModel extends Model {
     
     // Obtener todos los empleados
     public function getAll() {
-      $sql = "SELECT ID_sucursal, Direccion as 'direccion', Telefono as 'telefono', nombre FROM Sucursal";
+      $sql = "SELECT id_sucursal, direccion, telefono, nombre FROM sucursal";
       $stmt = $this->db->executeQuery($sql);
       $sucursales = [];
       
       while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
           $sucursales[] = new Sucursal(
-              $row['ID_sucursal'],
+              $row['id_sucursal'],
               $row['direccion'],
               $row['telefono'],
               $row['nombre'],
@@ -22,7 +22,7 @@ class SucursalModel extends Model {
     public function crear(Sucursal $sucursal) {          
         try { 
             return $this->db->insert(
-            "INSERT INTO Sucursal (Direccion, Telefono, nombre) 
+            "INSERT INTO sucursal (direccion, telefono, nombre) 
                     VALUES (?, ?, ?)",
             [$sucursal->getDireccion(), $sucursal->getTelefono(),$sucursal->getNombre()]
         );
@@ -34,11 +34,11 @@ class SucursalModel extends Model {
     }
     
     public function existeNombre($nombre, $excludeId = null) {
-        $sql = "SELECT COUNT(*) FROM Sucursal WHERE nombre = :nombre";
+        $sql = "SELECT COUNT(*) FROM sucursal WHERE nombre = :nombre";
         $params = [':nombre' => $nombre];
         
         if ($excludeId !== null) {
-            $sql .= " AND ID_Sucursal != :id";
+            $sql .= " AND id_sucursal != :id";
             $params[':id'] = $excludeId;
         }
         

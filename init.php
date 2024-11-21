@@ -1,7 +1,7 @@
 <?php 
 
-define('URLROOT', 'http://localhost/proyecto-db');
-define('ROOT', dirname(__DIR__) . "/proyecto-db");
+define('URLROOT', 'http://localhost/agencia');
+define('ROOT', dirname(__DIR__) . "/agencia");
 
 require ROOT . '/config.php';
 require ROOT . '/functions.php';

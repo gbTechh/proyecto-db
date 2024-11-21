@@ -3,17 +3,17 @@ class PaqueteTuristicoModel extends Model {
 
     // Obtener todos los paquetes turísticos
     public function getAll() {
-        $sql = "SELECT ID_paquete, nombre, descripcion, precio FROM paquete_turistico";
-        $stmt = $this->executeQuery($sql);
+        $sql = "SELECT id_paquete, nombre, descripcion, precio, id_ciudad FROM paquete_turistico";
+        $stmt = $this->db->executeQuery($sql);
         $paquetes = [];
         
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $paquetes[] = new PaqueteTuristico(
-                $row['ID_paquete'],
+                $row['id_paquete'],
                 $row['nombre'],
                 $row['descripcion'],
                 $row['precio'],
-                $row['ciudad']
+                $row['id_ciudad']
             );
         }
         
@@ -22,17 +22,17 @@ class PaqueteTuristicoModel extends Model {
 
     // Obtener paquete turístico por ID
     public function getByID($ID_paquete) {
-        $sql = "SELECT * FROM paquete_turistico WHERE ID_paquete = ?";
-        $stmt = $this->executeQuery($sql, [$ID_paquete]);
+        $sql = "SELECT * FROM paquete_turistico WHERE id_paquete = ?";
+        $stmt = $this->db->executeQuery($sql, [$ID_paquete]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         
         if ($row) {
             return new PaqueteTuristico(
-                $row['ID_paquete'],
+                $row['id_paquete'],
                 $row['nombre'],
                 $row['descripcion'],
                 $row['precio'],
-                $row['ciudad']
+                $row['id_ciudad']
             );
         }
         return null;
@@ -40,10 +40,10 @@ class PaqueteTuristicoModel extends Model {
 
     // Crear nuevo paquete turístico
     public function crear(PaqueteTuristico $paquete) {
-        $sql = "INSERT INTO paquete_turistico (nombre, descripcion, precio) 
-                VALUES (?, ?, ?)";
+        $sql = "INSERT INTO paquete_turistico (nombre, descripcion, precio, id_ciudad) 
+                VALUES (?, ?, ?, ?)";
         
-        return $this->executeQuery($sql, [
+        return $this->db->executeQuery($sql, [
             $paquete->getNombre(),
             $paquete->getDescripcion(),
             $paquete->getPrecio(),
@@ -57,7 +57,7 @@ class PaqueteTuristicoModel extends Model {
                 SET nombre = ?, descripcion = ?, precio = ? 
                 WHERE ID_paquete = ?";
         
-        return $this->executeQuery($sql, [
+        return $this->db->executeQuery($sql, [
             $paquete->getNombre(),
             $paquete->getDescripcion(),
             $paquete->getPrecio(),
@@ -69,14 +69,14 @@ class PaqueteTuristicoModel extends Model {
     // Eliminar paquete turístico
     public function eliminar($ID_paquete) {
         $sql = "DELETE FROM paquete_turistico WHERE ID_paquete = ?";
-        return $this->executeQuery($sql, [$ID_paquete]);
+        return $this->db->executeQuery($sql, [$ID_paquete]);
     }
 
     private function getCiudadIdPorNombre($nombre) {
-        $sql = "SELECT ID_ciudad FROM Ciudad WHERE nombre = ?";
+        $sql = "SELECT id_ciudad FROM ciudad WHERE nombre = ?";
         $stmt = $this->db->executeQuery($sql, [$nombre]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        return $row ? $row['ID_ciudad'] : null; 
+        return $row ? $row['id_ciudad'] : null; 
     }
 
     // Obtener paquetes turísticos por ciudad
@@ -85,15 +85,15 @@ class PaqueteTuristicoModel extends Model {
         $idCiudad = $this->getCiudadIdPorNombre($nombreCiudad);
 
         $sql = "SELECT 
-            p.ID_paquete,
+            p.id_paquete,
             p.nombre,
             p.descripcion,
             p.precio,
-            c.ID_ciudad,
+            c.id_ciudad,
             c.nombre as nombre_ciudad
         FROM paquete_turistico p
-        INNER JOIN Ciudad c ON p.ID_ciudad = c.ID_ciudad
-        WHERE c.ID_ciudad = ?";
+        INNER JOIN ciudad c ON p.id_ciudad = c.id_ciudad
+        WHERE c.id_ciudad = ?";
     
         $stmt = $this->db->executeQuery($sql, [$idCiudad]);
         $paquetes = [];
@@ -101,7 +101,7 @@ class PaqueteTuristicoModel extends Model {
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             // Crear un array con los datos del paquete para el formato JSON
             $paquetes[] = [
-                'id' => $row['ID_paquete'],
+                'id' => $row['id_paquete'],
                 'nombre' => $row['nombre'],
                 'descripcion' => $row['descripcion'],
                 'precio' => $row['precio'],

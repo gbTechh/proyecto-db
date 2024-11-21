@@ -157,6 +157,13 @@ header .image-text .header-text {
     padding: 1rem;
     background-color: white;
     border-bottom: 0.8px solid var(--border-color) ;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .div-btn {
+
+    }
   }
 
   .body {
@@ -253,4 +260,16 @@ header .image-text .header-text {
 .btn.btn-primary {
   background-color: var(--primary-color);
   color: white;
+}
+
+
+.btn-reserva {
+  appearance: none;
+  border:1px solid transparent;
+  background-color: #42c563;
+  color: white;
+  font-size: 1.35rem;
+  padding: 0.35rem 1.5rem;
+  cursor: pointer;
+  border-radius: 0.5rem;
 }

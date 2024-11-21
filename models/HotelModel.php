@@ -160,6 +160,37 @@ class HotelModel extends Model {
         return [];
     }
 
+    private function getCiudadIdPorNombre($nombre) {
+        $sql = "SELECT id_ciudad FROM ciudad WHERE nombre = ?";
+        $stmt = $this->db->executeQuery($sql, [$nombre]);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $row ? $row['id_ciudad'] : null; 
+    }
+    public function buscarHoteles($nombreCiudad) {
+        $idCiudad = $this->getCiudadIdPorNombre($nombreCiudad);
+
+        $sql = "SELECT h.id_hotel, h.nombre, h.direccion, h.categoria, h.telefono, h.precio_por_noche, c.id_ciudad FROM hotel h
+        INNER JOIN ciudad c ON h.id_ciudad = c.id_ciudad
+        WHERE c.id_ciudad = ?";
+        $stmt = $this->db->executeQuery($sql, [$idCiudad]);
+        $hoteles = [];
+        
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $hoteles[] = new Hotel(
+                $row['id_hotel'],
+                $row['nombre'],
+                $row['direccion'],
+                $row['categoria'],
+                $row['telefono'],
+                $row['precio_por_noche'],
+                $row['id_ciudad']
+            );
+        }
+        
+        return $hoteles;
+    }
+
+
     // Obtener hoteles paginados
     public function getPaginated($page = 1, $limit = 10, $search = '') {
         try {

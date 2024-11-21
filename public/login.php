@@ -4,9 +4,9 @@ session_start();
 if ($_SERVER["REQUEST_METHOD"] == "POST") { 
     //actualizar datos aqui
     $servername = "localhost";
-    $username = "root"; 
-    $password = ""; 
-    $dbname = "db_final";
+    $username = "enkit"; 
+    $password = "123"; 
+    $dbname = "agencia";
 
     $conn = new mysqli($servername, $username, $password, $dbname);
 
@@ -37,7 +37,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             header("Location: administrador.php");
         } else {
             $_SESSION['email'] = $row['@email'];
-            header("Location: /proyecto-db/public");
+            header("Location: /agencia/index.php");
         }
         exit();
     } elseif ($row['@tipo_usuario'] === 'No encontrado') {

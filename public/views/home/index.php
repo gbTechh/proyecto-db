@@ -1,6 +1,4 @@
-<?php
-session_start();
-?>
+
 <section class="banner">
   <div class="content-banner">	
   <?php if (isset($_SESSION['username'])): ?>

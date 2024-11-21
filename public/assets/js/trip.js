@@ -23,7 +23,7 @@ document.getElementById('search-form').addEventListener('submit', async function
                 end_date: endDate
             })
         });
-
+        
         const data = await response.json();
         console.log(data); 
         mostrarResultados(data);
@@ -45,7 +45,7 @@ function mostrarResultados(data) {
             <section class="vuelos-section">
                 <h2>Vuelos de Ida</h2>
                 <div class="wrapp-vuelos">
-                    ${mostrarVuelos(data.vuelos.ida)}
+                    ${mostrarVuelos(data.vuelos.ida, "ida")}
                 </div>
             </section>
         `;
@@ -57,7 +57,7 @@ function mostrarResultados(data) {
             <section class="vuelos-section">
                 <h2>Vuelos de Regreso</h2>
                 <div class="wrapp-vuelos">
-                    ${mostrarVuelos(data.vuelos.regreso)}
+                    ${mostrarVuelos(data.vuelos.regreso, "regreso")}
                 </div>
             </section>
         `;
@@ -74,7 +74,6 @@ function mostrarResultados(data) {
             </section>
         `;
     }
-
     if (data.hoteles && data.hoteles.length > 0) {
         resultsDiv.innerHTML += `
             <section class="hoteles-section">
@@ -85,10 +84,40 @@ function mostrarResultados(data) {
             </section>
         `;
     }
+    if (data.transportes && data.transportes.length > 0) {
+        resultsDiv.innerHTML += `
+            <section class="hoteles-section">
+                <h2>Transportes</h2>
+                <div class="container-trips">
+                    ${mostrarTransportes(data.transportes)}
+                </div>
+            </section>
+        `;
+    }
+    if (data.servicios && data.servicios.length > 0) {
+        resultsDiv.innerHTML += `
+            <section class="hoteles-section">
+                <h2>Servicios</h2>
+                <div class="container-trips">
+                    ${mostrarServicios(data.servicios)}
+                </div>
+            </section>
+        `;
+    }
+    if (data.guiasturisticos && data.guiasturisticos.length > 0) {
+        resultsDiv.innerHTML += `
+            <section class="guias-section">
+                <h2>Guias</h2>
+                <div class="container-trips">
+                    ${mostrarguias(data.guiasturisticos)}
+                </div>
+            </section>
+        `;
+    }
 }
 
 
-function mostrarVuelos(vuelos) {
+function mostrarVuelos(vuelos, tipo) {
     return vuelos.map(vuelo => `
         <div class="flight-card">
             <!-- Encabezado del vuelo -->
@@ -120,7 +149,7 @@ function mostrarVuelos(vuelos) {
                     <i class="bx bxs-plane-alt icon"></i>
                     <div class="info-container">
                         <span class="info-label">Salida:</span>
-                        <span class="info-value date">${formatearFecha(vuelo.fecha_salida)}</span>
+                        <span class="info-value date">${vuelo.fecha_salida}</span>
                     </div>
                 </div>
                 
@@ -128,12 +157,12 @@ function mostrarVuelos(vuelos) {
                     <i class="bx bxs-plane-land icon"></i>
                     <div class="info-container">
                         <span class="info-label">Llegada:</span>
-                        <span class="info-value date">${formatearFecha(vuelo.fecha_llegada)}</span>
+                        <span class="info-value date">${vuelo.fecha_llegada}</span>
                     </div>
                 </div>
             </div>
 
-            <button onclick="seleccionarVuelo(${vuelo.id})" class="btn-seleccionar">
+            <button onclick="seleccionarVuelo(${vuelo.id}, '${tipo}', '${vuelo.num_vuelo}', '${vuelo.origen}', ${vuelo.precio}, '${vuelo.destino}', '${vuelo.fecha_salida}', '${vuelo.fecha_llegada}' )" class="seleccionar-button">
                 Seleccionar Vuelo
             </button>
         </div>
@@ -162,13 +191,12 @@ function mostrarPaquetes(paquetes) {
                 </div>
             </div>
 
-            <button onclick="seleccionarPaquete(${paquete.id})" class="btn-seleccionar">
+            <button onclick="seleccionarPaquete(${paquete.id}, '${paquete.nombre}' ,' ${paquete.descripcion}', '${paquete.ciudad}', ${paquete.precio})" class="seleccionar-button">
                 Seleccionar Paquete
             </button>
         </div>
     `).join('');
 }
-
 function mostrarHoteles(hoteles) {
     return hoteles.map(hotel => `
         <div class="card-trips">
@@ -193,37 +221,158 @@ function mostrarHoteles(hoteles) {
                 </div>
             </div>
 
-            <button onclick="seleccionarHotel(${hotel.ID_hotel})" class="btn-seleccionar">
-                Seleccionar Paquete
+            <button onclick="seleccionarHotel(${hotel.id}, '${hotel.nombre}', '${hotel.direccion}', '${hotel.categoria}', '${hotel.telefono}', ${hotel.precio_por_noche})" class="btn-seleccionar">
+                Seleccionar Hotel
+            </button>
+        </div>
+    `).join('');
+}
+function mostrarTransportes(transportes) {
+    return transportes.map(transporte => `
+        <div class="flight-card">
+            <!-- Encabezado del vuelo -->
+            <div class="flight-header">
+                <span class="flight-number">${transporte.empresa}</span>
+                <span class="flight-price">$${transporte.costo}</span>
+            </div>
+            
+            <!-- Información del vuelo -->
+            <div class="flight-info">
+                <div class="info-container">
+                    <span class="info-label">Tipo:</span>
+                    <span class="info-value">${transporte.tipo}</span>
+                </div>
+            </div>
+
+            <button onclick="seleccionarTransporte(${transporte.id}, '${transporte.empresa}', ${transporte.costo}, '${transporte.tipo}')" class="btn-seleccionar">
+                Seleccionar Transporte
+            </button>
+        </div>
+    `).join('');
+}
+function mostrarServicios(servicios) {
+    return servicios.map(servicio => `
+        <div class="flight-card">
+            <!-- Encabezado del vuelo -->
+            <div class="flight-header">
+                <span class="flight-number">${servicio.descripcion}</span>
+                <span class="flight-price">$${servicio.costo}</span>
+            </div>
+
+
+            <button onclick="seleccionarServicio(${servicio.id}, '${servicio.descripcion}', ${servicio.costo})" class="btn-seleccionar">
+                Seleccionar Servicio
+            </button>
+        </div>
+    `).join('');
+}
+function mostrarguias(guiasturisticos) {
+    return guiasturisticos.map(guiaturistico => `
+        <div class="flight-card">
+            <!-- Encabezado del vuelo -->
+            <div class="flight-header">
+                <span class="flight-number">${guiaturistico.nombre}</span>
+                <span class="flight-price">$${guiaturistico.idioma}</span>
+            </div>
+
+
+            <button onclick="seleccionarguia(${guiaturistico.id}, '${guiaturistico.nombre}', '${guiaturistico.idioma}')" class="btn-seleccionar">
+                Seleccionar guia
             </button>
         </div>
     `).join('');
 }
 
+function seleccionarguia(id , nombre, idioma) {
+    const guiaSeleccionado = {
+        id: id,
+        nombre: nombre,
+        idioma: idioma,
+    };
+    localStorage.setItem(`guiaSeleccionado`, JSON.stringify(guiaSeleccionado));
+    console.log("guia guardado:", guiaSeleccionado);
+    alert(`guia seleccionado: ${guiaSeleccionado.id}`);
+}
 function formatearFecha(fecha) {
     const date = new Date(fecha); // Convierte la cadena en un objeto Date
-
     // Lista de los meses en español
     const meses = [
         'enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio',
         'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'
     ];
-
     // Formateamos la fecha en formato 'd de mes del yyyy'
     const dia = String(date.getDate()).padStart(2, '0'); // Día con 2 dígitos
     const mes = meses[date.getMonth()]; // Nombre del mes
     const año = date.getFullYear(); // Año
-
     return `${dia} de ${mes} del ${año}`; // Devuelve la fecha formateada
 }
 
-
-function seleccionarVuelo(id) {
-    // Implementar la lógica de selección de vuelo
-    console.log('Vuelo seleccionado:', id);
+function seleccionarVuelo(id, tipo, num_vuelo, origen, precio, destino, fecha_salida, fecha_llegada) {
+    const vueloSeleccionado = {
+        id: id,
+        tipo: tipo,
+        num_vuelo: num_vuelo,
+        precio: precio,
+        origen: origen,
+        destino: destino,
+        fecha_salida: fecha_salida,
+        fecha_llegada: fecha_llegada
+    };
+    localStorage.setItem(`vuelo${tipo.charAt(0).toUpperCase() + tipo.slice(1)}`, JSON.stringify(vueloSeleccionado));
+    console.log("Vuelo guardado:", vueloSeleccionado);
+    alert(`${tipo.charAt(0).toUpperCase() + tipo.slice(1)} seleccionado.`);
 }
 
-function seleccionarPaquete(id) {
-    // Implementar la lógica de selección de paquete
-    console.log('Paquete seleccionado:', id);
+function seleccionarPaquete(id, nombre, descripcion, ciudad, precio) {
+    const paqueteSeleccionado = {
+        id: id,
+        nombre: nombre,
+        descripcion: descripcion,
+        ciudad: ciudad,
+        precio: precio
+    };
+    localStorage.setItem(`paqueteSeleccionado`, JSON.stringify(paqueteSeleccionado));
+    console.log("Paquete guardado:", paqueteSeleccionado);
+    alert(`Paquete seleccionado: ${paqueteSeleccionado.nombre}`);
+}
+
+function seleccionarHotel(id, nombre, direccion, categoria, telefono, precio_por_noche) {
+    const hotelSeleccionado = {
+        id: id,
+        nombre: nombre,
+        direccion: direccion,
+        categoria: categoria,
+        telefono: telefono,
+        precio_por_noche: precio_por_noche,
+    };
+    localStorage.setItem(`hotelSeleccionado`, JSON.stringify(hotelSeleccionado));
+    console.log("Hotel guardado:", hotelSeleccionado);
+    alert(`Hotel seleccionado: ${hotelSeleccionado.nombre}`);
+}
+
+function seleccionarTransporte(id , empresa, costo, tipo) {
+    const transporteSeleccionado = {
+        id: id,
+        empresa: empresa,
+        costo: costo,
+        tipo: tipo
+    };
+    localStorage.setItem(`transporteSeleccionado`, JSON.stringify(transporteSeleccionado));
+    console.log("Transporte guardado:", transporteSeleccionado);
+    alert(`Transporte seleccionado: ${transporteSeleccionado.id}`);
+}
+
+function seleccionarServicio(id , descripcion, costo) {
+    const servicioSeleccionado = {
+        id: id,
+        descripcion: descripcion,
+        costo: costo,
+    };
+    localStorage.setItem(`servicioSeleccionado`, JSON.stringify(servicioSeleccionado));
+    console.log("Servicio guardado:", servicioSeleccionado);
+    alert(`Servicio seleccionado: ${servicioSeleccionado.id}`);
+}
+
+function datos_seleccionados(id){
+    
 }

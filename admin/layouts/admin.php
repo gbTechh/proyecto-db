@@ -28,7 +28,12 @@
         <?php include ROOT . '/admin/templates/navbar-admin.php'; ?>
         <main class="main-admin">
             <div class="header">
-                
+                <div>
+                        asd
+                </div>
+                <div class="div-btn">
+                    <a href="<?php echo URLROOT. "/admin/reservas.php"?>" class="btn-reserva">Reservas</a>
+                </div>
             </div>
             <div class="body">
                <?= $content ?? '' ?>
@@ -45,6 +50,30 @@
         }
     }
     ?>
+
+    <script>
+        // Código de hot-reload integrado
+        const watchFiles = () => {
+            const timestamp = new Date().getTime();
+            fetch('/agencia/check-changes.php?t=' + timestamp)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.hasChanged) {
+                        window.location.reload();
+                    } else {
+                        setTimeout(watchFiles, 1000);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error checking for changes:', error);
+                    setTimeout(watchFiles, 1000);
+                });
+        };
+
+        // Iniciar la vigilancia cuando se carga la página
+        //document.addEventListener('DOMContentLoaded', watchFiles);
+    </script>
+
     
 </body>
 </html>

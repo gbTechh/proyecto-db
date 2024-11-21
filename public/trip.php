@@ -8,6 +8,15 @@ require ROOT . '/models/PaqueteTuristico.php';
 require ROOT . '/models/PaqueteTuristicoModel.php';
 require ROOT . '/models/Hotel.php';
 require ROOT . '/models/HotelModel.php';
+require ROOT . '/models/Transporte.php';
+require ROOT . '/models/TransporteModel.php';
+require ROOT . '/models/Servicio.php';
+require ROOT . '/models/ServicioModel.php';
+require ROOT . '/models/GuiaTuristico.php';
+require ROOT . '/models/GuiaTuristicoModel.php';
+
+
+
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $data = json_decode(file_get_contents('php://input'), true);
@@ -20,10 +29,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $destino = $data['destination'] ?? '';
     $fechaInicio = $data['start_date'] ?? '';
     $fechaFin = $data['end_date'] ?? '';
-
+    //var_dump($origen,$destino);
     $vueloModel = new VueloModel();
     $vuelos = $vueloModel->buscarVuelos($origen, $destino, $fechaInicio, $fechaFin);
-
+    //var_dump($vuelos);
     // Buscar paquetes turísticos
     $paqueteModel = new PaqueteTuristicoModel();
     $paquetes = $paqueteModel->buscarPaquetes($destino);
@@ -32,6 +41,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $hoteles = $hotelModel->buscarHoteles($destino);
     //var_dump($hoteles);
 
+    $transporteModel = new TransporteModel();
+    $transportes = $transporteModel->get4();
+    //var_dump($transportes);
+    $servicioModel = new ServicioModel();
+    $servicios = $servicioModel->buscarServicios($destino);
+    //var_dump($servicios);
+    $guiaturisticoModel = new GuiaTuristicoModel();
+    $guiasturisticos = $guiaturisticoModel->buscarGuias($destino);
+    //var_dump($guiasturisticos);
     // Preparar la respuesta combinada
     $response = [
         'vuelos' => [
@@ -39,7 +57,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'regreso' => []
         ],
         'paquetes' => [],
-        'hoteles' => []
+        'hoteles' => [],
+        'transportes' => [],
+        'servicios' => [],
+        'guiasturisticos' => []
     ];
 
     // Procesar los vuelos de ida
@@ -79,13 +100,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         ];
     }
     foreach ($hoteles as $hotel) {
-        $response['hoteles'][] = [ // Usar [] para agregar al array
-            'ID_hotel' => $hotel->getID(),
+        $response['hoteles'][] = [ 
+            'id' => $hotel->getID(),
             'nombre' => $hotel->getNombre(),
             'direccion' => $hotel->getDireccion(),
             'categoria' => $hotel->getCategoria(),
             'telefono' => $hotel->getTelefono(),
             'precio_por_noche' => $hotel->getPrecioPorNoche(),
+        ];
+    }
+    foreach ($transportes as $transporte) {
+        $response['transportes'][] = [ 
+            'id' => $transporte->getID(),
+            'tipo' => $transporte->getTipo(),
+            'costo' => $transporte->getCosto(),
+            'empresa' => $transporte->getEmpresa(),
+        ];
+    }
+    foreach ($servicios as $servicio) {
+        $response['servicios'][] = [ 
+            'id' => $servicio->getID(),
+            'costo' => $servicio->getCosto(),
+            'descripcion' => $servicio->getdescripcion(),
+        ];
+    }
+    foreach ($guiasturisticos as $guiaturistico) {
+        $response['guiasturisticos'][] = [ 
+            'id' => $guiaturistico->getID(),
+            'nombre' => $guiaturistico->getnombre(),
+            'telefono' => $guiaturistico->gettelefono(),
+            'idioma' => $guiaturistico->getidioma()
         ];
     }
 

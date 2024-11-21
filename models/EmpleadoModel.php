@@ -4,18 +4,19 @@ class EmpleadoModel extends Model {
     // Obtener todos los empleados
     public function getAll() {      
 
-        $sql = "SELECT DNI, Nombre, Apellidos, Telefono, ID_Sucursal, puesto, e_username, e_password FROM Empleado";
+        $sql = "SELECT e.dni, e.nombre, e.apellidos, e.telefono, s.nombre as 'name_sucursal', e.puesto, e.e_username, e.e_password FROM empleado e 
+        LEFT JOIN sucursal s on s.id_sucursal = e.id_sucursal;";
         
         $rows = $this->db->getAll($sql);
         $empleados = [];
         
         foreach($rows as $row) {
             $empleado = new Empleado(
-                $row['DNI'],
-                $row['Nombre'],
-                $row['Apellidos'],
-                $row['Telefono'],
-                $row['ID_Sucursal'],
+                $row['dni'],
+                $row['nombre'],
+                $row['apellidos'],
+                $row['telefono'],
+                $row['name_sucursal'],
                 $row['puesto'],
                 $row['e_username'],
                 $row['e_password']
@@ -29,7 +30,7 @@ class EmpleadoModel extends Model {
    
     // Obtener empleado por DNI
     public function getByDni($dni) {
-        $sql = "SELECT * FROM Empleado WHERE dni = ?";
+        $sql = "SELECT * FROM empleado WHERE dni = ?";
         $row = $this->db->getOne($sql, [$dni]);
         if ($row) {
             return new Empleado(
@@ -49,7 +50,7 @@ class EmpleadoModel extends Model {
     // Crear nuevo empleado
     public function crear(Empleado $empleado) {        
         try { 
-            $sql = "INSERT INTO Empleado (dni, nombre, apellidos, telefono, id_sucursal, puesto, e_username, e_password) VALUES (:dni, :nombre, :apellidos, :telefono, :id_sucursal, :puesto, :username, :password)";
+            $sql = "INSERT INTO empleado (dni, nombre, apellidos, telefono, id_sucursal, puesto, e_username, e_password) VALUES (:dni, :nombre, :apellidos, :telefono, :id_sucursal, :puesto, :username, :password)";
             
             $params = [
                 ':dni' => $empleado->getID(),
@@ -72,7 +73,7 @@ class EmpleadoModel extends Model {
 
     // Actualizar empleado
     public function actualizar(Empleado $empleado) {
-        $sql = "UPDATE Empleado 
+        $sql = "UPDATE empleado 
                 SET nombre = ?, apellidos = ?, telefono = ?, 
                     id_sucursal = ?, puesto = ?, e_username = ?, e_password = ? 
                 WHERE dni = ?";

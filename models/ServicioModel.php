@@ -19,6 +19,34 @@ class ServicioModel extends Model {
         return $servicios;
     }
 
+    private function getCiudadIdPorNombre($nombre) {
+        $sql = "SELECT id_ciudad FROM ciudad WHERE nombre = ?";
+        $stmt = $this->db->executeQuery($sql, [$nombre]);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $row ? $row['id_ciudad'] : null; 
+    }
+
+    public function buscarServicios($nombreCiudad) {
+        $idCiudad = $this->getCiudadIdPorNombre($nombreCiudad);
+        $sql = "SELECT s.id_servicio, s.descripcion, s.costo FROM servicio s
+        INNER JOIN ciudad c ON s.ciudad_int = c.id_ciudad
+        WHERE c.id_ciudad = ?";
+    
+        $stmt = $this->db->executeQuery($sql, [$idCiudad]);
+        $servicios = [];
+        
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $servicios[] = new Servicio(
+                ID_servicio: $row['id_servicio'],
+                descripcion: $row['descripcion'],
+                costo: $row['costo'],
+                ciudad: $row['ciudad'],
+            );
+        }
+        
+        return $servicios;
+    }
+
     // Obtener servicios paginados
     public function getPaginated($page = 1, $limit = 10, $search = '') {
         try {

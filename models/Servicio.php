@@ -1,26 +1,26 @@
 <?php
 class Servicio {
     private $ID_servicio;
-    private $tipo_transporte;
-    private $empresa;
+    private $descripcion;
     private $costo;
+    private $ciudad;
   
-    public function __construct($ID_servicio, $tipo_transporte, $empresa, $costo) {
+    public function __construct($ID_servicio, $descripcion, $costo, $ciudad) {
       $this->ID_servicio = $ID_servicio;
-      $this->tipo_transporte = $tipo_transporte;
-      $this->empresa = $empresa;
+      $this->descripcion = $descripcion;
       $this->costo = $costo;
+      $this->ciudad = $ciudad;
     }
 
     // Getters
     public function getID() { return $this->ID_servicio; }
-    public function getTipoTransporte() { return $this->tipo_transporte; }
-    public function getEmpresa() { return $this->empresa; }
+    public function getdescripcion() { return $this->descripcion; }
     public function getCosto() { return $this->costo; }
+    public function getCiudad() { return $this->ciudad; }
 
     // Setters
     public function setID($ID_servicio) { $this->ID_servicio = $ID_servicio; }
-    public function setTipoTransporte($tipo_transporte) { $this->tipo_transporte = $tipo_transporte; }
-    public function setEmpresa($empresa) { $this->empresa = $empresa; }
+    public function setdescripcion($descripcion) { $this->descripcion = $descripcion; }
     public function setCosto($costo) { $this->costo = $costo; }
+    public function setCiudad($ciudad) { $this->ciudad = $ciudad; }
 }
