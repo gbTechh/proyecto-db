@@ -19,7 +19,7 @@
             <tr>
                 <th>Nombre</th>
                 <th>Teléfono</th>
-                <th>Idiomas</th>
+                <th>Idioma</th>
                 <th>Ciudad</th>
                 <th>Acciones</th>
             </tr>
@@ -29,7 +29,7 @@
                <tr>
                     <td><?php echo $guia->getNombre(); ?></td>
                     <td><?php echo $guia->getTelefono(); ?></td>
-                    <td><?php echo $guia->getIdiomas(); ?></td>
+                    <td><?php echo $guia->getIdioma(); ?></td>
                     <td><?php echo $guia->getCiudad(); ?></td>
                     <td>
                         <div class="action-buttons">

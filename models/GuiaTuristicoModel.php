@@ -48,7 +48,7 @@ class GuiaTuristicoModel extends Model {
             $guia->getID(),
             $guia->getNombre(),
             $guia->getTelefono(),
-            $guia->getIdiomas(),
+            $guia->getIdioma(),
             $guia->getCiudad()
         ]);
     }
@@ -62,7 +62,7 @@ class GuiaTuristicoModel extends Model {
         return $this->db->executeQuery($sql, [
             $guia->getNombre(),
             $guia->getTelefono(),
-            $guia->getIdiomas(),
+            $guia->getIdioma(),
             $guia->getCiudad(),
             $guia->getID()
         ]);

@@ -35,15 +35,29 @@ class CiudadModel extends Model {
     }
 
     // Obtener ciudad por ID
-    public function getByID($ID_ciudad) {
-        $row = $this->db->getOne("SELECT * FROM ciudad WHERE id_ciudad = ?", [$ID_ciudad]);
-        return $row ? new Ciudad(
-            $row['id_ciudad'],
-            $row['nombre'],
-            $row['pais'],
-            $row['cant_guias'],
-            $row['cant_hoteles']
-        ) : null;
+    public function getByID($id_ciudad) {
+        $sql = "SELECT c.id_ciudad, c.nombre, c.pais, 
+                COUNT(DISTINCT g.id_Guia) as cant_guias, 
+                COUNT(DISTINCT h.id_Hotel) as cant_hoteles 
+                FROM ciudad c 
+                LEFT JOIN guia_turistico g ON g.id_ciudad = c.id_ciudad 
+                LEFT JOIN hotel h ON h.id_ciudad = c.id_ciudad 
+                WHERE c.id_ciudad = ?
+                GROUP BY c.id_ciudad, c.nombre, c.pais";
+
+        $stmt = $this->db->executeQuery($sql, [$id_ciudad]);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        if ($row) {
+            return new Ciudad(
+                $row['id_ciudad'],
+                $row['nombre'],
+                $row['pais'],
+                $row['cant_guias'],
+                $row['cant_hoteles']
+            );
+        }
+        return null;
     }
 
     // Crear nueva ciudad

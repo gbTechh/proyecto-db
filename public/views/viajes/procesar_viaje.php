@@ -1,10 +1,10 @@
 <?php
-session_start();
+require '../../../init.php';
 
-$servername = "localhost";
-$username = "enkit";
-$password = "123";
-$dbname = "agencia";
+$servername = DB_HOST;
+$username = DB_USER; 
+$password = DB_PASS; 
+$dbname = DB_NAME;
 
 $conn = new mysqli($servername, $username, $password, $dbname);
 

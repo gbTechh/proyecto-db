@@ -55,4 +55,33 @@ class Database {
             die("Error en la consulta: " . $e->getMessage());
         }
     }
+    public function executeQuery2($sql, $params = []) {
+        try {
+            // Debug
+            error_log("SQL: " . $sql);
+            error_log("Params: " . print_r($params, true));
+
+            // Preparar la consulta
+            $stmt = $this->conn->prepare($sql);
+            if (!$stmt) {
+                throw new PDOException($this->conn->errorInfo()[2]);
+            }
+
+            // Ejecutar la consulta
+            $success = $stmt->execute($params);
+            if (!$success) {
+                throw new PDOException($stmt->errorInfo()[2]);
+            }
+
+            return $stmt;
+            
+        } catch (PDOException $e) {
+            // Registrar el error para debugging
+            error_log("Database Error: " . $e->getMessage());
+            error_log("SQL: " . $sql);
+            error_log("Params: " . print_r($params, true));
+            
+            throw new Exception("Error en la consulta: " . $e->getMessage());
+        }
+    }
 }

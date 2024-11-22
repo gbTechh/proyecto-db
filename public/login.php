@@ -1,12 +1,12 @@
 <?php
-session_start();
+require '../init.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") { 
     //actualizar datos aqui
-    $servername = "localhost";
-    $username = "enkit"; 
-    $password = "123"; 
-    $dbname = "agencia";
+    $servername = DB_HOST;
+    $username = DB_USER; 
+    $password = DB_PASS; 
+    $dbname = DB_NAME;
 
     $conn = new mysqli($servername, $username, $password, $dbname);
 
@@ -34,10 +34,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if ($row['@tipo_usuario'] === 'Empleado') {
             $_SESSION['id_sucursal'] = $row['@id_sucursal'];
             $_SESSION['puesto'] = $row['@puesto'];
-            header("Location: administrador.php");
+            header("Location: " . URLROOT ." /admin/sucursales");
         } else {
             $_SESSION['email'] = $row['@email'];
-            header("Location: /agencia/index.php");
+            header("Location:" . URLROOT . "/index.php");
         }
         exit();
     } elseif ($row['@tipo_usuario'] === 'No encontrado') {

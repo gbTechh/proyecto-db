@@ -8,7 +8,7 @@
 
     <div class="wrapp-guias">
         <form action="guia_turistico.php?action=post" method="POST" class="guias-form">
-            
+
             <!-- Nombre del Guía -->
             <div class="form-group">
                 <label for="nombre">Nombre del Guía *</label>
@@ -24,24 +24,20 @@
                     <div class="invalid-feedback"><?php echo $errors['nombre']; ?></div>
                 <?php endif; ?>
             </div>
-            
-            <!-- Idiomas del Guía -->
+
+            <!-- Idioma del Guía -->
             <div class="form-group">
-                <label for="idiomas">Idiomas *</label>
-                <div id="idiomas-container">
-                    <input 
-                        type="text" 
-                        id="nuevoIdioma" 
-                        class="form-control" 
-                        placeholder="Escribe un idioma y haz clic en 'Agregar'" 
-                    />
-                    <button type="button" id="btnAgregarIdioma" class="btn btn-primary mt-2">Agregar Idioma</button>
-                </div>
-                <ul id="listaIdiomas" class="mt-3"></ul>
-                <!-- Campo oculto para almacenar los idiomas concatenados -->
-                <input type="hidden" id="idiomas" name="idiomas" value="<?php echo $old['idiomas'] ?? ''; ?>" />
-                <?php if (isset($errors['idiomas'])): ?>
-                    <div class="invalid-feedback"><?= $errors['idiomas'] ?></div>
+                <label for="idioma">Idioma *</label>
+                <input 
+                    type="text" 
+                    id="idioma" 
+                    name="idioma" 
+                    class="form-control <?php echo isset($errors['idioma']) ? 'is-invalid' : ''; ?>"
+                    value="<?php echo isset($old['idioma']) ? htmlspecialchars($old['idioma']) : ''; ?>"
+                    required
+                >
+                <?php if (isset($errors['idioma'])): ?>
+                    <div class="invalid-feedback"><?php echo $errors['idioma']; ?></div>
                 <?php endif; ?>
             </div>
 

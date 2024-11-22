@@ -12,6 +12,7 @@ document.getElementById('search-form').addEventListener('submit', async function
     }
 
     try {
+        console.log('Enviando solicitud a trip.php...');
         // Buscar vuelos y paquetes
         const response = await fetch('trip.php', {
             method: 'POST',
@@ -23,14 +24,14 @@ document.getElementById('search-form').addEventListener('submit', async function
                 end_date: endDate
             })
         });
-        
+
         const data = await response.json();
-        console.log(data); 
+        console.log(data);
         mostrarResultados(data);
 
     } catch (error) {
         console.error('Error al buscar vuelos y paquetes turísticos:', error);
-        document.getElementById('results').innerHTML = 
+        document.getElementById('results').innerHTML =
             '<p class="error">Error al buscar vuelos o paquetes turísticos. Por favor, intente nuevamente.</p>';
     }
 });
@@ -67,7 +68,7 @@ function mostrarResultados(data) {
     if (data.paquetes && data.paquetes.length > 0) {
         resultsDiv.innerHTML += `
             <section class="paquetes-section">
-                <h2>Paquetes Turísticos</h2>
+                <h2 class="heading-2">Paquetes Turísticos</h2>
                 <div class="container-trips">
                     ${mostrarPaquetes(data.paquetes)}
                 </div>
@@ -76,9 +77,9 @@ function mostrarResultados(data) {
     }
     if (data.hoteles && data.hoteles.length > 0) {
         resultsDiv.innerHTML += `
-            <section class="hoteles-section">
-                <h2>Hoteles</h2>
-                <div class="container-trips">
+            <section class="container Hotels">
+                <h2 class="heading-2" >Hoteles</h2>
+                <div class="container-hotels">
                     ${mostrarHoteles(data.hoteles)}
                 </div>
             </section>
@@ -86,9 +87,9 @@ function mostrarResultados(data) {
     }
     if (data.transportes && data.transportes.length > 0) {
         resultsDiv.innerHTML += `
-            <section class="hoteles-section">
-                <h2>Transportes</h2>
-                <div class="container-trips">
+            <section class="container Transport">
+                <h2 class="heading-2">Transportes</h2>
+                <div class="container-transport-options">
                     ${mostrarTransportes(data.transportes)}
                 </div>
             </section>
@@ -96,9 +97,9 @@ function mostrarResultados(data) {
     }
     if (data.servicios && data.servicios.length > 0) {
         resultsDiv.innerHTML += `
-            <section class="hoteles-section">
-                <h2>Servicios</h2>
-                <div class="container-trips">
+            <section class="container Guia">
+                <h2 class="heading-2" >Servicios</h2>
+                <div class="container-transport-options">
                     ${mostrarServicios(data.servicios)}
                 </div>
             </section>
@@ -106,9 +107,9 @@ function mostrarResultados(data) {
     }
     if (data.guiasturisticos && data.guiasturisticos.length > 0) {
         resultsDiv.innerHTML += `
-            <section class="guias-section">
-                <h2>Guias</h2>
-                <div class="container-trips">
+            <section class="container Guia">
+                <h2 class="heading-2">Guias</h2>
+                <div class="container-guia-options">
                     ${mostrarguias(data.guiasturisticos)}
                 </div>
             </section>
@@ -162,7 +163,7 @@ function mostrarVuelos(vuelos, tipo) {
                 </div>
             </div>
 
-            <button onclick="seleccionarVuelo(${vuelo.id}, '${tipo}', '${vuelo.num_vuelo}', '${vuelo.origen}', ${vuelo.precio}, '${vuelo.destino}', '${vuelo.fecha_salida}', '${vuelo.fecha_llegada}' )" class="seleccionar-button">
+            <button class = "seleccionar-button" onclick="seleccionarVuelo(${vuelo.id}, '${tipo}', '${vuelo.num_vuelo}', '${vuelo.origen}', ${vuelo.precio}, '${vuelo.destino}', '${vuelo.fecha_salida}', '${vuelo.fecha_llegada}' )" class="seleccionar-button">
                 Seleccionar Vuelo
             </button>
         </div>
@@ -173,8 +174,8 @@ function mostrarPaquetes(paquetes) {
     return paquetes.map(paquete => `
         <div class="card-trips">
             <div class="container-img">
-                <img src="" />
-                <span class="discount">-13%</span>
+                <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjZ9mgEZn1p-zB-YGa2qkYv2sLey6-Wai5_02ZA8Z7O1l5rEWD7mycDXNeAlc6GbqkzmrAkkp5CYoHxxDiheqDBAObYHPWtAkdL0_v_R77VAz1bjE2uoLBiypWe2UMksLvXfDkuT0TH0Qg/s1600/Ca%25C3%25B1%25C3%25B3n+del+Colca+con+c%25C3%25B3ndores_baja.jpg" />
+             
             </div>
             <div class="content-card-trips">
                 <p class="date"><strong>Ciudad:</strong> ${paquete.ciudad}</p>
@@ -191,7 +192,7 @@ function mostrarPaquetes(paquetes) {
                 </div>
             </div>
 
-            <button onclick="seleccionarPaquete(${paquete.id}, '${paquete.nombre}' ,' ${paquete.descripcion}', '${paquete.ciudad}', ${paquete.precio})" class="seleccionar-button">
+            <button  class = "seleccionar-button" onclick="seleccionarPaquete(${paquete.id}, '${paquete.nombre}' ,' ${paquete.descripcion}', '${paquete.ciudad}', ${paquete.precio})" class="seleccionar-button">
                 Seleccionar Paquete
             </button>
         </div>
@@ -201,8 +202,7 @@ function mostrarHoteles(hoteles) {
     return hoteles.map(hotel => `
         <div class="card-trips">
             <div class="container-img">
-                <img src="" />
-                <span class="discount">-13%</span>
+                <img src="https://images.trvl-media.com/lodging/32000000/31720000/31717800/31717706/92b5831e.jpg?impolicy=fcrop&w=357&h=201&p=1&q=medium" />
             </div>
             <div class="content-card-trips">
                 <p class="date">Direccion: ${hotel.direccion}</p>
@@ -221,7 +221,7 @@ function mostrarHoteles(hoteles) {
                 </div>
             </div>
 
-            <button onclick="seleccionarHotel(${hotel.id}, '${hotel.nombre}', '${hotel.direccion}', '${hotel.categoria}', '${hotel.telefono}', ${hotel.precio_por_noche})" class="btn-seleccionar">
+            <button  class = "seleccionar-button" onclick="seleccionarHotel(${hotel.id}, '${hotel.nombre}', '${hotel.direccion}', '${hotel.categoria}', '${hotel.telefono}', ${hotel.precio_por_noche})" class="btn-seleccionar">
                 Seleccionar Hotel
             </button>
         </div>
@@ -244,7 +244,7 @@ function mostrarTransportes(transportes) {
                 </div>
             </div>
 
-            <button onclick="seleccionarTransporte(${transporte.id}, '${transporte.empresa}', ${transporte.costo}, '${transporte.tipo}')" class="btn-seleccionar">
+            <button  class = "seleccionar-button" onclick="seleccionarTransporte(${transporte.id}, '${transporte.empresa}', ${transporte.costo}, '${transporte.tipo}')" class="btn-seleccionar">
                 Seleccionar Transporte
             </button>
         </div>
@@ -260,7 +260,7 @@ function mostrarServicios(servicios) {
             </div>
 
 
-            <button onclick="seleccionarServicio(${servicio.id}, '${servicio.descripcion}', ${servicio.costo})" class="btn-seleccionar">
+            <button  class = "seleccionar-button" onclick="seleccionarServicio(${servicio.id}, '${servicio.descripcion}', ${servicio.costo})" class="btn-seleccionar">
                 Seleccionar Servicio
             </button>
         </div>
@@ -272,18 +272,18 @@ function mostrarguias(guiasturisticos) {
             <!-- Encabezado del vuelo -->
             <div class="flight-header">
                 <span class="flight-number">${guiaturistico.nombre}</span>
-                <span class="flight-price">$${guiaturistico.idioma}</span>
+                <span class="info-value">Idioma(s):${guiaturistico.idioma}</span>
             </div>
 
 
-            <button onclick="seleccionarguia(${guiaturistico.id}, '${guiaturistico.nombre}', '${guiaturistico.idioma}')" class="btn-seleccionar">
+            <button  class = "seleccionar-button" onclick="seleccionarguia(${guiaturistico.id}, '${guiaturistico.nombre}', '${guiaturistico.idioma}')" class="btn-seleccionar">
                 Seleccionar guia
             </button>
         </div>
     `).join('');
 }
 
-function seleccionarguia(id , nombre, idioma) {
+function seleccionarguia(id, nombre, idioma) {
     const guiaSeleccionado = {
         id: id,
         nombre: nombre,
@@ -350,7 +350,7 @@ function seleccionarHotel(id, nombre, direccion, categoria, telefono, precio_por
     alert(`Hotel seleccionado: ${hotelSeleccionado.nombre}`);
 }
 
-function seleccionarTransporte(id , empresa, costo, tipo) {
+function seleccionarTransporte(id, empresa, costo, tipo) {
     const transporteSeleccionado = {
         id: id,
         empresa: empresa,
@@ -362,7 +362,7 @@ function seleccionarTransporte(id , empresa, costo, tipo) {
     alert(`Transporte seleccionado: ${transporteSeleccionado.id}`);
 }
 
-function seleccionarServicio(id , descripcion, costo) {
+function seleccionarServicio(id, descripcion, costo) {
     const servicioSeleccionado = {
         id: id,
         descripcion: descripcion,
@@ -373,6 +373,6 @@ function seleccionarServicio(id , descripcion, costo) {
     alert(`Servicio seleccionado: ${servicioSeleccionado.id}`);
 }
 
-function datos_seleccionados(id){
-    
+function datos_seleccionados(id) {
+
 }

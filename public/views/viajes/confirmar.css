@@ -1,0 +1,174 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+/* Variables globales */
+:root {
+    --primary-color: #2196f3;
+    --secondary-color: #1976d2;
+    --text-color: #333;
+    --background-color: #f5f5f5;
+    --card-background: #ffffff;
+    --border-radius: 8px;
+    --box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+
+  /* Estilos generales */
+  body {
+        font-family: 'Poppins', sans-serif;
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+    background-color: var(--background-color);
+    color: var(--text-color);
+  }
+  
+  .main-content {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+  }
+  
+  /* Encabezados */
+  .heading-1 {
+    font-family: 'Lobster', cursive;
+    color: var(--primary-color);
+    text-align: center;
+    font-size: 3rem;
+    margin-bottom: 1rem;
+  }
+  
+  .parrafo {
+    text-align: center;
+    font-size: 1.2rem;
+    color: #666;
+    margin-bottom: 2rem;
+  }
+  
+  .hover-area {
+    text-align: center;
+    color: var(--secondary-color);
+    padding: 1rem;
+    border-radius: var(--border-radius);
+    transition: all 0.3s ease;
+  }
+  
+  .hover-area:hover {
+    background-color: var(--primary-color);
+    color: white;
+    transform: scale(1.02);
+  }
+  
+  /* Contenedor del resumen */
+  .container.summary {
+    display: flex;
+    gap: 2rem;
+    background-color: var(--card-background);
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    padding: 2rem;
+    margin-bottom: 2rem;
+  }
+  
+  /* Columnas */
+  .summary-column {
+    flex: 1;
+  }
+  
+  .image-column img {
+    width: 100%;
+    border-radius: var(--border-radius);
+    object-fit: cover;
+  }
+  
+  .details-column h3 {
+    color: var(--primary-color);
+    border-bottom: 2px solid var(--primary-color);
+    padding-bottom: 0.5rem;
+    margin-top: 1.5rem;
+  }
+  
+  /* Detalles del viaje */
+  .details-column div {
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    background-color: #f8f9fa;
+    border-radius: var(--border-radius);
+    border-left: 4px solid var(--primary-color);
+  }
+  
+  .details-column p {
+    margin: 0.5rem 0;
+    color: #555;
+  }
+  
+  /* Precio total y duración */
+  #precio-total, #duracion-viaje {
+    background-color: var(--card-background);
+    padding: 1rem;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    margin-bottom: 1rem;
+    text-align: center;
+  }
+  
+  #precio-total h3, #duracion-viaje h3 {
+    color: var(--primary-color);
+    margin-bottom: 0.5rem;
+  }
+  
+  #precio-total p {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--secondary-color);
+  }
+  
+  /* Botón de confirmación */
+  button[type="submit"] {
+    display: block;
+    width: 100%;
+    max-width: 300px;
+    margin: 2rem auto;
+    padding: 1rem 2rem;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: var(--border-radius);
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  button[type="submit"]:hover {
+    background-color: var(--secondary-color);
+    transform: translateY(-2px);
+  }
+  
+  /* Media queries para responsividad */
+  @media (max-width: 768px) {
+    .container.summary {
+      flex-direction: column;
+    }
+  
+    .heading-1 {
+      font-size: 2rem;
+    }
+  
+    .details-column div {
+      padding: 0.8rem;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .main-content {
+      padding: 0 0.5rem;
+    }
+  
+    .heading-1 {
+      font-size: 1.8rem;
+    }
+  
+    button[type="submit"] {
+      padding: 0.8rem 1.5rem;
+      font-size: 1rem;
+    }
+  }

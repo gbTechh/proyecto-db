@@ -14,6 +14,7 @@ session_start();
     <title>Around the world</title>
     <link href="https://fonts.googleapis.com/css2?family=Lobster&display=swap" rel="stylesheet">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="stylesheet" href="confirmar.css">
 </head>
 <body>
 <main class="main-content">
@@ -26,14 +27,14 @@ session_start();
     <form action="procesar_viaje.php" method="POST">
         <section class="container summary">
             <div class="summary-column image-column">
-                <img id="destino-imagen" src="" alt="Destination Image" />
+                <img id="destino-imagen" src="https://media.revistagq.com/photos/5ed5285ef95b900ced636e6d/1:1/w_4016,h_4016,c_limit/GettyImages-619394704.jpg" alt="Destination Image" />
             </div>
             <div class="summary-column details-column">
                 <h3>Resumen de tu viaje</h3>
 
-                <div id="vuelo-ida"></div>
-                <div id="vuelo-regreso"></div>
-                <div id="paquete-seleccionado"></div>
+                <div id="vuelo-ida" class="details-section"></div>
+                <div id="vuelo-regreso" class="details-section"></div>
+                <div id="paquete-seleccionado" class="details-section"></div>
                 
 
                 <!-- Campos ocultos para enviar los datos -->
@@ -49,9 +50,9 @@ session_start();
             </div>
         </section>
 
-        <div id="precio-total"></div>
-        <div id="duracion-viaje"></div>
-        <button type="submit">Confirmar reserva</button>
+        <div id="precio-total" class="summary-section"></div>
+        <div id="duracion-viaje" class="summary-section"></div>
+        <button type="submit" class="submit-button">Confirmar reserva</button>
 
     </form>
 </main>
@@ -65,14 +66,15 @@ session_start();
     function calculateDuration(startDate, endDate) {
         const start = new Date(startDate);
         const end = new Date(endDate);
-        const duration = Math.ceil((end - start) / (1000 * 60 * 60 * 24)); // Duración en días
-        return duration > 0 ? duration : 0; // Devuelve un número
+        const duration = Math.ceil((end - start) / (1000 * 60 * 60 * 24));
+        return duration > 0 ? duration : 0;
     }
+    
     document.querySelector('form').addEventListener('submit', function () {
         const precioTotal = parseFloat(document.getElementById('precio-total').textContent.replace('$', '')) || 0;
         const duracionviaje = document.getElementById('duracion-viaje').textContent.trim();
-       
     });
+    
     document.addEventListener('DOMContentLoaded', function () {
         const vueloIda = JSON.parse(localStorage.getItem('vueloIda'));
         const vueloRegreso = JSON.parse(localStorage.getItem('vueloRegreso'));
@@ -83,10 +85,8 @@ session_start();
         const guia = JSON.parse(localStorage.getItem('guiaSeleccionado'));
         
 
-        // Variables para calcular el precio total
         let precioTotal = 0;
 
-        // Mostrar detalles y sumar precios
         if (vueloIda) {
             precioTotal += parseFloat(vueloIda.precio || 0);
             document.getElementById('vuelo-ida').innerHTML = `
@@ -126,8 +126,10 @@ session_start();
                 <p>precio: $${paquete.precio}</p>
             `;
         }
+        
         if (hotel) {
             const hotelDiv = document.createElement('div');
+            hotelDiv.classList.add('details-section');
             hotelDiv.innerHTML = `
                 <h3>hotel Seleccionado:</h3>
                  ${hotel.id}
@@ -142,6 +144,7 @@ session_start();
 
         if (transporte) {
             const transporteDiv = document.createElement('div');
+            transporteDiv.classList.add('details-section');
             transporteDiv.innerHTML = `
                 <h3>transporte Seleccionado:</h3>
                  ${transporte.id}
@@ -154,21 +157,24 @@ session_start();
 
         if (servicio) {
             const servicioDiv = document.createElement('div');
+            servicioDiv.classList.add('details-section');
             servicioDiv.innerHTML = `
                 <h3>servicio Seleccionado:</h3>
                  ${servicio.id}
                 <p>Descripción: ${servicio.descripcion}</p>
-                <p>costo: $${servicio.costo}</p>
+                <p>Costo: $${servicio.costo}</p>
             `;
             document.querySelector('.details-column').appendChild(servicioDiv);
         }
+        
         if (guia) {
             const guiaDiv = document.createElement('div');
+            guiaDiv.classList.add('details-section');
             guiaDiv.innerHTML = `
                 <h3>guia Seleccionado:</h3>
                  ${guia.id}
                 <p>Descripción: ${guia.nombre}</p>
-                <p>costo: $${guia.idioma}</p>
+                <p>Idiomas: ${guia.idioma}</p>
             `;
             document.querySelector('.details-column').appendChild(guiaDiv);
         }
@@ -182,20 +188,20 @@ session_start();
         if (servicio) {
             precioTotal += parseFloat(servicio.costo || 0);
         }
+        
         document.getElementById('precio-total').innerHTML = `
             <h3>precio Total:</h3>
             <p>$${precioTotal.toFixed(2)}</p>
         `;
+        
         if (vueloIda && vueloRegreso) {
             const duracion = calculateDuration(vueloIda.fecha_salida, vueloRegreso.fecha_llegada);
             document.getElementById('duracion-viaje').innerHTML = `
                 <h3>Duración del viaje:</h3>
                 <p>${duracion} días</p>
             `;
-            document.getElementById('duracion_viaje_input').value = duracion; // Solo el número
+            document.getElementById('duracion_viaje_input').value = duracion;
         }
-
-        
 
         document.getElementById('vuelo_ida_input').value = JSON.stringify(vueloIda);
         document.getElementById('vuelo_regreso_input').value = JSON.stringify(vueloRegreso);

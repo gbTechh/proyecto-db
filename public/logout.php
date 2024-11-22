@@ -1,5 +1,5 @@
 <?php
-session_start();
+require '../init.php';
 session_destroy(); 
-header("Location: /proyecto-db/public"); 
+header("Location: " .URLROOT); 
 exit();

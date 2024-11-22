@@ -4,6 +4,12 @@ require '../init.php';
 require ROOT . '/models/Cliente.php'; 
 require ROOT . '/models/ClienteModel.php';
 
+// Verificar si hay sesión activa
+if (!isset($_SESSION['empleado']) || $_SESSION['empleado']['is_logged_in'] !== true) {
+    header('Location: ' . URLROOT . '/admin/login.php');
+    exit;
+}
+
 $clienteModel = new ClienteModel();
 $clientes = $clienteModel->getAll();
 

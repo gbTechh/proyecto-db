@@ -2,12 +2,17 @@
 class EmpleadoModel extends Model {
     
     // Obtener todos los empleados
-    public function getAll() {      
-
+    public function getAll($sucursal = null) {      
         $sql = "SELECT e.dni, e.nombre, e.apellidos, e.telefono, s.nombre as 'name_sucursal', e.puesto, e.e_username, e.e_password FROM empleado e 
-        LEFT JOIN sucursal s on s.id_sucursal = e.id_sucursal;";
-        
-        $rows = $this->db->getAll($sql);
+        LEFT JOIN sucursal s on s.id_sucursal = e.id_sucursal";
+        $params = [];
+        if ($sucursal != null) {            
+            $sql .= " AND DNI != :id";
+            $sql .= " WHERE e.id_sucursal = :id";
+            $params[':id'] = $sucursal;
+        }
+
+        $rows = $this->db->executeQuery($sql, $params);
         $empleados = [];
         
         foreach($rows as $row) {
@@ -47,6 +52,48 @@ class EmpleadoModel extends Model {
         return null;
     }
 
+    public function login($username, $password) {
+        try {
+            $sql = "SELECT e.dni, e.nombre as 'nombre', e.apellidos, e.telefono, s.nombre as 'sucursal', s.id_sucursal, e.puesto, e.e_username, e.e_password FROM empleado e 
+            INNER JOIN sucursal s ON e.id_sucursal = s.id_sucursal
+             WHERE e_username = ? and e_password = ? ";
+            $stmt = $this->db->executeQuery($sql, [$username, $password]);
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+
+            if ($row) {
+                return new Login(
+                    $row['dni'],
+                    $row['nombre'],
+                    $row['apellidos'],
+                    $row['telefono'],
+                    $row['sucursal'],
+                    $row['id_sucursal'],
+                    $row['puesto'],
+                    $row['e_username'],
+                    $row['e_password']
+                );
+            }
+            return null;
+
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
+    }
+
+    public function existeUsername($username, $excludeId = null) {
+        $sql = "SELECT COUNT(*) FROM empleado WHERE e_username = :e_username";
+        $params = [':e_username' => $username];
+        
+        if ($excludeId !== null) {
+            $sql .= " AND DNI != :id";
+            $params[':id'] = $excludeId;
+        }
+        
+        $stmt = $this->db->executeQuery($sql, $params);
+        return $stmt->fetchColumn() > 0;
+    }
+   
     // Crear nuevo empleado
     public function crear(Empleado $empleado) {        
         try { 

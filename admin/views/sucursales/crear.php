@@ -2,7 +2,7 @@
 <div class="sucursal">
   <form method="POST" class="sucursal-form" action="sucursales.php?action=post">
     <div class="wrapp-title">
-      <h1 class="title"><?php echo $title; ?></h1>
+      <h1 class="title">Crear una nueva sucursal</h1>
       <button type="submit" class="btn btn-primary">Guardar Sucursal</button>
 
     </div>

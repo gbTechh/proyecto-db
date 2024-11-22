@@ -23,6 +23,7 @@
                 <th>Teléfono</th>
                 <th>Precio/Noche</th>
                 <th>Ciudad</th>
+                <th>Proveedores</th>
                 <th>Acciones</th>
             </tr>
         </thead>
@@ -35,6 +36,13 @@
                     <td><?php echo $hotel->getTelefono(); ?></td>
                     <td><?php echo $hotel->getPrecioPorNoche(); ?></td>
                     <td><?php echo $hotel->getCiudad(); ?></td>
+                    <td>
+                        <div class="action-buttons">
+                            <a href="hoteles.php?action=verProveedores&id=<?php echo $hotel->getId();?>" class="btn-proveedores">
+                                <i class='bx bx-file'></i>
+                            </a>
+                        </div>
+                    </td>
                     <td>
                         <div class="action-buttons">
                             <a href="hoteles.php?action=editar&id=<?php echo $hotel->getId(); ?>" class="btn editar-btn">

@@ -4,6 +4,10 @@ require '../init.php';
 require ROOT . '/models/Sucursal.php'; 
 require ROOT . '/models/SucursalModel.php';
 
+if(!($_SESSION['empleado']['rol'] == "Administrador") ) {
+    header('Location: ' . URLROOT . '/admin/index.php');
+}
+
 $sucursalModel = new SucursalModel();
 $sucursales = $sucursalModel->getAll();
 

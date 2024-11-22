@@ -38,7 +38,7 @@ switch($action) {
                 null, // El id es generado automáticamente
                 $_POST['nombre'],
                 $_POST['telefono'],
-                $_POST['idiomas'],
+                $_POST['idioma'],
                 $_POST['id_ciudad']
             );
 
@@ -88,7 +88,7 @@ switch($action) {
                     $id_guia,
                     $_POST['nombre'],
                     $_POST['telefono'],
-                    $_POST['idiomas'],
+                    $_POST['idioma'],
                     $_POST['id_ciudad']
                 );
     
@@ -125,7 +125,6 @@ switch($action) {
         render('admin/views/guias/index.php', $data, $styles, $scripts);
 }
 
-
 function validarDatos($data) {
     $errors = [];
 
@@ -134,20 +133,23 @@ function validarDatos($data) {
         $errors['nombre'] = 'El nombre es obligatorio.';
     } elseif (strlen($data['nombre']) > 100) {
         $errors['nombre'] = 'El nombre no puede tener más de 100 caracteres.';
+    } elseif (!preg_match('/^[\p{L} \'-]+$/u', $data['nombre'])) {
+        $errors['nombre'] = 'El nombre solo puede contener letras, espacios, apóstrofes o guiones.';
     }
 
     // Validar teléfono
     if (empty($data['telefono'])) {
         $errors['telefono'] = 'El teléfono es requerido';
-    } elseif (!preg_match('/^[0-9]{9}$/', $data['telefono'])) {
-        $errors['telefono'] = 'El teléfono debe tener 9 dígitos y no tener letras';
+    } elseif (!preg_match('/^\+?\d{8,15}$/', $data['telefono'])) {
+        $errors['telefono'] = 'El teléfono es númerico y de 8 a 15 dígitos';
     }
 
-    // Validar ID de ciudad
-    if (empty($data['idiomas'])) {
-        $errors['idiomas'] = 'El idioma es obligatorio';
+    // Validar idioma
+    if (empty($data['idioma'])) {
+        $errors['idioma'] = 'El idioma es obligatorio';
+    } elseif (!preg_match('/^[\p{L}\s]+$/u', $data['idioma'])) {
+        $errors['idioma'] = 'El idioma no puede tener números';
     }
-    return $errors;
 
     // Validar ID de ciudad
     if (empty($data['id_ciudad']) || !is_numeric($data['id_ciudad'])) {
@@ -155,4 +157,3 @@ function validarDatos($data) {
     }
     return $errors;
 }
-

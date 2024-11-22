@@ -39,14 +39,7 @@
                     <input type="date" id="end-date" name="end-date">
                 </div>
 
-                <div>
-                    <label for="num-people">Número de Personas:</label>
-                    <div class="num-people-input">
-                        <button type="button" onclick="decrementPeople()">-</button>
-                        <input type="number" id="num-people" name="num-people" min="1" value="1" readonly>
-                        <button type="button" onclick="incrementPeople()">+</button>
-                    </div>
-                </div>
+               
 
                 <div class="container confirm-trip">
                     <button type="submit" class="buscar-button">Buscar</button>
@@ -57,7 +50,7 @@
                 <div id="results">
                 </div>
                 <div class="container confirm-trip">
-                    <a href="<?php echo URLROOT . "/public/views/viajes/confirmar2.php"?>">confirmar</a>
+                    <a class= "buscar-button" href="<?php echo URLROOT . "/public/views/viajes/confirmar2.php"?>">Ver mi Selección</a>
                     <!--<button type="button" id="confirm-button" class="confirm-button">Confirmar</button>-->
                 </div>
 

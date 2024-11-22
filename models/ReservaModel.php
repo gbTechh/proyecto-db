@@ -2,104 +2,107 @@
 class ReservaModel extends Model {
 
     // Obtener todas las reservas
-    public function getAll() {
-        $sql = "SELECT id_reserva, fecha, num_personas, estado, ID_cliente, ID_empleado, ID_viaje FROM reserva";
-        $stmt = $this->db->executeQuery($sql);
+    public function getAllConfirmadas($id_sucursal = null) {
+        $sql = "SELECT r.id_reserva, r.fecha, r.estado, r.id_viaje, r.id_sucursal, r.dni_empleado, c.dni as 'dni_cliente', CONCAT(c.nombre, ' ', c.apellidos) as 'nombre_cliente' FROM reserva r
+        INNER JOIN viaje v ON r.id_viaje = v.id_viaje
+        INNER JOIN cliente c ON c.dni = v.dni_cliente
+        WHERE r.id_sucursal = ? and estado = 'Confirmado'; ";
+
+       
+        $stmt = $this->db->executeQuery($sql, [$id_sucursal]);
         $reservas = [];
+
+        //WHERE dni_empleado is null or dni_empleado = ?
         
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $reservas[] = new Reserva(
                 $row['id_reserva'],
                 $row['fecha'],
-                $row['num_personas'],
                 $row['estado'],
-                $row['ID_cliente'],
-                $row['ID_empleado'],
-                $row['ID_viaje']
+                $row['id_viaje'],
+                $row['id_sucursal'],
+                $row['dni_empleado'],
+                $row['dni_cliente'],
+                $row['nombre_cliente'],
             );
         }
         
-        $stmt = $this->db->executeQuery($sql);
       
         return $reservas;
     }
+    public function getAllPendientes() {
+       $sql = "SELECT r.id_reserva, r.fecha, r.estado, r.id_viaje, r.id_sucursal, r.dni_empleado, c.dni as 'dni_cliente', CONCAT(c.nombre, ' ', c.apellidos) as 'nombre_cliente' FROM reserva r
+        INNER JOIN viaje v ON r.id_viaje = v.id_viaje
+        INNER JOIN cliente c ON c.dni = v.dni_cliente
+        WHERE estado = 'Pendiente';";
+        $stmt = $this->db->executeQuery($sql);
+        $reservas = [];
 
-    // Obtener reservas paginadas
-    public function getPaginated($page = 1, $limit = 10, $search = '') {
+        //WHERE dni_empleado is null or dni_empleado = ?
+        
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $reservas[] = new Reserva(
+                $row['id_reserva'],
+                $row['fecha'],
+                $row['estado'],
+                $row['id_viaje'],
+                $row['id_sucursal'],
+                $row['dni_empleado'],
+                $row['dni_cliente'],
+                $row['nombre_cliente'],
+            );
+        }
+        
+      
+        return $reservas;
+    }
+    public function buscarReserva($str) {
         try {
-            $offset = ($page - 1) * $limit;
-            
-            // Construir la consulta base
-            $sql = "SELECT ID_reserva, fecha, num_personas, estado, ID_cliente, ID_empleado, ID_viaje FROM reserva";
-            $countSql = "SELECT COUNT(*) as total FROM reserva";
-            $params = [];
+            $sql = "SELECT r.id_reserva, r.fecha, r.estado, r.id_viaje, 
+                        r.id_sucursal, r.dni_empleado, 
+                        c.dni as 'dni_cliente', 
+                        CONCAT(c.nombre, ' ', c.apellidos) as 'nombre_cliente' 
+                    FROM reserva r
+                    INNER JOIN viaje v ON r.id_viaje = v.id_viaje
+                    INNER JOIN cliente c ON c.dni = v.dni_cliente
+                    WHERE c.dni LIKE ? 
+                    OR r.estado LIKE ?
+                    OR c.nombre LIKE ?
+                    OR c.apellidos LIKE ?";
 
-            // Agregar búsqueda si existe
-            if (!empty($search)) {
-                $searchWhere = " WHERE ID_reserva LIKE :search OR estado LIKE :search";
-                $sql .= $searchWhere;
-                $countSql .= $searchWhere;
-                $params[':search'] = "%$search%";
-            }
+            $searchTerm = "%{$str}%";
+            // El mismo término para cada condición
+            $params = [$searchTerm, $searchTerm, $searchTerm, $searchTerm];
 
-            // Agregar paginación usando parámetros nombrados
-            $sql .= " LIMIT :limit OFFSET :offset";
-
-            // Obtener el total de registros
-            $stmt = $this->db->prepare($countSql);
-            if (!empty($search)) {
-                $stmt->bindValue(':search', "%$search%", PDO::PARAM_STR);
-            }
-            $stmt->execute();
-            $total = $stmt->fetch(PDO::FETCH_ASSOC)['total'];
-
-            // Preparar y ejecutar la consulta principal
-            $stmt = $this->db->prepare($sql);
-            if (!empty($search)) {
-                $stmt->bindValue(':search', "%$search%", PDO::PARAM_STR);
-            }
-            $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
-            $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
-            $stmt->execute();
+            $stmt = $this->db->executeQuery($sql, $params);
             $reservas = [];
 
             while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
                 $reservas[] = new Reserva(
-                    $row['ID_reserva'],
+                    $row['id_reserva'],
                     $row['fecha'],
-                    $row['num_personas'],
                     $row['estado'],
-                    $row['ID_cliente'],
-                    $row['ID_empleado'],
-                    $row['ID_viaje']
+                    $row['id_viaje'],
+                    $row['id_sucursal'],
+                    $row['dni_empleado'],
+                    $row['dni_cliente'],
+                    $row['nombre_cliente']
                 );
             }
 
-            // Convertir los objetos Reserva a arrays para JSON
-            $reservasArray = array_map(function($reserva) {
-                return [
-                    'ID_reserva' => $reserva->getID(),
-                    'fecha' => $reserva->getFecha(),
-                    'num_personas' => $reserva->getNum_Personas(),
-                    'estado' => $reserva->getEstado(),
-                    'ID_cliente' => $reserva->getCliente(),
-                    'ID_empleado' => $reserva->getEmpleado(),
-                    'ID_viaje' => $reserva->getViaje()
-                ];
-            }, $reservas);
-
             return [
-                'data' => $reservasArray,
-                'total' => $total,
-                'totalPages' => ceil($total / $limit),
-                'currentPage' => $page
+                'success' => true,
+                'data' => $reservas,
+                'count' => count($reservas)
             ];
 
-        } catch (PDOException $e) {
-            throw new Exception("Error en la consulta: " . $e->getMessage());
+        } catch (Exception $e) {
+            return [
+                'success' => false,
+                'error' => $e->getMessage()
+            ];
         }
     }
-
     // Obtener reserva por ID
     public function getByID($ID_reserva) {
         $sql = "SELECT * FROM reserva WHERE ID_reserva = ?";
@@ -119,7 +122,35 @@ class ReservaModel extends Model {
         }
         return null;
     }
+    public function confirmarReserva($id, $sucursal, $dni_empleado) {
+        try {
+            // Primero verifica que la reserva existe
+            $sqlCheck = "SELECT id_reserva FROM reserva WHERE id_reserva = ?";
+            $stmtCheck = $this->db->executeQuery($sqlCheck, [$id]);
+            
+            if ($stmtCheck->rowCount() === 0) {
+                throw new Exception("La reserva con ID {$id} no existe");
+            }
 
+            // Realiza la actualización
+            $sql = "UPDATE reserva SET estado = 'Confirmado', id_sucursal = ?, dni_empleado = ?  WHERE id_reserva = ?";
+            $stmt = $this->db->executeQuery($sql, [$sucursal, $dni_empleado, $id]);
+            
+            // Verifica si se actualizó alguna fila
+            if ($stmt->rowCount() > 0) {
+                return [
+                    'success' => true,
+                    'message' => "Reserva confirmada exitosamente",
+                    'rows_affected' => $stmt->rowCount()
+                ];
+            } else {
+                throw new Exception("No se pudo actualizar la reserva");
+            }
+            
+        } catch (PDOException $e) {
+            throw new Exception("Error al confirmar la reserva: " . $e->getMessage());
+        }
+    }
     // Crear una nueva reserva
     public function crear(Reserva $reserva) {
         $sql = "INSERT INTO reserva (ID_reserva, fecha, num_personas, estado, ID_cliente, ID_empleado, ID_viaje) 

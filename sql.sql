@@ -58,7 +58,6 @@ CREATE TABLE pago (
     monto DECIMAL(10,2) NOT NULL,
     fecha DATE NOT NULL,
     estado VARCHAR(50) NOT NULL,
-    metodo_pago VARCHAR(50) NOT NULL,
     id_reserva INT,
     FOREIGN KEY (id_reserva) REFERENCES reserva(id_reserva)
 );
@@ -819,12 +818,12 @@ INSERT INTO reserva (fecha, estado, id_viaje, id_sucursal, dni_empleado) VALUES
 ('2024-01-19', 'Confirmado', 5, 5, '45678905');
 
 -- 4. pago (depende de reserva)
-INSERT INTO pago (monto, fecha, estado, metodo_pago, id_reserva) VALUES
-(1500.00, '2024-01-15', 'Completado', 'Tarjeta', 1),
-(800.00, '2024-01-16', 'Pendiente', 'Transferencia', 2),
-(100.00, '2024-01-17', 'Completado', 'Efectivo', 3),
-(200.00, '2024-01-18', 'Reembolsado', 'Tarjeta', 4),
-(300.00, '2024-01-19', 'Completado', 'Transferencia', 5);
+INSERT INTO pago (monto, fecha, estado, id_reserva) VALUES
+(1500.00, '2024-01-15', 'Completado', 1),
+(800.00, '2024-01-16', 'Pendiente', 2),
+(100.00, '2024-01-17', 'Completado', 3),
+(200.00, '2024-01-18', 'Reembolsado', 4),
+(300.00, '2024-01-19', 'Completado', 5);
 
 INSERT INTO vuelo (num_vuelo, ciudad_origen, ciudad_destino, fecha_salida, fecha_llegada, precio) VALUES
 ('VL002', 2, 1, '2024-01-23 10:00:00', '2024-01-23 11:30:00', 180.00);
@@ -840,8 +839,60 @@ INSERT INTO paquete_turistico (nombre, descripcion, precio, id_ciudad) VALUES
 ('Laguna Salinas', 'Disfruta de la laguna', 150.00, 2);
 /**********+procedimientos:********/
 
+
+
+
+INSERT INTO guia_turistico (nombre, telefono, idioma, id_ciudad) VALUES
+('Pablo Ruiz', '123123123', 'Español', 1),
+('Ana Torres', '234234234', 'Portugués', 2),
+('Carlos López', '345345345', 'Francés', 3),
+('María García', '456456456', 'Alemán', 4),
+('Juan Pérez', '567567567', 'Italiano', 5);
+
+INSERT INTO guia_turistico (nombre, telefono, idioma, id_ciudad) VALUES
+('Carlos Martínez', '34611111111', 'Español', 6),
+('Ana García', '34622222222', 'Francés', 7),
+('Pierre Dubois', '33633333333', 'Inglés', 8),
+('John Smith', '44644444444', 'Francés', 9),
+('Marco Rossi', '39655555555', 'Italiano', 10),
+('Giuseppe Verdi', '39666666666', 'Alemán', 11),
+('Hans Weber', '49677777777', 'Español', 12),
+('Franz Mueller', '49688888888', 'Francés', 13),
+('Jan van der Berg', '31699999999', 'Holandés', 14),
+('João Silva', '351611111111', 'Portugués', 15),
+('Klaus Wagner', '43622222222', 'Italiano', 16),
+('Pavel Novak', '420633333333', 'Checo', 17),
+('Nikos Papadopoulos', '30644444444', 'Griego', 18),
+('Erik Andersson', '46655555555', 'Sueco', 19),
+('Magnus Olsen', '47666666666', 'Noruego', 20),
+('Lars Hansen', '45677777777', 'Danés', 21),
+('Mikko Virtanen', '358688888888', 'Finés', 22),
+('Adam Kowalski', '48699999999', 'Polaco', 23),
+('István Nagy', '36611111111', 'Húngaro', 24),
+('Marko Kovačić', '385622222222', 'Croata', 25);
+
+
+/**PROCEDURREEES*/
+DELIMITER //
+CREATE PROCEDURE InsertCliente(
+    IN p_nombre VARCHAR(50),
+    IN p_apellido VARCHAR(50),
+    IN p_username VARCHAR(50),
+    IN p_password VARCHAR(255),
+    IN p_dni VARCHAR(20),
+    IN p_telefono VARCHAR(20),
+    IN p_email VARCHAR(50)
+)
+BEGIN
+    INSERT INTO cliente (nombre, apellidos, c_username, c_password, dni, telefono, email)
+    VALUES (p_nombre, p_apellido, p_username, p_password, p_dni, p_telefono, p_email);
+END //
+DELIMITER ;
+
+
 DROP PROCEDURE `VerificarUsuario`;
-CREATE DEFINER=`enkit`@`%` PROCEDURE `VerificarUsuario`(IN `p_username` VARCHAR(50), IN `p_password` VARCHAR(50), OUT `p_tipo_usuario` VARCHAR(10), OUT `p_nombre` VARCHAR(50), OUT `p_apellidos` VARCHAR(50), OUT `p_dni` VARCHAR(20), OUT `p_telefono` VARCHAR(20), OUT `p_email` VARCHAR(50), OUT `p_id_sucursal` INT, OUT `p_puesto` VARCHAR(50)) NOT DETERMINISTIC CONTAINS SQL SQL SECURITY DEFINER BEGIN
+DELIMITER //
+CREATE PROCEDURE `VerificarUsuario`(IN `p_username` VARCHAR(50), IN `p_password` VARCHAR(50), OUT `p_tipo_usuario` VARCHAR(10), OUT `p_nombre` VARCHAR(50), OUT `p_apellidos` VARCHAR(50), OUT `p_dni` VARCHAR(20), OUT `p_telefono` VARCHAR(20), OUT `p_email` VARCHAR(50), OUT `p_id_sucursal` INT, OUT `p_puesto` VARCHAR(50)) NOT DETERMINISTIC CONTAINS SQL SQL SECURITY DEFINER BEGIN
     DECLARE v_password VARCHAR(50);
     DECLARE v_found BOOLEAN DEFAULT FALSE;
 
@@ -870,6 +921,35 @@ CREATE DEFINER=`enkit`@`%` PROCEDURE `VerificarUsuario`(IN `p_username` VARCHAR(
     IF v_found = FALSE THEN
         SET p_tipo_usuario = 'No encontrado';
     END IF;
-END
+END//
+DELIMITER;
 
 
+
+/*TRIGGERRS**/
+
+DELIMITER //
+CREATE TRIGGER create_reserva AFTER INSERT ON viaje FOR EACH ROW BEGIN INSERT INTO reserva (id_viaje, fecha, estado) VALUES (NEW.id_viaje, CURDATE(), 'Pendiente'); END; //
+DELIMITER;
+
+
+DELIMITER //
+CREATE TRIGGER create_pago AFTER INSERT ON reserva FOR EACH ROW BEGIN DECLARE precio DECIMAL(10,2); SELECT v.precio INTO precio FROM viaje v WHERE v.id_viaje = NEW.id_viaje; INSERT INTO pago (id_reserva, fecha, monto, estado) VALUES (NEW.id_reserva, CURDATE(), precio, 'Pendiente'); END//
+DELIMITER;
+
+
+DELIMITER //
+CREATE TRIGGER update_pago_estado
+AFTER UPDATE ON reserva
+FOR EACH ROW
+BEGIN
+    -- Verifica si el estado cambia a 'Confirmado'
+    IF NEW.estado = 'Confirmado' THEN
+        -- Actualiza el estado en la tabla pago correspondiente
+        UPDATE pago
+        SET estado = 'Completado'
+        WHERE id_reserva = NEW.id_reserva;
+    END IF;
+END;
+//
+DELIMITER ;

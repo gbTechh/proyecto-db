@@ -1,31 +1,60 @@
 <?php
 require '../init.php';
 
+require ROOT . '/models/Login.php'; 
 require ROOT . '/models/Empleado.php'; 
 require ROOT . '/models/EmpleadoModel.php';
 
-$vueloModel = new VueloModel();
-$vuelos = $vueloModel->getAll();
 
-$data = [
-  'title' => 'Lista de todos los vuelos disponibles',
-  'vuelos' => $vuelos
-];
 
-$styles = ['vuelos']; // Cargará /assets/admin/css/vuelos.css
-$scripts = ['vuelos']; // Cargará /assets/admin/js/vuelos.js
+$empleadoModel = new EmpleadoModel();
+
+$data = [];
+
+$styles = ['login']; // Cargará /assets/admin/css/login.css
+$scripts = ['login']; // Cargará /assets/admin/js/login.js
 
 //RUTAS
 $action = $_GET['action'] ?? 'index';
 
 switch($action) {
-    case 'crear':
-        render('admin/views/vuelos/crear.php', $data, $styles, $scripts);
+    case 'post':
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+          try {
+            if (empty($_POST['username']) || empty($_POST['password'])) {
+                throw new Exception("Todos los campos son requeridos");
+            }
+            $empleadoData = $empleadoModel->login(htmlspecialchars($_POST['username']), $_POST['password']);
+            if (!is_null($empleadoData)) { 
+                $_SESSION['empleado'] = [
+                    'id' => $empleadoData->getID(),
+                    'nombre' => $empleadoData->getNombreCompleto(),
+                    'username' => $empleadoData->getUsername(),
+                    'rol' => $empleadoData->getPuesto(),
+                    'sucursal' => $empleadoData->getSucursal(),
+                    'id_sucursal' => $empleadoData->getIdSucursal(),
+                    'last_activity' => time(),
+                    'is_logged_in' => true
+                ];
+                header('Location: ' . URLROOT . '/admin/clientes.php');
+                exit;
+            } else {
+                $data['errors']['login'] = "Credenciales incorrectas";
+                $data['old'] = $_POST;
+                throw new Exception("Error al iniciar sesion");
+            }
+          } catch (Exception $e) {
+            $data['errors'][] = $e->getMessage();
+            $data['old'] = $_POST;
+            renderLogin('admin/views/login/index.php', $data, $styles, $scripts);
+          }
+        }
         break;
+
     case 'editar':
-        render('admin/views/vuelos/editar.php', $data, $styles, $scripts);
+        renderLogin('admin/views/login/editar.php', $data, $styles, $scripts);
         break;
     default:
-        render('admin/views/vuelos/index.php', $data, $styles, $scripts);
+        renderLogin('admin/views/login/index.php', $data, $styles, $scripts);
 }
 

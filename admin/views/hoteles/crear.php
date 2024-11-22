@@ -118,16 +118,17 @@
             
             <!-- Proveedor del Hotel -->
             <div class="form-group">
-                <label for="id_proveedor">Proveedor *</label>
+                <label for="id_proveedor">Proveedor(es) </label>
                 <select 
                     id="id_proveedor" 
-                    name="id_proveedor" 
+                    name="id_proveedor[]" 
                     class="form-control <?php echo isset($errors['id_proveedor']) ? 'is-invalid' : ''; ?>"
+                    multiple
                     required
                 >
-                    <option value="">Seleccione un proveedor</option>
+                    <option value="" disabled>Seleccione proveedor(es)</option>
                     <?php foreach ($proveedores as $proveedor): ?>
-                        <option value="<?php echo $proveedor->getID(); ?>" <?php echo isset($old['id_proveedor']) && $old['id_proveedor'] == $proveedor->getID() ? 'selected' : ''; ?>>
+                        <option value="<?php echo $proveedor->getID(); ?>" <?php echo isset($old['id_proveedor']) && in_array($proveedor->getID(), $old['id_proveedor']) ? 'selected' : ''; ?>>
                             <?php echo $proveedor->getNombre();  ?>
                         </option>
                     <?php endforeach; ?>

@@ -152,7 +152,8 @@
 
 /* Estilos generales para los botones */
 .btn.editar-btn,
-.btn.eliminar-btn {
+.btn.eliminar-btn, 
+.btn-proveedores {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -163,10 +164,18 @@
   min-height: auto;
 }
 
-a{
+a {
   text-decoration: none;
 }
-/* Botón Editar */
+/* Botón ver proveedores */
+.btn-proveedores {
+  color: rgb(170, 97, 24);
+  font-size: 18px;
+}
+.btn-proveedores:hover {
+  background-color: rgba(221, 117, 14, 0.1);
+}
+/* Botón editar */
 .editar-btn {
   color: rgb(11, 0, 216);
   font-size: 18px;
@@ -184,4 +193,94 @@ a{
 
 .eliminar-btn:hover {
   background-color: rgba(192, 0, 0, 0.1);
+}
+
+
+/* Contenedor de información del hotel */
+.hotel-info-section {
+  margin-bottom: 30px;
+  padding: 20px;
+  background-color: white;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+}
+
+.hotel-info-section p {
+  margin: 15px 0;
+  font-size: 1.1rem;
+  color: #555;
+}
+
+.hotel-info-section .section-title {
+  font-size: 1.5rem;
+  color: #444;
+  margin-bottom: 20px;
+  border-bottom: 2px solid #ddd;
+  padding-bottom: 5px;
+}
+
+/* Contenedor de proveedores */
+.proveedores-section {
+  padding: 20px;
+  background-color: #f1f1f1;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+.proveedores-section .section-title {
+  font-size: 1.4rem;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.proveedores-grid {
+  display: flex;
+  flex-wrap: wrap; 
+  gap: 20px; 
+  justify-content: start; 
+}
+/* Cards para cada proveedor */
+.proveedor-card {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.proveedor-card:hover {
+  transform: scale(1.02);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.proveedor-card h3 {
+  font-size: 1.3rem;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.proveedor-card p {
+  margin: 5px 0;
+  font-size: 1rem;
+  color: #555;
+}
+
+/* Botón de ver más proveedores */
+.btn-ver-mas {
+  display: inline-block;
+  margin-top: 10px;
+  padding: 10px 15px;
+  text-align: center;
+  font-size: 0.9rem;
+  color: #fff;
+  background-color: #007bff;
+  border-radius: 5px;
+  text-decoration: none;
+  transition: background-color 0.3s;
+}
+
+.btn-ver-mas:hover {
+  background-color: #0056b3;
 }

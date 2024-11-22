@@ -1,12 +1,12 @@
 <?php
-session_start();
+require '../init.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     //actualizar datos aqui
-    $servername = "localhost";
-    $username = "root"; 
-    $password = ""; 
-    $dbname = "db_final";
+    $servername = DB_HOST;
+    $username = DB_USER; 
+    $password = DB_PASS; 
+    $dbname = DB_NAME;
 
     $conn = new mysqli($servername, $username, $password, $dbname);
     if ($conn->connect_error) {
@@ -25,7 +25,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $stmt->bind_param("sssssss", $nombre, $apellido, $username, $password, $dni, $telefono, $email);
 
     if ($stmt->execute()) {
-        header("Location: /proyecto-db/public/login.php");
+        header("Location: login.php");
         echo "Registro exitoso.";
         exit();
     } else {
@@ -65,7 +65,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <input type="email" id="email" name="email" required><br><br>
             <input type="submit" value="Registrarse">
         </form>
-        <a href="<?php echo URLROOT . "/login.php"?>">Continuar sin iniciar sesión</a></span>
+        <a href="<?php echo URLROOT . "login.php"?>">Continuar sin iniciar sesión</a></span>
         <a href="login.php">Regresar a Login</a>
     </div>
 </body>

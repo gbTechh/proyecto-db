@@ -10,6 +10,18 @@ function render($view, $data = [], $styles = [], $scripts = []) {
     // Incluir el layout con el contenido capturado
     require 'admin/layouts/admin.php';
 }
+
+function renderLogin($view, $data = [], $styles = [], $scripts = []) {
+    // Capturar el contenido de la vista
+    ob_start();
+    extract($data);
+    require $view;
+    $content = ob_get_clean();
+    
+    // Incluir el layout con el contenido capturado
+    require 'admin/layouts/login.php';
+}
+
 function renderFront($view, $data = [], $styles = [], $scripts = []) {
     // Capturar el contenido de la vista
     ob_start();

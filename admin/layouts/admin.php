@@ -1,6 +1,14 @@
 <?php 
 
 
+if (!isset($_SESSION['empleado'])) {
+    header('Location: login.php');
+    exit;
+}
+
+$name = $_SESSION['empleado']['nombre'];
+$rol = $_SESSION['empleado']['rol'];
+
 ?>
 
 
@@ -21,7 +29,7 @@
         }
     }
     ?>
-    <title><?= $title ?? 'Admin Panel' ?></title>
+    <title><?= $title ? $title  : 'Admin Panel'  ?></title>
 </head>
 <body class="admin-panel">
     <div class="container">
@@ -29,7 +37,7 @@
         <main class="main-admin">
             <div class="header">
                 <div>
-                        asd
+                    <span>Bienvenido, <strong><?= $name;?></strong><?= " (". $_SESSION['empleado']['rol'] . ")"?></span>
                 </div>
                 <div class="div-btn">
                     <a href="<?php echo URLROOT. "/admin/reservas.php"?>" class="btn-reserva">Reservas</a>
@@ -71,7 +79,7 @@
         };
 
         // Iniciar la vigilancia cuando se carga la página
-        //document.addEventListener('DOMContentLoaded', watchFiles);
+        document.addEventListener('DOMContentLoaded', watchFiles);
     </script>
 
     

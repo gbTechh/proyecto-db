@@ -1,0 +1,97 @@
+@import url('https://fonts.googleapis.com/css2?family=Mulish:ital,wght@0,200..1000;1,200..1000&display=swap');
+*{
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    font-family:'Mulish', sans-serif;
+
+}
+body{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;  
+    background-color: rgba(255, 255, 255, 0.9); 
+}
+.contenedor{
+    width: 400px;
+    padding: 40px 32px;
+    border-radius: 8px;
+    box-shadow: rgba(100,100,111, 0.2) 0px 7px 29px 0px;
+}
+
+.contenedor h2{
+    font-size: 1.6rem;
+    color: rgba(1, 12, 64, 0.9);
+}
+.contenedor label{
+    font-size: 14px;
+    font-weight: bold;
+    color: rgba(4, 14, 61, 0.9);
+    display: flex;
+    margin-top: 16px;
+}
+.contenedor-input{
+    position: relative;
+}
+.contenedor-input input{
+    width: 100%;
+    height: 46px;
+    outline: none;
+    border-radius: 8px;
+    font-size: 16px;
+    text-indent: 20px;
+    margin-top: 6px;
+    border: 1px solid rgba(17, 38, 82, 0.9);
+}
+.contenedor-input i{
+    position: absolute;
+    font-size: 25px;
+    right: 14px;
+    top: 14px;
+    color: rgba(17, 38, 82, 0.9);
+}
+.btn{
+    width: 100%;
+    margin-top: 30px;
+    background: rgba(3, 18, 93, 0.9);
+    color: white;
+    height: 40px;
+    cursor: pointer;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.15);
+    font-weight: 700;
+    letter-spacing: 0.05rem;
+    border-radius: 8px;
+    -webkit-border-radius: 8px;
+    -moz-border-radius: 8px;
+    -ms-border-radius: 8px;
+    -o-border-radius: 8px;
+    font-size: 16px;
+    border: none;
+}
+.links{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 25px;
+}
+.links a{
+    margin-left: 5px;
+    color:rgba(3, 18, 93, 0.9);
+    font-size: 1rem;
+    font-weight: 600;
+    text-decoration: none;
+    text-underline-offset: 6px;
+    text-decoration-color: rgba(6, 1, 64, 0.9);
+}
+.links a:hover{
+    text-decoration: underline;
+}
+
+.text-error {
+    display: block;
+    width: 100%;
+    padding: 1rem 0;
+    color: red;
+    font-size: 1.4rem;
+}

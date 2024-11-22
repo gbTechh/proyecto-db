@@ -47,8 +47,7 @@ class HotelModel extends Model {
         return null;
     }
 
-    // Crear un nuevo hotel
-    public function crear(Hotel $hotel, $id_proveedor) {
+    public function crear(Hotel $hotel) {
         $sql = "INSERT INTO hotel (nombre, direccion, categoria, telefono, precio_por_noche, id_ciudad) 
                 VALUES (?, ?, ?, ?, ?, ?)";
         $this->db->executeQuery($sql, [
@@ -60,17 +59,17 @@ class HotelModel extends Model {
             $hotel->getCiudad()
         ]);
 
-        // Obtener el último ID insertado
-        $id_hotel = $this->db->getLastInsertId();
-
-        $sql_proveedor = "INSERT INTO proveedor_hotel (id_proveedor, id_hotel)
-                          VALUES (?, ?)";
-        return $this->db->executeQuery($sql_proveedor, [
+        return $this->db->getLastInsertId();
+    }
+    
+    public function asociarProveedor($id_hotel, $id_proveedor) {
+        $sql = "INSERT INTO proveedor_hotel (id_proveedor, id_hotel) VALUES (?, ?)";
+        return $this->db->executeQuery($sql, [
             $id_proveedor,
             $id_hotel
-        ]);                
+        ]);
     }
-
+    
     
     // Actualizar un hotel
     public function actualizar(Hotel $hotel, $ids_proveedores) {
@@ -93,33 +92,19 @@ class HotelModel extends Model {
     }
 
     public function actualizarProveedoresPorHotel($id_hotel, $ids_proveedores) {
-        // Imprimir el ID del hotel para verificarlo
-        echo "<pre>ID del hotel: ";
-        var_dump($id_hotel);
-        echo "</pre>";
-    
-        // Imprimir los IDs de los proveedores para verificar qué datos están llegando
-        echo "<pre>IDs de proveedores recibidos: ";
-        var_dump($ids_proveedores);
-        echo "</pre>";
-    
+
         // Eliminar todos los proveedores actuales para este hotel en la tabla
         $sqlDelete = "DELETE FROM proveedor_hotel WHERE id_hotel = ?";
         $this->db->executeQuery($sqlDelete, [$id_hotel]);
-        echo "<p>Proveedores actuales eliminados para el hotel con ID {$id_hotel}</p>";
     
         // Insertar los nuevos proveedores asociados si hay algún ID en $ids_proveedores
         if (!empty($ids_proveedores)) {
             $sqlInsert = "INSERT INTO proveedor_hotel (id_hotel, id_proveedor) VALUES (?, ?)";
             foreach ($ids_proveedores as $id_proveedor) {
-                echo "<p>Insertando proveedor con ID {$id_proveedor} para el hotel con ID {$id_hotel}</p>";
                 $this->db->executeQuery($sqlInsert, [$id_hotel, $id_proveedor]);
             }
         } else {
-            echo "<p>No hay proveedores para insertar para el hotel con ID {$id_hotel}</p>";
         }
-    
-        echo "<p>Actualización de proveedores completada para el hotel con ID {$id_hotel}</p>";
     }
     
     // Eliminar un hotel
@@ -203,7 +188,7 @@ class HotelModel extends Model {
 
             // Si hay búsqueda, agregarla a las consultas
             if (!empty($search)) {
-                $searchWhere = " WHERE nombre LIKE :search OR direccion LIKE :search OR categoria LIKE :search";
+                $searchWhere = "WHERE nombre LIKE :search OR direccion LIKE :search OR categoria LIKE :search";
                 $sql .= $searchWhere;
                 $countSql .= $searchWhere;
                 $params[':search'] = "%$search%";
