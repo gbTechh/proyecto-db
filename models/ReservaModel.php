@@ -1,7 +1,7 @@
 <?php
 class ReservaModel extends Model {
 
-    // Obtener todas las reservas
+    // Obtener todas las reservas confirmadas
     public function getAllConfirmadas($id_sucursal = null) {
         $sql = "SELECT r.id_reserva, r.fecha, r.estado, r.id_viaje, r.id_sucursal, r.dni_empleado, c.dni as 'dni_cliente', CONCAT(c.nombre, ' ', c.apellidos) as 'nombre_cliente' FROM reserva r
         INNER JOIN viaje v ON r.id_viaje = v.id_viaje

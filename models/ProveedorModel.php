@@ -138,7 +138,7 @@ class ProveedorModel extends Model {
         $sql = "INSERT INTO proveedor (id_proveedor, nombre, direccion, telefono, email) 
                 VALUES (?, ?, ?, ?, ?)";
         
-        return $this->executeQuery($sql, [
+        return $this->db->executeQuery($sql, [
             $proveedor->getID(),
             $proveedor->getNombre(),
             $proveedor->getDireccion(),
@@ -153,7 +153,7 @@ class ProveedorModel extends Model {
                 SET nombre = ?, direccion = ?, telefono = ?, email = ? 
                 WHERE id_proveedor = ?";
         
-        return $this->executeQuery($sql, [
+        return $this->db->executeQuery($sql, [
             $proveedor->getNombre(),
             $proveedor->getDireccion(),
             $proveedor->getTelefono(),
@@ -165,6 +165,6 @@ class ProveedorModel extends Model {
     // Eliminar un proveedor
     public function eliminar($id_proveedor) {
         $sql = "DELETE FROM proveedor WHERE id_proveedor = ?";
-        return $this->executeQuery($sql, [$id_proveedor]);
+        return $this->db->executeQuery($sql, [$id_proveedor]);
     }
 }

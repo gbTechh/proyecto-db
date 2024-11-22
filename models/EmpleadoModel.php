@@ -59,7 +59,7 @@ class EmpleadoModel extends Model {
              WHERE e_username = ? and e_password = ? ";
             $stmt = $this->db->executeQuery($sql, [$username, $password]);
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        
+            
 
             if ($row) {
                 return new Login(

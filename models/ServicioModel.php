@@ -1,24 +1,27 @@
 <?php
 class ServicioModel extends Model {
 
-    // Obtener todos los servicios
+     // Obtener todos los servicios
     public function getAll() {
-        $sql = "SELECT ID_servicio, tipo_transporte, empresa, costo FROM servicio";
-        $stmt = $this->executeQuery($sql);
+        $sql = "SELECT s.id_servicio, p.nombre AS 'proveedor', s.descripcion, s.costo, c.nombre AS 'ciudad' 
+                FROM servicio s 
+                INNER JOIN proveedor p ON p.id_proveedor = s.id_proveedor 
+                INNER JOIN ciudad c ON c.id_ciudad = s.ciudad_int;";
+        $stmt = $this->db->executeQuery($sql);
         $servicios = [];
         
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $servicios[] = new Servicio(
-                $row['ID_servicio'],
-                $row['tipo_transporte'],
-                $row['empresa'],
-                $row['costo']
+                $row['id_servicio'],
+                $row['proveedor'],
+                $row['descripcion'],
+                $row['costo'],
+                $row['ciudad']
             );
         }
         
         return $servicios;
     }
-
     private function getCiudadIdPorNombre($nombre) {
         $sql = "SELECT id_ciudad FROM ciudad WHERE nombre = ?";
         $stmt = $this->db->executeQuery($sql, [$nombre]);
@@ -37,98 +40,31 @@ class ServicioModel extends Model {
         
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $servicios[] = new Servicio(
-                ID_servicio: $row['id_servicio'],
+                id_servicio: $row['id_servicio'],
                 descripcion: $row['descripcion'],
                 costo: $row['costo'],
                 ciudad: $row['ciudad'],
+                proveedor: '',
             );
         }
         
         return $servicios;
     }
 
-    // Obtener servicios paginados
-    public function getPaginated($page = 1, $limit = 10, $search = '') {
-        try {
-            $offset = ($page - 1) * $limit;
-            
-            // Consulta base
-            $sql = "SELECT ID_servicio, tipo_transporte, empresa, costo FROM servicio";
-            $countSql = "SELECT COUNT(*) as total FROM servicio";
-            $params = [];
-
-            // Si hay búsqueda, agregarla a las consultas
-            if (!empty($search)) {
-                $searchWhere = " WHERE tipo_transporte LIKE :search OR empresa LIKE :search";
-                $sql .= $searchWhere;
-                $countSql .= $searchWhere;
-                $params[':search'] = "%$search%";
-            }
-
-            // Agregar limit y offset para paginación
-            $sql .= " LIMIT :limit OFFSET :offset";
-
-            // Obtener el total de servicios
-            $stmt = $this->db->prepare($countSql);
-            if (!empty($search)) {
-                $stmt->bindValue(':search', "%$search%", PDO::PARAM_STR);
-            }
-            $stmt->execute();
-            $total = $stmt->fetch(PDO::FETCH_ASSOC)['total'];
-
-            // Ejecutar la consulta principal para obtener los servicios
-            $stmt = $this->db->prepare($sql);
-            if (!empty($search)) {
-                $stmt->bindValue(':search', "%$search%", PDO::PARAM_STR);
-            }
-            $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
-            $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
-            $stmt->execute();
-
-            $servicios = [];
-            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                $servicios[] = new Servicio(
-                    $row['ID_servicio'],
-                    $row['tipo_transporte'],
-                    $row['empresa'],
-                    $row['costo']
-                );
-            }
-
-            // Convertir los objetos Servicio a arrays para JSON
-            $serviciosArray = array_map(function($servicio) {
-                return [
-                    'ID_servicio' => $servicio->getID(),
-                    'tipo_transporte' => $servicio->getTipoTransporte(),
-                    'empresa' => $servicio->getEmpresa(),
-                    'costo' => $servicio->getCosto()
-                ];
-            }, $servicios);
-
-            return [
-                'data' => $serviciosArray,
-                'total' => $total,
-                'totalPages' => ceil($total / $limit),
-                'currentPage' => $page
-            ];
-
-        } catch (PDOException $e) {
-            throw new Exception("Error en la consulta: " . $e->getMessage());
-        }
-    }
-
+   
     // Obtener un servicio por ID
-    public function getByID($ID_servicio) {
-        $sql = "SELECT * FROM servicio WHERE ID_servicio = ?";
-        $stmt = $this->executeQuery($sql, [$ID_servicio]);
+    public function getByID($id_servicio) {
+        $sql = "SELECT * FROM servicio WHERE id_servicio = ?";
+        $stmt = $this->db->executeQuery($sql, [$id_servicio]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         
         if ($row) {
             return new Servicio(
-                $row['ID_servicio'],
-                $row['tipo_transporte'],
-                $row['empresa'],
-                $row['costo']
+                $row['id_servicio'],
+                $row['proveedor'],
+                $row['descripcion'],
+                $row['costo'],
+                $row['ciudad']
             );
         }
         return null;
@@ -136,34 +72,36 @@ class ServicioModel extends Model {
 
     // Crear un nuevo servicio
     public function crear(Servicio $servicio) {
-        $sql = "INSERT INTO servicio (ID_servicio, tipo_transporte, empresa, costo) 
-                VALUES (?, ?, ?, ?)";
+        $sql = "INSERT INTO servicio (id_servicio, proveedor, descripcion, costo, ciudad) 
+                VALUES (?, ?, ?, ?, ?)";
         
-        return $this->executeQuery($sql, [
+        return $this->db->executeQuery($sql, [
             $servicio->getID(),
-            $servicio->getTipoTransporte(),
-            $servicio->getEmpresa(),
-            $servicio->getCosto()
+            $servicio->getProveedor(),
+            $servicio->getDescripcion(),
+            $servicio->getCosto(),
+            $servicio->getCiudad()
         ]);
     }
 
     // Actualizar un servicio
     public function actualizar(Servicio $servicio) {
         $sql = "UPDATE servicio 
-                SET tipo_transporte = ?, empresa = ?, costo = ? 
-                WHERE ID_servicio = ?";
+                SET proveedor = ?, descripcion = ?, costo = ?, ciudad = ? 
+                WHERE id_servicio = ?";
         
-        return $this->executeQuery($sql, [
-            $servicio->getTipoTransporte(),
-            $servicio->getEmpresa(),
+        return $this->db->executeQuery($sql, [
+            $servicio->getProveedor(),
+            $servicio->getDescripcion(),
             $servicio->getCosto(),
+            $servicio->getCiudad(),
             $servicio->getID()
         ]);
     }
 
     // Eliminar un servicio
-    public function eliminar($ID_servicio) {
-        $sql = "DELETE FROM servicio WHERE ID_servicio = ?";
-        return $this->executeQuery($sql, [$ID_servicio]);
+    public function eliminar($id_servicio) {
+        $sql = "DELETE FROM servicio WHERE id_servicio = ?";
+        return $this->db->executeQuery($sql, [$id_servicio]);
     }
 }

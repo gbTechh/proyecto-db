@@ -6,10 +6,10 @@ class Transporte {
     private $empresa;
   
     public function __construct($ID_transporte, $tipo, $costo, $empresa) {
-      $this->ID_transporte = $ID_transporte;
-      $this->tipo = $tipo;
-      $this->costo = $costo;
-      $this->empresa = $empresa;
+        $this->ID_transporte = $ID_transporte;
+        $this->tipo = $tipo;
+        $this->costo = $costo;
+        $this->empresa = $empresa;
     }
 
     // Getters
@@ -24,3 +24,4 @@ class Transporte {
     public function setCosto($costo) { $this->costo = $costo; }
     public function setEmpresa($empresa) { $this->empresa = $empresa; }
 }
+?>

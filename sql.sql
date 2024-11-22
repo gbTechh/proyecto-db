@@ -109,12 +109,11 @@ CREATE TABLE vuelo (
     FOREIGN KEY (ciudad_destino) REFERENCES ciudad(id_ciudad)
 );
 
-CREATE TABLE viaje_vuelo (
-    id_viaje INT,
-    id_vuelo INT,
-    PRIMARY KEY (id_viaje, id_vuelo),
-    FOREIGN KEY (id_viaje) REFERENCES viaje(id_viaje),
-    FOREIGN KEY (id_vuelo) REFERENCES vuelo(id_vuelo)
+
+CREATE TABLE promocion (
+    id_promocion INT PRIMARY KEY AUTO_INCREMENT,
+    descripcion TEXT,
+    descuento DECIMAL(5,2)
 );
 
 CREATE TABLE paquete_turistico (
@@ -123,7 +122,9 @@ CREATE TABLE paquete_turistico (
     descripcion TEXT,
     precio DECIMAL(10,2),
     id_ciudad INT,
-    FOREIGN KEY (id_ciudad) REFERENCES ciudad(id_ciudad)
+    id_promocion INT,
+    FOREIGN KEY (id_ciudad) REFERENCES ciudad(id_ciudad),
+    FOREIGN KEY (id_promocion) REFERENCES promocion(id_promocion)
 );
 
 
@@ -133,19 +134,12 @@ CREATE TABLE guia_turistico (
     id_guia INT PRIMARY KEY AUTO_INCREMENT,
     nombre VARCHAR(100) NOT NULL,
     telefono VARCHAR(20),
-    idioma VARCHAR(50),
+    idioma VARCHAR(255),
     id_ciudad INT,
     FOREIGN KEY (id_ciudad) REFERENCES ciudad(id_ciudad)
 );
 
-CREATE TABLE promocion (
-    id_promocion INT PRIMARY KEY AUTO_INCREMENT,
-    descripcion TEXT,
-    descuento DECIMAL(5,2),
-    periodo_validez VARCHAR(50),
-    id_empleado VARCHAR(15),
-    FOREIGN KEY (id_empleado) REFERENCES empleado(dni)
-);
+
 
 CREATE TABLE transporte (
     id_transporte INT PRIMARY KEY AUTO_INCREMENT,
@@ -299,12 +293,12 @@ INSERT INTO guia_turistico (nombre, telefono, idioma, id_ciudad) VALUES
 ('Juan Pérez', '567567567', 'Español, Italiano', 5);
 
 -- 11. promocion (depende de empleado)
-INSERT INTO promocion (descripcion, descuento, periodo_validez, id_empleado) VALUES
-('descuento Verano', 15.00, 'Enero 2024', '45678901'),
-('Oferta Familias', 20.00, 'Febrero 2024', '45678902'),
-('Early Bird', 10.00, 'Marzo 2024', '45678903'),
-('descuento Grupos', 25.00, 'Abril 2024', '45678904'),
-('Oferta Flash', 30.00, 'Mayo 2024', '45678905');
+INSERT INTO promocion (descripcion, descuento) VALUES
+('descuento Verano', 15.00),
+('Oferta Familias', 20.00),
+('Early Bird', 10.00),
+('descuento Grupos', 25.00),
+('Oferta Flash', 30.00);
 
 -- 12. transporte (independiente)
 INSERT INTO transporte (tipo, costo, empresa) VALUES
@@ -779,24 +773,24 @@ INSERT INTO hotel (nombre, direccion, categoria, telefono, precio_por_noche, id_
 
 
 
-INSERT INTO empleado (dni, nombre, apellidos, telefono, puesto, e_username, e_password)
+INSERT INTO empleado (dni, nombre, apellidos, telefono,id_sucursal, puesto, e_username, e_password)
 VALUES 
-('0000001', 'Juan', 'Pérez', '1122334455', 'Gerente', 'juanxp', 'pass123'),
-('0000002', 'Ana', 'García', '2233445566', 'Recepcionista', 'aqnag', 'pass456'),
-('0000003', 'Carlos', 'Ruiz', '3344556677', 'Vendedor', 'carloxsr', 'pass789'),
-('0000004', 'Luisa', 'Martínez', '4455667788', 'Atención al cliente', 'luissam', 'pass101'),
-('0000005', 'Pedro', 'López', '8899556677', 'Administrador', 'pedqwrol', 'pass202'),
-('0000006', 'Jan', 'Rez', '4455112233', 'Gerente', 'juansp', 'pawss123'),
-('0000007', 'Anastacia', 'Gracia', '5566223344', 'Recepcionista', 'ancag', 'pass456'),
-('0000008', 'Carlos', 'Santos', '5566773344', 'Vendedor', 'carlossr', 'pass789'),
-('0000009', 'Luis', 'Rodriguez', '6677884455', 'Atención al cliwente', 'luisam', 'pass101'),
-('0000010', 'Pedro', 'Ruan', '7788995566', 'Administrador', 'pedroxl', 'pass202');
+('0000001', 'Juan', 'Pérez', '1122334455', 2, 'Gerente', 'juanxp', 'pass123'),
+('0000002', 'Ana', 'García', '2233445566', 2, 'Recepcionista', 'aqnag', 'pass456'),
+('0000003', 'Carlos', 'Ruiz', '3344556677', 1, 'Vendedor', 'carloxsr', 'pass789'),
+('0000004', 'Luisa', 'Martínez', '4455667788', 3, 'Atención al cliente', 'luissam', 'pass101'),
+('0000005', 'Pedro', 'López', '8899556677', 4,'Administrador', 'pedqwrol', 'pass202'),
+('0000006', 'Jan', 'Rez', '4455112233', 1, 'Gerente', 'juansp', 'pawss123'),
+('0000007', 'Anastacia', 'Gracia', '5566223344', 2, 'Recepcionista', 'ancag', 'pass456'),
+('0000008', 'Carlos', 'Santos', '5566773344', 3, 'Vendedor', 'carlossr', 'pass789'),
+('0000009', 'Luis', 'Rodriguez', '6677884455', 2, 'Atención al cliwente', 'luisam', 'pass101'),
+('0000010', 'Pedro', 'Ruan', '7788995566', 1, 'Administrador', 'pedroxl', 'pass202');
 
 /* INSERTANDO MAS PAQUETES */
-INSERT INTO paquete_turistico (nombre, descripcion, precio, id_ciudad) VALUES  
-('Colca Full Day', 'Disfruta del vuelo de Cóndor', 200.00, 2),
-('Cañon de Cotahuasi', 'Disfruta del cañon mas profundo del Peru', 250.00, 2),
-('Laguna Salinas', 'Disfruta de la laguna', 150.00, 2);
+INSERT INTO paquete_turistico (nombre, descripcion, precio, id_ciudad, id_promocion) VALUES  
+('Colca Full Day', 'Disfruta del vuelo de Cóndor', 200.00, 2, 1),
+('Cañon de Cotahuasi', 'Disfruta del cañon mas profundo del Peru', 250.00, 2, 2),
+('Laguna Salinas', 'Disfruta de la laguna', 150.00, 2, 3);
 
 
 
@@ -804,8 +798,6 @@ INSERT INTO paquete_turistico (nombre, descripcion, precio, id_ciudad) VALUES
 INSERT INTO proveedor_hotel (id_proveedor, id_hotel) VALUES
 (1, 1), (1, 2), (2, 3), (3, 4), (3, 5);
 
-INSERT INTO viaje_vuelo (id_viaje, id_vuelo) VALUES
-(1, 1), (2, 2), (3, 3), (4, 4), (5, 5);
 
 
 
@@ -890,7 +882,7 @@ END //
 DELIMITER ;
 
 
-DROP PROCEDURE `VerificarUsuario`;
+DROP PROCEDURE IF EXISTS VerificarUsuario;
 DELIMITER //
 CREATE PROCEDURE `VerificarUsuario`(IN `p_username` VARCHAR(50), IN `p_password` VARCHAR(50), OUT `p_tipo_usuario` VARCHAR(10), OUT `p_nombre` VARCHAR(50), OUT `p_apellidos` VARCHAR(50), OUT `p_dni` VARCHAR(20), OUT `p_telefono` VARCHAR(20), OUT `p_email` VARCHAR(50), OUT `p_id_sucursal` INT, OUT `p_puesto` VARCHAR(50)) NOT DETERMINISTIC CONTAINS SQL SQL SECURITY DEFINER BEGIN
     DECLARE v_password VARCHAR(50);

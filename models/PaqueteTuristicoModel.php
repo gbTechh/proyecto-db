@@ -55,7 +55,7 @@ class PaqueteTuristicoModel extends Model {
     public function actualizar(PaqueteTuristico $paquete) {
         $sql = "UPDATE paquete_turistico 
                 SET nombre = ?, descripcion = ?, precio = ? 
-                WHERE ID_paquete = ?";
+                WHERE id_paquete = ?";
         
         return $this->db->executeQuery($sql, [
             $paquete->getNombre(),
@@ -68,7 +68,7 @@ class PaqueteTuristicoModel extends Model {
 
     // Eliminar paquete turístico
     public function eliminar($ID_paquete) {
-        $sql = "DELETE FROM paquete_turistico WHERE ID_paquete = ?";
+        $sql = "DELETE FROM paquete_turistico WHERE id_paquete = ?";
         return $this->db->executeQuery($sql, [$ID_paquete]);
     }
 

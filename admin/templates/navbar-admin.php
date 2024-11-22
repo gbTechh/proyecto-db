@@ -45,14 +45,7 @@
                         </a>
                     </li>
                     <?php }?>
-                    <?php if($rol == "Administrador" || $rol == "Gerente" || $rol == "Vendedor") {?>
-                    <li class="nav-link">
-                        <a href="#reservas">
-                            <i class='bx bx-calendar-alt icon'></i>
-                            <span class="text nav-text">Reservas</span>
-                        </a>
-                    </li>
-                    <?php }?>
+                    
                     <?php if($rol == "Administrador" || $rol == "Gerente" || $rol == "Vendedor") {?>
                     <li class="nav-link">
                     <a href="<?php echo URLROOT . "/admin/hoteles.php"?>">
@@ -61,14 +54,7 @@
                         </a>
                     </li>
                     <?php }?>
-                    <?php if($rol == "Administrador" || $rol == "Gerente" || $rol == "Vendedor") {?>
-                    <li class="nav-link">
-                        <a href="<?php echo URLROOT . "/admin/viajes.php"?>">
-                            <i class='bx bx-map icon'></i>
-                            <span class="text nav-text">Viajes</span>
-                        </a>
-                    </li>
-                    <?php }?>
+                   
                     <?php if($rol == "Administrador" || $rol == "Gerente" || $rol == "Vendedor") {?>
                     <li class="nav-link">
                          <a href="<?php echo URLROOT . "/admin/vuelos.php"?>">
@@ -90,6 +76,38 @@
                          <a href="<?php echo URLROOT . "/admin/guia_turistico.php"?>">
                             <i class='bx bx-world icon'></i>
                             <span class="text nav-text">Guías Turísticos</span>
+                        </a>
+                    </li>
+                    <?php }?>
+                    <?php if($rol == "Administrador" || $rol == "Gerente" || $rol == "Vendedor") {?>
+                    <li class="nav-link">
+                         <a href="<?php echo URLROOT . "/admin/servicios.php"?>">
+                            <i class='bx bx-cube icon'></i>
+                            <span class="text nav-text">Servicios</span>
+                        </a>
+                    </li>
+                    <?php }?>
+                    <?php if($rol == "Administrador" || $rol == "Gerente" || $rol == "Vendedor") {?>
+                    <li class="nav-link">
+                         <a href="<?php echo URLROOT . "/admin/transportes.php"?>">
+                            <i class='bx bxs-truck icon'></i>
+                            <span class="text nav-text">Transportes</span>
+                        </a>
+                    </li>
+                    <?php }?>
+                    <?php if($rol == "Administrador" || $rol == "Gerente" || $rol == "Vendedor") {?>
+                    <li class="nav-link">
+                         <a href="<?php echo URLROOT . "/admin/paquete_turistico.php"?>">
+                            <i class='bx bx-gift icon'></i>
+                            <span class="text nav-text">Paquetes Turísticos</span>
+                        </a>
+                    </li>
+                    <?php }?>
+                    <?php if($rol == "Administrador" || $rol == "Gerente" || $rol == "Vendedor") {?>
+                    <li class="nav-link">
+                         <a href="<?php echo URLROOT . "/admin/proveedor.php"?>">
+                            <i class='bx bx-user-pin icon'></i>
+                            <span class="text nav-text">Proveedores</span>
                         </a>
                     </li>
                     <?php }?>
