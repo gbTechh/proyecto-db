@@ -317,17 +317,47 @@ INSERT INTO promocion (descripcion, descuento) VALUES
 
 
 -- 9. paquete_turistico (independiente)
-INSERT INTO paquete_turistico (nombre, descripcion, precio, id_ciudad, id_promocion, precio_base) VALUES
-('Paquete Básico', 'Tour básico por la ciudad', 200.00, 1, 1, 200.00),
-('Paquete Premium', 'Tour completo con hotel 5 estrellas', 500.00, 2, 2, 500.00),
-('Paquete Familiar', 'Tour para toda la familia', 800.00, 3, 3, 800.00),
-('Paquete Aventura', 'Tour de deportes extremos', 400.00 ,1, 2, 400.00),
-('Paquete Cultural', 'Tour por museos y sitios históricos', 300.00, 4, 1, 300.00),
-('Colca Full Day', 'Disfruta del vuelo de Cóndor', 200.00, 2, 1, 200.00),
-('Cañon de Cotahuasi', 'Disfruta del cañon mas profundo del Peru', 250.00, 2, 2, 250.00),
-('Laguna Salinas', 'Disfruta de la laguna', 150.00, 2, 3, 150.00);
+-- paquete_turistico 
+INSERT INTO paquete_turistico (nombre, descripcion, precio_base, id_ciudad, imagen) VALUES
+-- Lima
+('Lima Gastronómica', 'Tour gastronómico por los mejores restaurantes de Lima, clases de cocina y visita a mercados locales.', 399.99, 1, 'paquete_lima_1.jpg'),
+('Lima Cultural e Histórica', 'Visita al centro histórico, museos, Huaca Pucllana y más. Incluye show nocturno.', 450.00, 1, 'paquete_lima_2.jpg'),
 
+-- Arequipa
+('Arequipa y el Colca', 'Explora la Ciudad Blanca y el Cañón del Colca. Avistamiento de cóndores.', 200.00, 2, 'paquete_arequipa_1.jpg'),
+('Arequipa Monumental', 'Recorrido por conventos, casonas coloniales y miradores. Incluye tour gastronómico.', 399.99, 2, 'paquete_arequipa_2.jpg'),
 
+-- Sao Paulo
+('São Paulo Urbano', 'Experiencia completa en la ciudad más grande de Sudamérica. Shopping, gastronomía y vida nocturna.', 634.90, 3, 'paquete_saopaulo_1.jpg'),
+('São Paulo Cultural', 'Visita a museos, teatros y barrios históricos. Incluye show brasileño.', 390.99, 3, 'paquete_saopaulo_2.jpg'),
+
+-- Brasilia
+('Brasilia Arquitectónica', 'Tour por las obras maestras de Oscar Niemeyer y la arquitectura moderna.', 699.99, 4, 'paquete_brasilia_1.jpg'),
+('Brasilia Completo', 'Conoce la capital de Brasil, sus monumentos y lago Paranoá.', 899.99, 4, 'paquete_brasilia_2.jpg'),
+
+-- Santiago de Chile
+('Santiago Urbano', 'Recorrido por barrios emblemáticos, viñedos y cerro San Cristóbal.', 331.00, 5, 'paquete_santiagodechile_1.jpg'),
+('Santiago y Valle Nevado', 'Combina ciudad y nieve con visita al centro de ski (en temporada).', 821.00, 5, 'paquete_santiagodechile_2.jpg'),
+
+-- Arica
+('Arica Playas', 'Disfruta del clima privilegiado y las mejores playas del norte de Chile.', 200.99, 6, 'paquete_arica_1.jpg'),
+('Arica Histórica', 'Conoce el Morro de Arica y sitios arqueológicos cercanos.', 586.99, 6, 'paquete_arica_2.jpg'),
+
+-- Bogotá
+('Bogotá Cultural', 'Visita a museos, Monserrate y La Candelaria. Incluye cena en Andrés D.C.', 599.99, 7, 'paquete_bogota_1.jpg'),
+('Bogotá y Zipaquirá', 'Conoce la capital y la Catedral de Sal. Tour gastronómico incluido.', 299.99, 7, 'paquete_bogota_2.jpg'),
+
+-- Medellín
+('Medellín Primavera', 'Tour por la ciudad de la eterna primavera, incluye Parque Arví y metro cable.', 299.99, 8, 'paquete_medellin_1.jpg'),
+('Medellín Transformación', 'Conoce la transformación social de la ciudad, Comuna 13 y proyectos urbanos.', 199.99, 8, 'paquete_medellin_2.jpg'),
+
+-- Buenos Aires
+('Buenos Aires Clásico', 'Recorrido por Plaza de Mayo, La Boca, San Telmo y Recoleta.', 399.99, 9, 'paquete_buenosaires_1.jpg'),
+('Buenos Aires Cultural', 'Shows de tango, teatros y cenas gourmet.', 629.99, 9, 'paquete_buenosaires_2.jpg'),
+
+-- Córdoba
+('Córdoba Colonial', 'Tour por la arquitectura colonial y las estancias jesuíticas.', 320.99, 10, 'paquete_cordoba_1.jpg'),
+('Córdoba y Sierra', 'Combina ciudad con excursiones a las sierras cordobesas.', 599.99, 10, 'paquete_cordoba_2.jpg');
 
 
 -- 12. transporte (independiente)
