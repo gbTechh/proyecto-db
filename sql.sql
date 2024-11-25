@@ -561,14 +561,14 @@ DELIMITER ;
 -- ('12345675', 'Miguel', 'Castro Silva', '998777670', 'miguel@email.com', 'mcastro', 'cpass127'),
 -- ('12345676', 'Gabriel', 'Lopez Mendez', '998777670', 'gab@email.com', 'glopez', 'cpass127'),
 -- ('12345677', 'Luis', 'Fernandez Calapuja', '998777670', 'lucho@email.com', 'luchito', 'cpass127');
-INSERT INTO cliente (dni, nombre, apellidos, telefono, email, c_username, c_password) VALUES
-('12345671', 'Luis', 'Rodríguez Pérez', '998777666', 'luis@email.com', 'lrodri', 'cpass123'),
-('12345672', 'Carmen', 'Díaz García', '998777667', 'carmen@email.com', 'cdiaz', 'cpass124'),
-('12345673', 'Jorge', 'Flores López', '998777668', 'jorge@email.com', 'jflores', 'cpass125'),
-('12345674', 'Laura', 'Torres Ruiz', '998777669', 'laura@email.com', 'ltorres', 'cpass126'),
-('12345675', 'Miguel', 'Castro Silva', '998777670', 'miguel@email.com', 'mcastro', 'cpass127'),
-('12345676', 'Gabriel', 'Lopez Mendez', '998777670', 'gab@email.com', 'glopez', 'cpass127'),
-('12345677', 'Luis', 'Fernandez Calapuja', '998777670', 'lucho@email.com', 'luchito', 'cpass127');
+-- INSERT INTO cliente (dni, nombre, apellidos, telefono, email, c_username, c_password) VALUES
+-- ('12345671', 'Luis', 'Rodríguez Pérez', '998777666', 'luis@email.com', 'lrodri', 'cpass123'),
+-- ('12345672', 'Carmen', 'Díaz García', '998777667', 'carmen@email.com', 'cdiaz', 'cpass124'),
+-- ('12345673', 'Jorge', 'Flores López', '998777668', 'jorge@email.com', 'jflores', 'cpass125'),
+-- ('12345674', 'Laura', 'Torres Ruiz', '998777669', 'laura@email.com', 'ltorres', 'cpass126'),
+-- ('12345675', 'Miguel', 'Castro Silva', '998777670', 'miguel@email.com', 'mcastro', 'cpass127'),
+-- ('12345676', 'Gabriel', 'Lopez Mendez', '998777670', 'gab@email.com', 'glopez', 'cpass127'),
+-- ('12345677', 'Luis', 'Fernandez Calapuja', '998777670', 'lucho@email.com', 'luchito', 'cpass127');
 
 INSERT INTO viaje (duracion, precio, dni_cliente, vuelo_ida, vuelo_regreso, paquete_turistico, hotel, guia, transporte) VALUES
 (7, 1200.00, '12345672', 1, 2, 1, 1, 1, 1),
