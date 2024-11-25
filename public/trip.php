@@ -42,10 +42,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     //var_dump($hoteles);
 
     $transporteModel = new TransporteModel();
-    $transportes = $transporteModel->get4();
+    $transportes = $transporteModel->buscarTransportes($destino);
     //var_dump($transportes);
+    
     $servicioModel = new ServicioModel();
-    $servicios = $servicioModel->buscarServicios($destino);
+    $servicios = $servicioModel->getByCiudad($destino); // Usamos el método getByCiudad
     //var_dump($servicios);
     $guiaturisticoModel = new GuiaTuristicoModel();
     $guiasturisticos = $guiaturisticoModel->buscarGuias($destino);
@@ -121,7 +122,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $response['servicios'][] = [ 
             'id' => $servicio->getID(),
             'costo' => $servicio->getCosto(),
-            'descripcion' => $servicio->getdescripcion(),
+            'descripcion' => $servicio->getDescripcion(),
         ];
     }
     foreach ($guiasturisticos as $guiaturistico) {

@@ -7,7 +7,7 @@
     </div>
 
     <div class="wrapp-proveedor">
-        <table class="table">
+        <table id="miTabla" class="display table">
             <thead>
                 <tr>
                     <th>Nombre</th>

@@ -1,3 +1,9 @@
+
+<?php if (!empty($mensaje)): ?>
+    <div class="alert alert-success">
+        <?= $mensaje ?>
+    </div>
+<?php endif; ?>
 <div class="servicios">
     <div class="wrapp-title">
         <h1 class="title">Editar Servicio</h1>
@@ -6,8 +12,8 @@
         </a>
     </div>
 
-    <div class="wrapp-servicio">
-        <form action="servicios.php?action=actualizar&id=<?php echo $servicio->getID(); ?>" method="POST" class="servicio-form">
+    <div class="wrapp-servicios">
+        <form action="servicios.php?action=update&id=<?php echo $servicio->getID(); ?>" method="POST" class="servicio-form">
             
             <!-- Descripción -->
             <div class="form-group">
@@ -30,8 +36,8 @@
                     type="number" 
                     id="costo" 
                     name="costo" 
+                    value="<?php  htmlspecialchars($data['servicio']->getCosto()); ?>"
                     class="form-control <?php echo isset($errors['costo']) ? 'is-invalid' : ''; ?>"
-                    value="<?php echo htmlspecialchars($servicio->getCosto()); ?>"
                     required
                 >
                 <?php if (isset($errors['costo'])): ?>
@@ -41,38 +47,46 @@
 
             <!-- Ciudad -->
             <div class="form-group">
-                <label for="ciudad_int">Ciudad *</label>
+                <label for="id_ciudad">Ciudad *</label>
                 <select 
-                    id="ciudad_int" 
-                    name="ciudad_int" 
-                    class="form-control <?php echo isset($errors['ciudad_int']) ? 'is-invalid' : ''; ?>"
+                    id="id_ciudad" 
+                    name="id_ciudad" 
+                    class="form-control <?php echo isset($errors['id_ciudad']) ? 'is-invalid' : ''; ?>"
                     required
                 >
                     <option value="">Seleccione una ciudad</option>
                     <?php foreach ($ciudades as $ciudad): ?>
                         <option value="<?php echo $ciudad->getID(); ?>" <?php 
-                            echo $servicio->getCiudadInt() == $ciudad->getID() ? 'selected' : ''; 
+                            echo $servicio->getCiudad() == $ciudad->getID() ? 'selected' : ''; 
                         ?>>
                             <?php echo $ciudad->getNombre(); ?>
                         </option>
                     <?php endforeach; ?>
                 </select>
-                <?php if (isset($errors['ciudad_int'])): ?>
-                    <div class="invalid-feedback"><?php echo $errors['ciudad_int']; ?></div>
+                <?php if (isset($errors['id_ciudad'])): ?>
+                    <div class="invalid-feedback"><?php echo $errors['id_ciudad']; ?></div>
                 <?php endif; ?>
             </div>
 
-            <!-- Proveedor -->
+            <!-- Proveedor del Hotel -->
             <div class="form-group">
-                <label for="id_proveedor">Proveedor *</label>
-                <input 
-                    type="text" 
+                <label for="id_proveedor">Proveedor(es) *</label>
+                <select 
                     id="id_proveedor" 
-                    name="id_proveedor" 
+                    name="id_proveedor[]" 
                     class="form-control <?php echo isset($errors['id_proveedor']) ? 'is-invalid' : ''; ?>"
-                    value="<?php echo htmlspecialchars($servicio->getProveedor()); ?>"
                     required
+                    multiple
                 >
+                    <option value="">Seleccione un proveedor(es)</option>
+                    <?php foreach ($proveedores as $proveedor): ?>
+                        <option value="<?php echo $proveedor->getID(); ?>" <?php 
+                            echo $servicio->getProveedor() == $proveedor->getID() ? 'selected' : ''; 
+                        ?>>
+                            <?php echo $proveedor->getNombre(); ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
                 <?php if (isset($errors['id_proveedor'])): ?>
                     <div class="invalid-feedback"><?php echo $errors['id_proveedor']; ?></div>
                 <?php endif; ?>

@@ -71,13 +71,13 @@ class GuiaTuristicoModel extends Model {
     // Eliminar guía turístico
     public function eliminar($id_guia) {
         $sql = "DELETE FROM guia_turistico WHERE id_guia = ?";
-        return $this->executeQuery($sql, [$id_guia]);
+        return $this->db->executeQuery($sql, [$id_guia]);
     }
 
     // Buscar guías por ciudad
     public function getByCiudad($id_ciudad) {
         $sql = "SELECT * FROM guia_turistico WHERE id_ciudad = ?";
-        $stmt = $this->executeQuery($sql, [$id_ciudad]);
+        $stmt = $this->db->executeQuery($sql, [$id_ciudad]);
         $guias = [];
         
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {

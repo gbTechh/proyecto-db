@@ -1,12 +1,13 @@
 <?php
 class ServicioModel extends Model {
 
-     // Obtener todos los servicios
+    // Obtener todos los servicios
     public function getAll() {
         $sql = "SELECT s.id_servicio, p.nombre AS 'proveedor', s.descripcion, s.costo, c.nombre AS 'ciudad' 
                 FROM servicio s 
                 INNER JOIN proveedor p ON p.id_proveedor = s.id_proveedor 
-                INNER JOIN ciudad c ON c.id_ciudad = s.ciudad_int;";
+                INNER JOIN ciudad c ON c.id_ciudad = s.id_ciudad";
+        
         $stmt = $this->db->executeQuery($sql);
         $servicios = [];
         
@@ -22,37 +23,8 @@ class ServicioModel extends Model {
         
         return $servicios;
     }
-    private function getCiudadIdPorNombre($nombre) {
-        $sql = "SELECT id_ciudad FROM ciudad WHERE nombre = ?";
-        $stmt = $this->db->executeQuery($sql, [$nombre]);
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        return $row ? $row['id_ciudad'] : null; 
-    }
 
-    public function buscarServicios($nombreCiudad) {
-        $idCiudad = $this->getCiudadIdPorNombre($nombreCiudad);
-        $sql = "SELECT s.id_servicio, s.descripcion, s.costo FROM servicio s
-        INNER JOIN ciudad c ON s.ciudad_int = c.id_ciudad
-        WHERE c.id_ciudad = ?";
-    
-        $stmt = $this->db->executeQuery($sql, [$idCiudad]);
-        $servicios = [];
-        
-        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $servicios[] = new Servicio(
-                id_servicio: $row['id_servicio'],
-                descripcion: $row['descripcion'],
-                costo: $row['costo'],
-                ciudad: $row['ciudad'],
-                proveedor: '',
-            );
-        }
-        
-        return $servicios;
-    }
-
-   
-    // Obtener un servicio por ID
+    // Obtener servicio por ID
     public function getByID($id_servicio) {
         $sql = "SELECT * FROM servicio WHERE id_servicio = ?";
         $stmt = $this->db->executeQuery($sql, [$id_servicio]);
@@ -61,20 +33,19 @@ class ServicioModel extends Model {
         if ($row) {
             return new Servicio(
                 $row['id_servicio'],
-                $row['proveedor'],
+                $row['id_proveedor'],
                 $row['descripcion'],
                 $row['costo'],
-                $row['ciudad']
+                $row['id_ciudad']
             );
         }
         return null;
     }
-
-    // Crear un nuevo servicio
+    
     public function crear(Servicio $servicio) {
-        $sql = "INSERT INTO servicio (id_servicio, proveedor, descripcion, costo, ciudad) 
+    
+        $sql = "INSERT INTO servicio (id_servicio, id_proveedor, descripcion, costo, id_ciudad) 
                 VALUES (?, ?, ?, ?, ?)";
-        
         return $this->db->executeQuery($sql, [
             $servicio->getID(),
             $servicio->getProveedor(),
@@ -83,11 +54,13 @@ class ServicioModel extends Model {
             $servicio->getCiudad()
         ]);
     }
+    
 
-    // Actualizar un servicio
+    // Actualizar servicio
     public function actualizar(Servicio $servicio) {
+        // Actualización del servicio
         $sql = "UPDATE servicio 
-                SET proveedor = ?, descripcion = ?, costo = ?, ciudad = ? 
+                SET id_proveedor = ?, descripcion = ?, costo = ?, id_ciudad = ? 
                 WHERE id_servicio = ?";
         
         return $this->db->executeQuery($sql, [
@@ -99,9 +72,93 @@ class ServicioModel extends Model {
         ]);
     }
 
-    // Eliminar un servicio
+    // Eliminar servicio
     public function eliminar($id_servicio) {
         $sql = "DELETE FROM servicio WHERE id_servicio = ?";
         return $this->db->executeQuery($sql, [$id_servicio]);
     }
+
+    // Buscar servicios por ciudad
+    public function getByCiudad($id_ciudad) {
+        $sql = "SELECT * FROM servicio WHERE id_ciudad = ?";
+        $stmt = $this->db->executeQuery($sql, [$id_ciudad]);
+        $servicios = [];
+        
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $servicios[] = new Servicio(
+                $row['id_servicio'],
+                $row['id_proveedor'],
+                $row['descripcion'],
+                $row['costo'],
+                $row['id_ciudad']
+            );
+        }
+        
+        return $servicios;
+    }
+
+    // Buscar servicios por proveedor
+    public function getByProveedor($id_proveedor) {
+        $sql = "SELECT * FROM servicio WHERE id_proveedor = ?";
+        $stmt = $this->db->executeQuery($sql, [$id_proveedor]);
+        $servicios = [];
+        
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $servicios[] = new Servicio(
+                $row['id_servicio'],
+                $row['id_proveedor'],
+                $row['descripcion'],
+                $row['costo'],
+                $row['id_ciudad']
+            );
+        }
+        
+        return $servicios;
+    }
+
+    // Obtener el ID de la ciudad por nombre
+    private function getCiudadIdPorNombre($nombre) {
+        $sql = "SELECT id_ciudad FROM ciudad WHERE nombre = ?";
+        $stmt = $this->db->executeQuery($sql, [$nombre]);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $row ? $row['id_ciudad'] : null;
+    }
+
+    // Obtener el ID del proveedor por nombre
+    private function getProveedorIdPorNombre($nombre) {
+        $sql = "SELECT id_proveedor FROM proveedor WHERE nombre = ?";
+        $stmt = $this->db->executeQuery($sql, [$nombre]);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $row ? $row['id_proveedor'] : null;
+    }
+
+    // Obtener servicios paginados
+    public function getPaginated($page = 1, $limit = 10, $search = '') {
+        $offset = ($page - 1) * $limit;
+        $sql = "SELECT s.id_servicio, p.nombre AS 'proveedor', s.descripcion, s.costo, c.nombre AS 'ciudad' 
+                FROM servicio s 
+                INNER JOIN proveedor p ON p.id_proveedor = s.id_proveedor 
+                INNER JOIN ciudad c ON c.id_ciudad = s.id_ciudad";
+        
+        $params = [];
+        if (!empty($search)) {
+            $sql .= " WHERE s.descripcion LIKE :search OR p.nombre LIKE :search";
+            $params[':search'] = "%$search%";
+        }
+
+        $sql .= " LIMIT :limit OFFSET :offset";
+        $stmt = $this->db->executeQuery($sql);
+        $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+        $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+
+        foreach ($params as $key => $value) {
+            $stmt->bindValue($key, $value);
+        }
+
+        $stmt->execute();
+        $servicios = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        return $servicios;
+    }
 }
+?>

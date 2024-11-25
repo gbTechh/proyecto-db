@@ -7,7 +7,7 @@
     </div>
 
     <div class="wrapp-paquete">
-        <form action="paquete_turistico.php?action=guardar" method="POST" class="paquete-form">
+        <form action="paquete_turistico.php?action=post" method="POST" class="paquete-form">
             
             <!-- Nombre del Paquete -->
             <div class="form-group">
@@ -57,24 +57,23 @@
 
             <!-- Ciudad -->
             <div class="form-group">
-                <label for="ciudad">Ciudad *</label>
+                <label for="id_ciudad">Ciudad *</label>
                 <select 
-                    id="ciudad" 
-                    name="ciudad" 
-                    class="form-control <?php echo isset($errors['ciudad']) ? 'is-invalid' : ''; ?>"
+                    id="id_ciudad" 
+                    name="id_ciudad" 
+                    class="form-control <?php echo isset($errors['id_ciudad']) ? 'is-invalid' : ''; ?>" 
                     required
                 >
-                    <option value="">Seleccione una ciudad</option>
+                    <option value="" disabled selected>Seleccione una ciudad</option>
                     <?php foreach ($ciudades as $ciudad): ?>
-                        <option value="<?php echo $ciudad->getId(); ?>" <?php 
-                            echo isset($old['ciudad']) && $old['ciudad'] == $ciudad->getId() ? 'selected' : ''; 
-                        ?>>
+                        <option value="<?php echo $ciudad->getID(); ?>" 
+                            <?php echo isset($old['id_ciudad']) && $old['id_ciudad'] == $ciudad->getID() ? 'selected' : ''; ?>>
                             <?php echo $ciudad->getNombre(); ?>
                         </option>
                     <?php endforeach; ?>
                 </select>
-                <?php if (isset($errors['ciudad'])): ?>
-                    <div class="invalid-feedback"><?php echo $errors['ciudad']; ?></div>
+                <?php if (isset($errors['id_ciudad'])): ?>
+                    <div class="invalid-feedback"><?php echo $errors['id_ciudad']; ?></div>
                 <?php endif; ?>
             </div>
 

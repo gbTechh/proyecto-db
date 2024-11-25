@@ -1,8 +1,8 @@
 <?php
 // Configuración de base de datos
 define('DB_HOST', 'localhost');
-define('DB_USER', 'enkit');
-define('DB_PASS', '123');
+define('DB_USER', 'root');
+define('DB_PASS', '');
 define('DB_NAME', 'agencia');
 
 

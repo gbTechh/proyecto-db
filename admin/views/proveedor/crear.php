@@ -7,7 +7,7 @@
     </div>
 
     <div class="wrapp-proveedor">
-        <form action="proveedor.php?action=guardar" method="POST" class="proveedor-form">
+        <form action="proveedor.php?action=post" method="POST" class="proveedor-form">
             
             <!-- Nombre -->
             <div class="form-group">

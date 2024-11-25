@@ -6,18 +6,18 @@
 
 <div class="servicios">
     <div class="wrapp-title">
-        <h1 class="title">Gestión de Servicios</h1>
-        <a href="servicios.php?action=crear" class="btn btn-primary">
+        <h1 class="title"><?php echo $title; ?></h1>
+        <a class="btn btn-primary" href="servicios.php?action=crear">
             Agregar Servicios
         </a>
     </div>
 
     <div class="wrapp-servicios">
-        <table class="table">
+        <table id="miTabla" class="display table">
             <thead>
                 <tr>
                     <th>Descripción</th>
-                    <th>Proveedor</th>
+                    <th>Proveedores</th>
                     <th>Precio</th>
                     <th>Ciudad</th>
                     <th>Acciones</th>

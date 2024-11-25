@@ -21,78 +21,6 @@ class ProveedorModel extends Model {
         return $proveedores;
     }
 
-    // Obtener proveedores paginados
-    public function getPaginated($page = 1, $limit = 10, $search = '') {
-        try {
-            $offset = ($page - 1) * $limit;
-            
-            // Consulta base
-            $sql = "SELECT id_proveedor, nombre, direccion, telefono, email FROM proveedor";
-            $countSql = "SELECT COUNT(*) as total FROM proveedor";
-            $params = [];
-
-            // Si hay búsqueda, agregarla a las consultas
-            if (!empty($search)) {
-                $searchWhere = " WHERE nombre LIKE :search OR direccion LIKE :search OR telefono LIKE :search";
-                $sql .= $searchWhere;
-                $countSql .= $searchWhere;
-                $params[':search'] = "%$search%";
-            }
-
-            // Agregar limit y offset para paginación
-            $sql .= " LIMIT :limit OFFSET :offset";
-
-            // Obtener total de proveedores
-            $stmt = $this->db->prepare($countSql);
-            if (!empty($search)) {
-                $stmt->bindValue(':search', "%$search%", PDO::PARAM_STR);
-            }
-            $stmt->execute();
-            $total = $stmt->fetch(PDO::FETCH_ASSOC)['total'];
-
-            // Ejecutar la consulta principal para obtener los proveedores
-            $stmt = $this->db->prepare($sql);
-            if (!empty($search)) {
-                $stmt->bindValue(':search', "%$search%", PDO::PARAM_STR);
-            }
-            $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
-            $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
-            $stmt->execute();
-
-            $proveedores = [];
-            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                $proveedores[] = new Proveedor(
-                    $row['id_proveedor'],
-                    $row['nombre'],
-                    $row['direccion'],
-                    $row['telefono'],
-                    $row['email']
-                );
-            }
-
-            // Convertir los objetos Proveedor a arrays para JSON
-            $proveedoresArray = array_map(function($proveedor) {
-                return [
-                    'id_proveedor' => $proveedor->getID(),
-                    'nombre' => $proveedor->getNombre(),
-                    'direccion' => $proveedor->getDireccion(),
-                    'telefono' => $proveedor->getTelefono(),
-                    'email' => $proveedor->getEmail()
-                ];
-            }, $proveedores);
-
-            return [
-                'data' => $proveedoresArray,
-                'total' => $total,
-                'totalPages' => ceil($total / $limit),
-                'currentPage' => $page
-            ];
-
-        } catch (PDOException $e) {
-            throw new Exception("Error en la consulta: " . $e->getMessage());
-        }
-    }
-
     // Obtener proveedor por ID
     public function getByID($id_proveedor) {
         $sql = "SELECT * FROM proveedor WHERE id_proveedor = ?";
@@ -167,4 +95,77 @@ class ProveedorModel extends Model {
         $sql = "DELETE FROM proveedor WHERE id_proveedor = ?";
         return $this->db->executeQuery($sql, [$id_proveedor]);
     }
+    // Obtener proveedores paginados
+    public function getPaginated($page = 1, $limit = 10, $search = '') {
+        try {
+            $offset = ($page - 1) * $limit;
+
+            // Consulta base
+            $sql = "SELECT id_proveedor, nombre, direccion, telefono, email FROM proveedor";
+            $countSql = "SELECT COUNT(*) as total FROM proveedor";
+            $params = [];
+
+            // Si hay búsqueda, agregarla a las consultas
+            if (!empty($search)) {
+                $searchWhere = " WHERE nombre LIKE :search OR direccion LIKE :search OR email LIKE :search OR telefono LIKE :search";
+                $sql .= $searchWhere;
+                $countSql .= $searchWhere;
+                $params[':search'] = "%$search%";
+            }
+
+            // Agregar limit y offset para paginación
+            $sql .= " LIMIT :limit OFFSET :offset";
+
+            // Obtener total de proveedores
+            $stmt = $this->db->prepare($countSql);
+            if (!empty($search)) {
+                $stmt->bindValue(':search', "%$search%", PDO::PARAM_STR);
+            }
+            $stmt->execute();
+            $total = $stmt->fetch(PDO::FETCH_ASSOC)['total'];
+
+            // Ejecutar la consulta principal para obtener los proveedores
+            $stmt = $this->db->prepare($sql);
+            if (!empty($search)) {
+                $stmt->bindValue(':search', "%$search%", PDO::PARAM_STR);
+            }
+            $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+            $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+            $stmt->execute();
+
+            $proveedores = [];
+            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                $proveedores[] = new Proveedor(
+                    $row['id_proveedor'],
+                    $row['nombre'],
+                    $row['direccion'],
+                    $row['telefono'],
+                    $row['email']
+                );
+            }
+
+            // Convertir los objetos Proveedor a arrays para JSON
+            $proveedoresArray = array_map(function($proveedor) {
+                return [
+                    'id_proveedor' => $proveedor->getID(),
+                    'nombre' => $proveedor->getNombre(),
+                    'direccion' => $proveedor->getDireccion(),
+                    'telefono' => $proveedor->getTelefono(),
+                    'email' => $proveedor->getEmail()
+                ];
+            }, $proveedores);
+
+            return [
+                'data' => $proveedoresArray,
+                'total' => $total,
+                'totalPages' => ceil($total / $limit),
+                'currentPage' => $page
+            ];
+
+        } catch (PDOException $e) {
+            throw new Exception("Error en la consulta: " . $e->getMessage());
+        }
+    }
+
 }
+?>

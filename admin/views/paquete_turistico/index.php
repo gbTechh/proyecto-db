@@ -13,7 +13,7 @@
     </div>
 
     <div class="wrapp-paquete">
-        <table class="table">
+        <table id="miTabla" class="display table">
             <thead>
                 <tr>
                     <th>Nombre</th>

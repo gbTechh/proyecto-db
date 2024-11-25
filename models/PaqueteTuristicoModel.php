@@ -3,7 +3,7 @@ class PaqueteTuristicoModel extends Model {
 
     // Obtener todos los paquetes turísticos
     public function getAll() {
-        $sql = "SELECT id_paquete, nombre, descripcion, precio, id_ciudad FROM paquete_turistico";
+        $sql = "SELECT p.id_paquete, p.nombre, p.descripcion, p.precio, c.nombre AS 'ciudad' FROM paquete_turistico p INNER JOIN ciudad c ON c.id_ciudad = p.id_ciudad";
         $stmt = $this->db->executeQuery($sql);
         $paquetes = [];
         
@@ -13,7 +13,7 @@ class PaqueteTuristicoModel extends Model {
                 $row['nombre'],
                 $row['descripcion'],
                 $row['precio'],
-                $row['id_ciudad']
+                $row['ciudad']
             );
         }
         
@@ -32,7 +32,7 @@ class PaqueteTuristicoModel extends Model {
                 $row['nombre'],
                 $row['descripcion'],
                 $row['precio'],
-                $row['id_ciudad']
+                $row['ciudad']
             );
         }
         return null;
@@ -76,7 +76,7 @@ class PaqueteTuristicoModel extends Model {
         $sql = "SELECT id_ciudad FROM ciudad WHERE nombre = ?";
         $stmt = $this->db->executeQuery($sql, [$nombre]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        return $row ? $row['id_ciudad'] : null; 
+        return $row ? $row['ciudad'] : null; 
     }
 
     // Obtener paquetes turísticos por ciudad
@@ -111,4 +111,73 @@ class PaqueteTuristicoModel extends Model {
 
         return ['paquetes' => $paquetes];
     }
+    // Obtener paquetes turísticos paginados
+    public function getPaginated($page = 1, $limit = 10, $search = '') {
+        try {
+            $offset = ($page - 1) * $limit;
+
+            // Consulta base
+            $sql = "SELECT 
+                        p.id_paquete, 
+                        p.nombre, 
+                        p.descripcion, 
+                        p.precio, 
+                        c.nombre AS 'ciudad' 
+                    FROM paquete_turistico p 
+                    INNER JOIN ciudad c ON c.id_ciudad = p.id_ciudad";
+            $countSql = "SELECT COUNT(*) as total FROM paquete_turistico p INNER JOIN ciudad c ON c.id_ciudad = p.id_ciudad";
+            $params = [];
+
+            // Si hay búsqueda, agregar filtros
+            if (!empty($search)) {
+                $searchWhere = " WHERE p.nombre LIKE :search OR p.descripcion LIKE :search OR c.nombre LIKE :search";
+                $sql .= $searchWhere;
+                $countSql .= $searchWhere;
+                $params[':search'] = "%$search%";
+            }
+
+            // Agregar limit y offset para paginación
+            $sql .= " LIMIT :limit OFFSET :offset";
+
+            // Obtener total de paquetes turísticos
+            $stmt = $this->db->executeQuery($countSql);
+            if (!empty($search)) {
+                $stmt->bindValue(':search', "%$search%", PDO::PARAM_STR);
+            }
+            $stmt->execute();
+            $total = $stmt->fetch(PDO::FETCH_ASSOC)['total'];
+
+            // Ejecutar consulta principal
+            $stmt = $this->db->executeQuery($sql);
+            if (!empty($search)) {
+                $stmt->bindValue(':search', "%$search%", PDO::PARAM_STR);
+            }
+            $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+            $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+            $stmt->execute();
+
+            $paquetes = [];
+            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                // Formatear cada paquete para JSON
+                $paquetes[] = [
+                    'id_paquete' => $row['id_paquete'],
+                    'nombre' => $row['nombre'],
+                    'descripcion' => $row['descripcion'],
+                    'precio' => $row['precio'],
+                    'ciudad' => $row['ciudad']
+                ];
+            }
+
+            return [
+                'data' => $paquetes,
+                'total' => $total,
+                'totalPages' => ceil($total / $limit),
+                'currentPage' => $page
+            ];
+
+        } catch (PDOException $e) {
+            throw new Exception("Error en la consulta: " . $e->getMessage());
+        }
+    }
+
 }
