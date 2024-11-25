@@ -1174,7 +1174,7 @@ html {
 .container.confirm-trip {
     display: flex;
     justify-content: center;
-    margin-top: 6rem; 
+    /*margin-top: 6rem; */
 }
 
 .confirm-button {

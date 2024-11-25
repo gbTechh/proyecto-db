@@ -36,53 +36,64 @@ switch($action) {
         render('admin/views/hoteles/crear.php', $data, $styles, $scripts);
         break;
 
-        case 'post': 
-            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-                try {
-                    $errors = validarDatos($_POST);
-    
-                    $nuevoHotel = new Hotel(
-                        null, 
-                        $_POST['nombre'],
-                        $_POST['direccion'],
-                        $_POST['categoria'],
-                        $_POST['telefono'],
-                        $_POST['precio_por_noche'],
-                        $_POST['id_ciudad']
-                    );
-    
-                    $id_proveedores = $_POST['id_proveedor'] ?? [];
-        
-                    if (empty($id_proveedores)) {
-                        $errors['id_proveedor'] = "Debe seleccionar al menos un proveedor.";
-                    }
-        
-                    if (empty($errors)) {
-                        // Crear el hotel en la base de datos
-                        $id_hotel = $hotelModel->crear($nuevoHotel); // Devuelve el ID del hotel creado
-        
-                        if ($id_hotel) {
-                            // Asociar cada proveedor al hotel
-                            foreach ($id_proveedores as $id_proveedor) {
-                                $hotelModel->asociarProveedor($id_hotel, $id_proveedor);
-                            }
-                            header('Location: ' . URLROOT . '/admin/hoteles.php');
-                            exit;
-                        } else {
-                            throw new Exception("Error al crear el hotel en la base de datos.");
-                        }
-                    } else {
-                        $data['errors'] = $errors;
-                        $data['old'] = $_POST;
-                        throw new Exception("Error de validación en los datos proporcionados.");
-                    }
-                } catch (Exception $e) {
-                    $data['errors'][] = $e->getMessage();
-                    $data['old'] = $_POST;
-                    render('admin/views/hoteles/crear.php', $data, $styles, $scripts);
+    case 'post': 
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            try {
+                // Primero validamos todos los datos
+                $errors = validarDatos($_POST);
+                
+                // Validar que se haya seleccionado al menos un proveedor
+                $id_proveedores = $_POST['id_proveedor'] ?? [];
+                if (empty($id_proveedores)) {
+                    $errors['id_proveedor'] = "Debe seleccionar al menos un proveedor.";
                 }
+
+                // Si hay errores, lanzar excepción antes de subir la imagen
+                if (!empty($errors)) {
+                    $data['errors'] = $errors;
+                    $data['old'] = $_POST;
+                    throw new Exception("Error de validación en los datos proporcionados.");
+                }
+
+                // Si no hay errores, procedemos a subir la imagen
+                $resultado_subida = subirImagen($_FILES["imagen"]);
+                
+                if (!$resultado_subida['success']) {
+                    throw new Exception($resultado_subida['mensaje']);
+                }
+
+                $nuevoHotel = new Hotel(
+                    null, 
+                    $_POST['nombre'],
+                    $_POST['direccion'],
+                    $_POST['categoria'],
+                    $_POST['telefono'],
+                    $_POST['precio_por_noche'],
+                    $_POST['id_ciudad'],
+                    $resultado_subida['nombre_archivo']
+                );
+
+                // Crear el hotel en la base de datos
+                $id_hotel = $hotelModel->crear($nuevoHotel);
+
+                if ($id_hotel) {
+                    // Asociar cada proveedor al hotel
+                    foreach ($id_proveedores as $id_proveedor) {
+                        $hotelModel->asociarProveedor($id_hotel, $id_proveedor);
+                    }
+                    header('Location: ' . URLROOT . '/admin/hoteles.php');
+                    exit;
+                } else {
+                    throw new Exception("Error al crear el hotel en la base de datos.");
+                }
+                
+            } catch (Exception $e) {
+                $data['errors'][] = $e->getMessage();
+                $data['old'] = $_POST;
+                render('admin/views/hoteles/crear.php', $data, $styles, $scripts);
             }
-            break;
+        }
+        break;
         
     case 'editar':
         $id_hotel = $_GET['id'] ?? null;
@@ -105,33 +116,21 @@ switch($action) {
     case 'update': // Procesar formulario de edición
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             try {
+                // Primero validamos todos los datos
                 $errors = validarDatos($_POST);
-    
+                
                 $id_hotel = $_GET['id'] ?? null;
                 if (!$id_hotel) {
                     throw new Exception("ID del hotel no proporcionado.");
                 }
-                
-                $hotelActualizado = new Hotel(
-                    $id_hotel,
-                    $_POST['nombre'],
-                    $_POST['direccion'],
-                    $_POST['categoria'],
-                    $_POST['telefono'],
-                    $_POST['precio_por_noche'],
-                    $_POST['id_ciudad']
-                );
-                
+
                 $ids_proveedores = $_POST['id_proveedor'] ?? [];
-    
-                if (empty($errors)) {
-                    if ($hotelModel->actualizar($hotelActualizado, $ids_proveedores)) {
-                        header('Location: ' . URLROOT . '/admin/hoteles.php');
-                        exit;
-                    } else {
-                        throw new Exception("Error al actualizar el hotel");
-                    }
-                } else {
+                if (empty($ids_proveedores)) {
+                    $errors['id_proveedor'] = "Debe seleccionar al menos un proveedor.";
+                }
+
+                // Si hay errores, lanzar excepción antes de subir la imagen
+                if (!empty($errors)) {
                     $hotel = $hotelModel->getByID($id_hotel);
                     $proveedoresAsociados = $proveedorModel->getProveedoresByHotel($hotel->getID());
                     
@@ -143,6 +142,32 @@ switch($action) {
                     render('admin/views/hoteles/editar.php', $data, $styles, $scripts);
                     exit;
                 }
+
+                // Si no hay errores, procedemos a subir la imagen
+                $resultado_subida = subirImagen($_FILES["imagen"]);
+                    
+                if (!$resultado_subida['success']) {
+                    throw new Exception($resultado_subida['mensaje']);
+                }
+                
+                $hotelActualizado = new Hotel(
+                    $id_hotel,
+                    $_POST['nombre'],
+                    $_POST['direccion'],
+                    $_POST['categoria'],
+                    $_POST['telefono'],
+                    $_POST['precio_por_noche'],
+                    $_POST['id_ciudad'],
+                    $resultado_subida['nombre_archivo']
+                );
+
+                if ($hotelModel->actualizar($hotelActualizado, $ids_proveedores)) {
+                    header('Location: ' . URLROOT . '/admin/hoteles.php');
+                    exit;
+                } else {
+                    throw new Exception("Error al actualizar el hotel");
+                }
+                
             } catch (Exception $e) {
                 $hotel = $hotelModel->getByID($id_hotel);
                 $proveedoresAsociados = $proveedorModel->getProveedoresByHotel($hotel->getID());

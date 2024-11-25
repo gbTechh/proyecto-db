@@ -1,10 +1,36 @@
 <?php
 class VueloModel extends Model {
 
-    // Obtener todos los vuelos
-    public function getAll() {
-        $sql = "SELECT v.id_vuelo, v.num_vuelo, c.nombre as 'ciudad_origen', c2.nombre as 'ciudad_destino', v.fecha_salida, v.fecha_llegada, v.precio FROM vuelo v INNER JOIN ciudad c on v.ciudad_origen = c.id_ciudad INNER JOIN ciudad c2 on v.ciudad_destino = c2.id_ciudad;";
+    public function getTotal() {
+        $sql = "SELECT COUNT(*) as 'total' FROM vuelo v2 INNER JOIN ciudad c3 on v2.ciudad_origen = c3.id_ciudad INNER JOIN ciudad c4 on v2.ciudad_destino = c4.id_ciudad;";
+
         $stmt = $this->db->executeQuery($sql);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $row['total'];
+    }
+    // Obtener todos los vuelos
+    public function getAll($limit, $offset) {
+        $sql = "SELECT 
+                        v.id_vuelo, 
+                        v.num_vuelo, 
+                        c.nombre as 'ciudad_origen', 
+                        c2.nombre as 'ciudad_destino', 
+                        v.fecha_salida, 
+                        v.fecha_llegada, 
+                        v.precio,
+                        ? as total_registros 
+                    FROM vuelo v 
+                    INNER JOIN ciudad c ON v.ciudad_origen = c.id_ciudad 
+                    INNER JOIN ciudad c2 ON v.ciudad_destino = c2.id_ciudad 
+                    LIMIT $limit OFFSET $offset";
+        $total = $this->getTotal();
+            
+        // Ejecutar la consulta principal
+        $stmt = $this->db->executeQuery($sql, [
+            $total, // Para total_registros
+           
+        ]);
+
         $vuelos = [];
         
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
@@ -15,7 +41,8 @@ class VueloModel extends Model {
                 $row['ciudad_destino'],
                 $row['fecha_salida'],
                 $row['fecha_llegada'],
-                $row['precio']
+                $row['precio'],
+                $row['total_registros']
             );
         }
         

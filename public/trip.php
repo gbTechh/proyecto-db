@@ -96,7 +96,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'nombre' => $paquete['nombre'],
             'descripcion' => $paquete['descripcion'],
             'precio' => $paquete['precio'],
-            'ciudad' => $paquete['ciudad']
+            'ciudad' => $paquete['ciudad'],
+            'imagen' => $paquete['imagen']
         ];
     }
     foreach ($hoteles as $hotel) {
@@ -107,6 +108,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'categoria' => $hotel->getCategoria(),
             'telefono' => $hotel->getTelefono(),
             'precio_por_noche' => $hotel->getPrecioPorNoche(),
+            'imagen' => $hotel->getImagen()
         ];
     }
     foreach ($transportes as $transporte) {
@@ -132,7 +134,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'idioma' => $guiaturistico->getidioma()
         ];
     }
-
     header('Content-Type: application/json');
     echo json_encode($response);
     exit;

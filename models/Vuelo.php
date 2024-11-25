@@ -7,8 +7,9 @@ class Vuelo {
     private $fecha_salida;
     private $fecha_llegada;
     private $precio;
+    private $total;
   
-    public function __construct($ID_vuelo, $num_vuelo, $ciudad_origen, $ciudad_destino, $fecha_salida, $fecha_llegada, $precio) {
+    public function __construct($ID_vuelo, $num_vuelo, $ciudad_origen, $ciudad_destino, $fecha_salida, $fecha_llegada, $precio, $total = null) {
       $this->ID_vuelo = $ID_vuelo;
       $this->num_vuelo = $num_vuelo;
       $this->ciudad_origen = $ciudad_origen;
@@ -16,6 +17,7 @@ class Vuelo {
       $this->fecha_salida = $fecha_salida;
       $this->fecha_llegada = $fecha_llegada;
       $this->precio = $precio;
+      $this->total = $total;
     }
 
     // Getters
@@ -26,6 +28,7 @@ class Vuelo {
     public function getFechaSalida() { return $this->fecha_salida; }
     public function getFechaLlegada() { return $this->fecha_llegada; }
     public function getPrecio() { return $this->precio; }
+    public function getTotal() { return $this->total; }
 
     // Setters
     public function setID($ID_vuelo) { $this->ID_vuelo = $ID_vuelo; }
@@ -35,4 +38,5 @@ class Vuelo {
     public function setFechaSalida($fecha_salida) { $this->fecha_salida = $fecha_salida; }
     public function setFechaLlegada($fecha_llegada) { $this->fecha_llegada = $fecha_llegada; }
     public function setPrecio($precio) { $this->precio = $precio; }
+    public function setTotal($total) { $this->total = $total; }
 }

@@ -17,34 +17,37 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $username = $conn->real_escape_string($_POST["username"]);
     $password_ingresado = $_POST["password"]; 
 
-    $stmt = $conn->prepare("CALL VerificarUsuario(?, ?, @tipo_usuario, @nombre, @apellidos, @dni, @telefono, @email, @id_sucursal, @puesto)");
-    $stmt->bind_param("ss", $username, $password_ingresado);
+    // Llamar al procedimiento almacenado  
+    $stmt = $conn->prepare("CALL VerificarUsuario(?)");
+    $stmt->bind_param("s", $username);
     $stmt->execute();
 
-    $result = $conn->query("SELECT @tipo_usuario, @nombre, @apellidos, @dni, @telefono, @email, @id_sucursal, @puesto");
-    $row = $result->fetch_assoc();
+    $result = $stmt->get_result();
 
-    if ($row['@tipo_usuario'] === 'Empleado' || $row['@tipo_usuario'] === 'Cliente') {
-        $_SESSION['username'] = $username;
-        $_SESSION['nombre'] = $row['@nombre'];
-        $_SESSION['apellidos'] = $row['@apellidos'];
-        $_SESSION['dni'] = $row['@dni'];
-        $_SESSION['telefono'] = $row['@telefono'];
-        
-        if ($row['@tipo_usuario'] === 'Empleado') {
-            $_SESSION['id_sucursal'] = $row['@id_sucursal'];
-            $_SESSION['puesto'] = $row['@puesto'];
-            header("Location: " . URLROOT ." /admin/sucursales");
+    if ($result->num_rows > 0) {
+        $row = $result->fetch_assoc();
+        $hashed_password = $row['c_password']; 
+        // Verificar la contraseña
+        if (password_verify($password_ingresado, $hashed_password)) {
+            // Contraseña correcta, iniciar sesión
+            $_SESSION['username'] = $username;
+            $_SESSION['nombre'] = $row['nombre'];
+            $_SESSION['apellidos'] = $row['apellidos'];
+            $_SESSION['dni'] = $row['dni'];
+            $_SESSION['telefono'] = $row['telefono'];
+            $_SESSION['email'] = $row['email'];
+            
+            // Redirigir al usuario
+            header("Location: " . URLROOT ."/index.php");
+            exit();
         } else {
-            $_SESSION['email'] = $row['@email'];
-            header("Location:" . URLROOT . "/index.php");
+            // Contraseña incorrecta
+            echo "Contraseña incorrecta.";
         }
-        exit();
-    } elseif ($row['@tipo_usuario'] === 'No encontrado') {
-        echo "Usuario no encontrado.";
     } else {
-        echo "Contraseña incorrecta.";
+        echo "Usuario o Contraseña incorrectos.";
     }
+
 
     $stmt->close();
     $conn->close();
@@ -57,7 +60,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Iniciar sesión</title>
-    <link rel="stylesheet" href="public/assets/css/login.css"> 
+    <link rel="stylesheet" href="<?= URLROOT. "/public/assets/css/login.css"?>"> 
 </head>
 <body>
     <div class="container">

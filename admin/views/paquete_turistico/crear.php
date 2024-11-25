@@ -1,3 +1,4 @@
+
 <div class="paquete_turistico">
     <div class="wrapp-title">
         <h1 class="title">Crear Paquete Turístico</h1>
@@ -5,9 +6,12 @@
             Volver a la lista
         </a>
     </div>
+    <?php if (isset($errors[0])): ?>
+            <div class="invalid-feedback"><?php echo $errors[0]; ?></div>
+    <?php endif; ?>
 
     <div class="wrapp-paquete">
-        <form action="paquete_turistico.php?action=guardar" method="POST" class="paquete-form">
+        <form action="paquete_turistico.php?action=post" enctype="multipart/form-data" method="POST" class="paquete-form">
             
             <!-- Nombre del Paquete -->
             <div class="form-group">
@@ -54,27 +58,41 @@
                     <div class="invalid-feedback"><?php echo $errors['precio']; ?></div>
                 <?php endif; ?>
             </div>
-
+             <!-- IAMGEN del Hotel -->
+            <div class="form-group">
+                <label for="imagen">Seleccionar imagen *</label>
+                <input 
+                    type="file" 
+                    id="imagen" 
+                    accept="image/*"
+                    name="imagen" 
+                    class="form-control <?php echo isset($errors['imagen']) ? 'is-invalid' : ''; ?>"               
+                    required
+                >
+                <?php if (isset($errors['imagen'])): ?>
+                    <div class="invalid-feedback"><?php echo $errors['imagen']; ?></div>
+                <?php endif; ?>
+            </div>        
             <!-- Ciudad -->
             <div class="form-group">
-                <label for="ciudad">Ciudad *</label>
+                <label for="id_ciudad">Ciudad *</label>
                 <select 
-                    id="ciudad" 
-                    name="ciudad" 
-                    class="form-control <?php echo isset($errors['ciudad']) ? 'is-invalid' : ''; ?>"
+                    id="id_ciudad" 
+                    name="id_ciudad" 
+                    class="form-control <?php echo isset($errors['id_ciudad']) ? 'is-invalid' : ''; ?>"
                     required
                 >
                     <option value="">Seleccione una ciudad</option>
                     <?php foreach ($ciudades as $ciudad): ?>
                         <option value="<?php echo $ciudad->getId(); ?>" <?php 
-                            echo isset($old['ciudad']) && $old['ciudad'] == $ciudad->getId() ? 'selected' : ''; 
+                            echo isset($old['id_ciudad']) && $old['id_ciudad'] == $ciudad->getId() ? 'selected' : ''; 
                         ?>>
                             <?php echo $ciudad->getNombre(); ?>
                         </option>
                     <?php endforeach; ?>
                 </select>
-                <?php if (isset($errors['ciudad'])): ?>
-                    <div class="invalid-feedback"><?php echo $errors['ciudad']; ?></div>
+                <?php if (isset($errors['id_ciudad'])): ?>
+                    <div class="invalid-feedback"><?php echo $errors['id_ciudad']; ?></div>
                 <?php endif; ?>
             </div>
 

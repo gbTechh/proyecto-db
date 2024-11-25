@@ -3,13 +3,20 @@ require '../init.php';
 
 require ROOT . '/models/PaqueteTuristico.php'; 
 require ROOT . '/models/PaqueteTuristicoModel.php';
+require ROOT . '/models/Ciudad.php'; 
+require ROOT . '/models/CiudadModel.php';
 
 $paqueteTuristicoModel = new PaqueteTuristicoModel();
 $paquetes = $paqueteTuristicoModel->getAll();
 
+
+$ciudadModel = new CiudadModel();
+$ciudades = $ciudadModel->getAll();
+
 $data = [
   'title' => 'Lista de todos los paquetes turisticos disponibles',
-  'paquetes' => $paquetes
+  'paquetes' => $paquetes,
+  'ciudades' => $ciudades
 ];
 
 $styles = ['paquete_turistico']; // Cargará /assets/admin/css/paquete_turistico.css
@@ -19,6 +26,48 @@ $scripts = ['paquete_turistico']; // Cargará /assets/admin/js/paquete_turistico
 $action = $_GET['action'] ?? 'index';
 
 switch($action) {
+    case 'post': // Crear paquete turistico
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            try {
+                // Validar datos
+                $errors = validarDatos($_POST);
+
+                if (!empty($errors)) {
+                    $data['errors'] = $errors;
+                    $data['old'] = $_POST;
+                    throw new Exception("Error de validación en los datos proporcionados.");
+                }
+
+                $resultado_subida = subirImagen($_FILES["imagen"]);
+                if (!$resultado_subida['success']) {
+                    throw new Exception($resultado_subida['mensaje']);
+                }
+                // Crear instancia de paquete_turistico
+                $nuevoPaqueteTuristico = new PaqueteTuristico(
+                    null, // ID se genera automáticamente en la base de datos
+                    $_POST['nombre'],
+                    $_POST['descripcion'],
+                    $_POST['precio'],
+                    $_POST['id_ciudad'],
+                    $resultado_subida['nombre_archivo']                   
+                );
+
+                // Intentar guardar en la base de datos
+                if ($paqueteTuristicoModel->crear($nuevoPaqueteTuristico)) {
+                    header('Location: ' . URLROOT . '/admin/paquete_turistico.php');
+                    exit;
+                } else {
+                    $data['errors'] = $errors;
+                    $data['old'] = $_POST;
+                    throw new Exception("Error al crear el paquete turistico.");
+                }
+            } catch (Exception $e) {
+                $data['errors'][] = $e->getMessage();
+                $data['old'] = $_POST;
+                render('admin/views/paquete_turistico/crear.php', $data, $styles, $scripts);
+            }
+        }
+    break;
     case 'crear':
         render('admin/views/paquete_turistico/crear.php', $data, $styles, $scripts);
         break;
@@ -27,4 +76,17 @@ switch($action) {
         break;
     default:
         render('admin/views/paquete_turistico/index.php', $data, $styles, $scripts);
+}
+
+
+function validarDatos($data) {
+    $errors = [];
+
+    // Validar costo
+    if (empty($data['precio']) || !is_numeric($data['precio']) || $data['precio'] < 0) {
+        $errors['precio'] = "El costo debe ser un número válido mayor o igual a 0.";
+    }
+
+
+    return $errors;
 }

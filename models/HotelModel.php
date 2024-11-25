@@ -3,7 +3,7 @@ class HotelModel extends Model {
 
     // Obtener todos los hoteles
     public function getAll() {
-        $sql = "SELECT h.id_hotel, h.nombre, h.categoria, h.telefono, h.direccion, h.precio_por_noche, c.nombre AS ciudad
+        $sql = "SELECT h.id_hotel, h.nombre, h.categoria, h.telefono, h.direccion, h.precio_por_noche, c.nombre as 'ciudad', h.imagen
                 FROM hotel h
                 INNER JOIN ciudad c ON h.id_ciudad = c.id_ciudad";  
         
@@ -19,6 +19,7 @@ class HotelModel extends Model {
                 $row['telefono'],
                 $row['precio_por_noche'],
                 $row['ciudad'],
+                $row['imagen'] ?? '',
             );
             $hoteles[] = $hotel;
         }
@@ -41,22 +42,24 @@ class HotelModel extends Model {
                 $row['categoria'],
                 $row['telefono'],
                 $row['precio_por_noche'],
-                $row['id_ciudad']
+                $row['id_ciudad'],
+                $row['imagen'],
             );
         }
         return null;
     }
 
     public function crear(Hotel $hotel) {
-        $sql = "INSERT INTO hotel (nombre, direccion, categoria, telefono, precio_por_noche, id_ciudad) 
-                VALUES (?, ?, ?, ?, ?, ?)";
+        $sql = "INSERT INTO hotel (nombre, direccion, categoria, telefono, precio_por_noche, id_ciudad, imagen) 
+                VALUES (?, ?, ?, ?, ?, ?, ?)";
         $this->db->executeQuery($sql, [
             $hotel->getNombre(),
             $hotel->getDireccion(),
             $hotel->getCategoria(),
             $hotel->getTelefono(),
             $hotel->getPrecioPorNoche(),
-            $hotel->getCiudad()
+            $hotel->getCiudad(),
+            $hotel->getImagen()
         ]);
 
         return $this->db->getLastInsertId();
@@ -74,7 +77,7 @@ class HotelModel extends Model {
     // Actualizar un hotel
     public function actualizar(Hotel $hotel, $ids_proveedores) {
         $sql = "UPDATE hotel 
-                SET nombre = ?, direccion = ?, categoria = ?, telefono = ?, precio_por_noche = ?, id_ciudad = ? 
+                SET nombre = ?, direccion = ?, categoria = ?, telefono = ?, precio_por_noche = ?, id_ciudad = ?, imagen = ?
                 WHERE id_hotel = ?";
         
         $resultado = $this->db->executeQuery($sql, [
@@ -84,6 +87,7 @@ class HotelModel extends Model {
             $hotel->getTelefono(),
             $hotel->getPrecioPorNoche(),
             $hotel->getCiudad(),
+            $hotel->getImagen(),
             $hotel->getID()
         ]);
 
@@ -123,7 +127,7 @@ class HotelModel extends Model {
         if ($ciudad) {
             $idCiudad = $ciudad['id_ciudad'];
             // Obtener los hoteles en esa ciudad
-            $sql = "SELECT id_hotel, nombre, direccion, categoria, telefono, precio_por_noche, id_ciudad 
+            $sql = "SELECT id_hotel, nombre, direccion, categoria, telefono, precio_por_noche, id_ciudad, imagen
                     FROM hotel WHERE id_ciudad = ?";
             $stmt = $this->db->executeQuery($sql, [$idCiudad]);
             $hoteles = [];
@@ -136,7 +140,8 @@ class HotelModel extends Model {
                     $row['categoria'],
                     $row['telefono'],
                     $row['precio_por_noche'],
-                    $row['id_ciudad']
+                    $row['id_ciudad'],
+                    $row['imagen']
                 );
             }
             
@@ -154,7 +159,7 @@ class HotelModel extends Model {
     public function buscarHoteles($nombreCiudad) {
         $idCiudad = $this->getCiudadIdPorNombre($nombreCiudad);
 
-        $sql = "SELECT h.id_hotel, h.nombre, h.direccion, h.categoria, h.telefono, h.precio_por_noche, c.id_ciudad FROM hotel h
+        $sql = "SELECT h.id_hotel, h.nombre, h.direccion, h.categoria, h.telefono, h.precio_por_noche, c.id_ciudad, h.imagen FROM hotel h
         INNER JOIN ciudad c ON h.id_ciudad = c.id_ciudad
         WHERE c.id_ciudad = ?";
         $stmt = $this->db->executeQuery($sql, [$idCiudad]);
@@ -168,7 +173,8 @@ class HotelModel extends Model {
                 $row['categoria'],
                 $row['telefono'],
                 $row['precio_por_noche'],
-                $row['id_ciudad']
+                $row['id_ciudad'],
+                $row['imagen']
             );
         }
         
@@ -177,79 +183,79 @@ class HotelModel extends Model {
 
 
     // Obtener hoteles paginados
-    public function getPaginated($page = 1, $limit = 10, $search = '') {
-        try {
-            $offset = ($page - 1) * $limit;
+    // public function getPaginated($page = 1, $limit = 10, $search = '') {
+    //     try {
+    //         $offset = ($page - 1) * $limit;
             
-            // Consulta base
-            $sql = "SELECT id_hotel, nombre, direccion, categoria, telefono, precio_por_noche, id_ciudad FROM hotel";
-            $countSql = "SELECT COUNT(*) as total FROM hotel";
-            $params = [];
+    //         // Consulta base
+    //         $sql = "SELECT id_hotel, nombre, direccion, categoria, telefono, precio_por_noche, id_ciudad FROM hotel";
+    //         $countSql = "SELECT COUNT(*) as total FROM hotel";
+    //         $params = [];
 
-            // Si hay búsqueda, agregarla a las consultas
-            if (!empty($search)) {
-                $searchWhere = "WHERE nombre LIKE :search OR direccion LIKE :search OR categoria LIKE :search";
-                $sql .= $searchWhere;
-                $countSql .= $searchWhere;
-                $params[':search'] = "%$search%";
-            }
+    //         // Si hay búsqueda, agregarla a las consultas
+    //         if (!empty($search)) {
+    //             $searchWhere = "WHERE nombre LIKE :search OR direccion LIKE :search OR categoria LIKE :search";
+    //             $sql .= $searchWhere;
+    //             $countSql .= $searchWhere;
+    //             $params[':search'] = "%$search%";
+    //         }
 
-            // Agregar limit y offset para paginación
-            $sql .= " LIMIT :limit OFFSET :offset";
+    //         // Agregar limit y offset para paginación
+    //         $sql .= " LIMIT :limit OFFSET :offset";
 
-            // Obtener total de hoteles
-            $stmt = $this->db->prepare($countSql);
-            if (!empty($search)) {
-                $stmt->bindValue(':search', "%$search%", PDO::PARAM_STR);
-            }
-            $stmt->execute();
-            $total = $stmt->fetch(PDO::FETCH_ASSOC)['total'];
+    //         // Obtener total de hoteles
+    //         $stmt = $this->db->prepare($countSql);
+    //         if (!empty($search)) {
+    //             $stmt->bindValue(':search', "%$search%", PDO::PARAM_STR);
+    //         }
+    //         $stmt->execute();
+    //         $total = $stmt->fetch(PDO::FETCH_ASSOC)['total'];
 
-            // Ejecutar la consulta principal para obtener los hoteles
-            $stmt = $this->db->prepare($sql);
-            if (!empty($search)) {
-                $stmt->bindValue(':search', "%$search%", PDO::PARAM_STR);
-            }
-            $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
-            $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
-            $stmt->execute();
+    //         // Ejecutar la consulta principal para obtener los hoteles
+    //         $stmt = $this->db->prepare($sql);
+    //         if (!empty($search)) {
+    //             $stmt->bindValue(':search', "%$search%", PDO::PARAM_STR);
+    //         }
+    //         $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+    //         $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+    //         $stmt->execute();
 
-            $hoteles = [];
-            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                $hoteles[] = new Hotel(
-                    $row['id_hotel'],
-                    $row['nombre'],
-                    $row['direccion'],
-                    $row['categoria'],
-                    $row['telefono'],
-                    $row['precio_por_noche'],
-                    $row['id_ciudad']
-                );
-            }
+    //         $hoteles = [];
+    //         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+    //             $hoteles[] = new Hotel(
+    //                 $row['id_hotel'],
+    //                 $row['nombre'],
+    //                 $row['direccion'],
+    //                 $row['categoria'],
+    //                 $row['telefono'],
+    //                 $row['precio_por_noche'],
+    //                 $row['id_ciudad']
+    //             );
+    //         }
 
-            // Convertir los objetos Hotel a arrays para JSON
-            $hotelesArray = array_map(function($hotel) {
-                return [
-                    'id_hotel' => $hotel->getID(),
-                    'nombre' => $hotel->getNombre(),
-                    'direccion' => $hotel->getDireccion(),
-                    'categoria' => $hotel->getCategoria(),
-                    'telefono' => $hotel->getTelefono(),
-                    'precio_por_noche' => $hotel->getPrecioPorNoche(),
-                    'id_ciudad' => $hotel->getCiudad()
-                ];
-            }, $hoteles);
+    //         // Convertir los objetos Hotel a arrays para JSON
+    //         $hotelesArray = array_map(function($hotel) {
+    //             return [
+    //                 'id_hotel' => $hotel->getID(),
+    //                 'nombre' => $hotel->getNombre(),
+    //                 'direccion' => $hotel->getDireccion(),
+    //                 'categoria' => $hotel->getCategoria(),
+    //                 'telefono' => $hotel->getTelefono(),
+    //                 'precio_por_noche' => $hotel->getPrecioPorNoche(),
+    //                 'id_ciudad' => $hotel->getCiudad()
+    //             ];
+    //         }, $hoteles);
 
-            return [
-                'data' => $hotelesArray,
-                'total' => $total,
-                'totalPages' => ceil($total / $limit),
-                'currentPage' => $page
-            ];
+    //         return [
+    //             'data' => $hotelesArray,
+    //             'total' => $total,
+    //             'totalPages' => ceil($total / $limit),
+    //             'currentPage' => $page
+    //         ];
 
-        } catch (PDOException $e) {
-            throw new Exception("Error en la consulta: " . $e->getMessage());
-        }
-    }
+    //     } catch (PDOException $e) {
+    //         throw new Exception("Error en la consulta: " . $e->getMessage());
+    //     }
+    // }
 }
 ?>

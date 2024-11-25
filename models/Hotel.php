@@ -7,8 +7,9 @@ class Hotel {
     private $telefono;
     private $precio_por_noche;
     private $ciudad;
+    private $imagen;
   
-    public function __construct($id_hotel, $nombre, $direccion, $categoria, $telefono, $precio_por_noche, $ciudad) {
+    public function __construct($id_hotel, $nombre, $direccion, $categoria, $telefono, $precio_por_noche, $ciudad, $imagen) {
       $this->id_hotel = $id_hotel;
       $this->nombre = $nombre;
       $this->direccion = $direccion;
@@ -16,6 +17,7 @@ class Hotel {
       $this->telefono = $telefono;
       $this->precio_por_noche = $precio_por_noche;
       $this->ciudad = $ciudad;
+      $this->imagen = $imagen;
     }
 
     // Getters
@@ -26,6 +28,7 @@ class Hotel {
     public function getTelefono() { return $this->telefono; }
     public function getPrecioPorNoche() { return $this->precio_por_noche; }
     public function getCiudad() { return $this->ciudad; } 
+    public function getImagen() { return $this->imagen; } 
 
     // Setters
     public function setID($id_hotel) { $this->id_hotel = $id_hotel; }
@@ -35,5 +38,6 @@ class Hotel {
     public function setTelefono($telefono) { $this->telefono = $telefono; }
     public function setPrecioPorNoche($precio_por_noche) { $this->precio_por_noche = $precio_por_noche; }
     public function setCiudad($ciudad) { $this->ciudad = $ciudad; }
+    public function setImagen($imagen) { $this->imagen = $imagen; }
   
 }

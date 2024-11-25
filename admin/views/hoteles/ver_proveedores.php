@@ -13,6 +13,7 @@
             <p><strong>Teléfono:</strong> <?php echo htmlspecialchars($hotel->getTelefono()); ?></p>
             <p><strong>Precio por noche:</strong> <?php echo number_format($hotel->getPrecioPorNoche(), 2); ?> USD</p>
             <p><strong>Ciudad:</strong> <?php echo htmlspecialchars($ciudad->getNombre()); ?></p>
+            <img class="show-img" src="<?= URLROOT . "/uploads/" . $hotel->getImagen();?>">
         </div>
 
         <div class="proveedores-section">

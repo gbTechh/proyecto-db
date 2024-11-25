@@ -1,3 +1,4 @@
+let url = "localhost/agencia";
 document.getElementById('search-form').addEventListener('submit', async function (e) {
     e.preventDefault(); // Evitar que se recargue la página
 
@@ -174,7 +175,7 @@ function mostrarPaquetes(paquetes) {
     return paquetes.map(paquete => `
         <div class="card-trips">
             <div class="container-img">
-                <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjZ9mgEZn1p-zB-YGa2qkYv2sLey6-Wai5_02ZA8Z7O1l5rEWD7mycDXNeAlc6GbqkzmrAkkp5CYoHxxDiheqDBAObYHPWtAkdL0_v_R77VAz1bjE2uoLBiypWe2UMksLvXfDkuT0TH0Qg/s1600/Ca%25C3%25B1%25C3%25B3n+del+Colca+con+c%25C3%25B3ndores_baja.jpg" />
+                <img src="/agencia/uplodas/${paquete.imagen}" />
              
             </div>
             <div class="content-card-trips">
@@ -202,7 +203,7 @@ function mostrarHoteles(hoteles) {
     return hoteles.map(hotel => `
         <div class="card-trips">
             <div class="container-img">
-                <img src="https://images.trvl-media.com/lodging/32000000/31720000/31717800/31717706/92b5831e.jpg?impolicy=fcrop&w=357&h=201&p=1&q=medium" />
+                <img src="/agencia/uploads/${hotel.imagen}" />
             </div>
             <div class="content-card-trips">
                 <p class="date">Direccion: ${hotel.direccion}</p>
@@ -291,7 +292,7 @@ function seleccionarguia(id, nombre, idioma) {
     };
     localStorage.setItem(`guiaSeleccionado`, JSON.stringify(guiaSeleccionado));
     console.log("guia guardado:", guiaSeleccionado);
-    alert(`guia seleccionado: ${guiaSeleccionado.id}`);
+    alert(`guia seleccionado: ${guiaSeleccionado.nombre}`);
 }
 function formatearFecha(fecha) {
     const date = new Date(fecha); // Convierte la cadena en un objeto Date
@@ -359,7 +360,7 @@ function seleccionarTransporte(id, empresa, costo, tipo) {
     };
     localStorage.setItem(`transporteSeleccionado`, JSON.stringify(transporteSeleccionado));
     console.log("Transporte guardado:", transporteSeleccionado);
-    alert(`Transporte seleccionado: ${transporteSeleccionado.id}`);
+    alert(`Transporte seleccionado: ${transporteSeleccionado.tipo}`);
 }
 
 function seleccionarServicio(id, descripcion, costo) {
@@ -370,7 +371,7 @@ function seleccionarServicio(id, descripcion, costo) {
     };
     localStorage.setItem(`servicioSeleccionado`, JSON.stringify(servicioSeleccionado));
     console.log("Servicio guardado:", servicioSeleccionado);
-    alert(`Servicio seleccionado: ${servicioSeleccionado.id}`);
+    alert(`Servicio seleccionado: ${servicioSeleccionado.ddescripcion}`);
 }
 
 function datos_seleccionados(id) {

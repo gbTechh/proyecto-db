@@ -31,7 +31,7 @@ class ServicioModel extends Model {
 
     public function buscarServicios($nombreCiudad) {
         $idCiudad = $this->getCiudadIdPorNombre($nombreCiudad);
-        $sql = "SELECT s.id_servicio, s.descripcion, s.costo FROM servicio s
+        $sql = "SELECT s.id_servicio, s.descripcion, s.costo, c.nombre as 'ciudad' FROM servicio s
         INNER JOIN ciudad c ON s.ciudad_int = c.id_ciudad
         WHERE c.id_ciudad = ?";
     

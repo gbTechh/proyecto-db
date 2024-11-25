@@ -17,7 +17,7 @@
   padding: 1rem 0;
   border-radius: 0.75rem;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, max(300px, calc(25% - 1rem))), 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, max(180px, calc(25% - 1rem))), 1fr));
   gap: 1rem;
 }
 
@@ -91,4 +91,63 @@
   display: flex;
   justify-content: space-between;
   margin-top: 1rem;
+}
+
+/*****************PAGINACION*******************/
+
+.pagination-form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px 0;
+}
+
+.pagination-controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.pagination-button {
+    padding: 8px 12px;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    color: #4a5568;
+    text-decoration: none;
+    font-size: 14px;
+    transition: all 0.2s;
+}
+
+.pagination-button:hover {
+    background-color: #f7fafc;
+}
+
+.pagination-button.active {
+    background-color: #3182ce;
+    color: white;
+    border-color: #3182ce;
+}
+
+.pagination-ellipsis {
+    color: #a0aec0;
+    padding: 0 4px;
+}
+
+.items-per-page {
+    margin-left: 16px;
+    padding-left: 16px;
+    border-left: 1px solid #e2e8f0;
+}
+
+.items-per-page select {
+    padding: 6px 8px;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    color: #4a5568;
+    background-color: white;
+    font-size: 14px;
 }

@@ -3,7 +3,7 @@ class PaqueteTuristicoModel extends Model {
 
     // Obtener todos los paquetes turísticos
     public function getAll() {
-        $sql = "SELECT id_paquete, nombre, descripcion, precio, id_ciudad FROM paquete_turistico";
+        $sql = "SELECT id_paquete, nombre, descripcion, precio, id_ciudad, imagen FROM paquete_turistico";
         $stmt = $this->db->executeQuery($sql);
         $paquetes = [];
         
@@ -13,7 +13,8 @@ class PaqueteTuristicoModel extends Model {
                 $row['nombre'],
                 $row['descripcion'],
                 $row['precio'],
-                $row['id_ciudad']
+                $row['id_ciudad'],
+                $row['imagen']
             );
         }
         
@@ -32,7 +33,8 @@ class PaqueteTuristicoModel extends Model {
                 $row['nombre'],
                 $row['descripcion'],
                 $row['precio'],
-                $row['id_ciudad']
+                $row['id_ciudad'],
+                $row['imagen']
             );
         }
         return null;
@@ -40,29 +42,30 @@ class PaqueteTuristicoModel extends Model {
 
     // Crear nuevo paquete turístico
     public function crear(PaqueteTuristico $paquete) {
-        $sql = "INSERT INTO paquete_turistico (nombre, descripcion, precio, id_ciudad) 
-                VALUES (?, ?, ?, ?)";
+        $sql = "INSERT INTO paquete_turistico (nombre, descripcion, precio, id_ciudad, imagen) 
+                VALUES (?, ?, ?, ?, ?)";
         
         return $this->db->executeQuery($sql, [
             $paquete->getNombre(),
             $paquete->getDescripcion(),
             $paquete->getPrecio(),
-            $paquete->getCiudad()
+            $paquete->getCiudad(),
+            $paquete->getImagen()
         ]);
     }
 
     // Actualizar paquete turístico
     public function actualizar(PaqueteTuristico $paquete) {
         $sql = "UPDATE paquete_turistico 
-                SET nombre = ?, descripcion = ?, precio = ? 
+                SET nombre = ?, descripcion = ?, precio = ?, imagen = ? 
                 WHERE id_paquete = ?";
         
         return $this->db->executeQuery($sql, [
             $paquete->getNombre(),
             $paquete->getDescripcion(),
             $paquete->getPrecio(),
-            $paquete->getID(),
-            $paquete->getCiudad()
+            $paquete->getImagen(),
+            $paquete->getID()
         ]);
     }
 
@@ -81,7 +84,6 @@ class PaqueteTuristicoModel extends Model {
 
     // Obtener paquetes turísticos por ciudad
     public function buscarPaquetes($nombreCiudad) {
-
         $idCiudad = $this->getCiudadIdPorNombre($nombreCiudad);
 
         $sql = "SELECT 
@@ -90,7 +92,8 @@ class PaqueteTuristicoModel extends Model {
             p.descripcion,
             p.precio,
             c.id_ciudad,
-            c.nombre as nombre_ciudad
+            c.nombre as nombre_ciudad,
+            p.imagen
         FROM paquete_turistico p
         INNER JOIN ciudad c ON p.id_ciudad = c.id_ciudad
         WHERE c.id_ciudad = ?";
@@ -105,7 +108,8 @@ class PaqueteTuristicoModel extends Model {
                 'nombre' => $row['nombre'],
                 'descripcion' => $row['descripcion'],
                 'precio' => $row['precio'],
-                'ciudad' => $row['nombre_ciudad']
+                'ciudad' => $row['nombre_ciudad'],
+                'imagen' => $row['imagen'] 
             ];
         }
 

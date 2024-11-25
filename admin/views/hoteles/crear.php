@@ -7,7 +7,7 @@
     </div>
 
     <div class="wrapp-hoteles">
-        <form action="hoteles.php?action=post" method="POST" class="hotel-form">
+        <form action="hoteles.php?action=post" method="POST" enctype="multipart/form-data" class="hotel-form">
             
             <!-- Nombre del Hotel -->
             <div class="form-group">
@@ -113,6 +113,21 @@
                 </select>
                 <?php if (isset($errors['id_ciudad'])): ?>
                     <div class="invalid-feedback"><?php echo $errors['id_ciudad']; ?></div>
+                <?php endif; ?>
+            </div>
+            <!-- IAMGEN del Hotel -->
+            <div class="form-group">
+                <label for="imagen">Seleccionar imagen *</label>
+                <input 
+                    type="file" 
+                    id="imagen" 
+                    accept="image/*"
+                    name="imagen" 
+                    class="form-control <?php echo isset($errors['imagen']) ? 'is-invalid' : ''; ?>"               
+                    required
+                >
+                <?php if (isset($errors['imagen'])): ?>
+                    <div class="invalid-feedback"><?php echo $errors['imagen']; ?></div>
                 <?php endif; ?>
             </div>
             

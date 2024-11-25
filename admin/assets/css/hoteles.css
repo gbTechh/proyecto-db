@@ -284,3 +284,11 @@ a {
 .btn-ver-mas:hover {
   background-color: #0056b3;
 }
+
+.show-img {
+  display: block;
+  border-radius: 0.75rem;
+  width: 180px;
+  aspect-ratio: 1/1;
+  object-fit: cover;
+}
