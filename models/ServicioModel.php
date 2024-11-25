@@ -72,11 +72,11 @@ class ServicioModel extends Model {
 
     // Crear un nuevo servicio
     public function crear(Servicio $servicio) {
-        $sql = "INSERT INTO servicio (id_servicio, proveedor, descripcion, costo, ciudad) 
-                VALUES (?, ?, ?, ?, ?)";
+        $sql = "INSERT INTO servicio (id_proveedor, descripcion, costo, ciudad_int) 
+                VALUES (?, ?, ?, ?)";
         
         return $this->db->executeQuery($sql, [
-            $servicio->getID(),
+         
             $servicio->getProveedor(),
             $servicio->getDescripcion(),
             $servicio->getCosto(),

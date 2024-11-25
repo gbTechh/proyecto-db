@@ -281,13 +281,28 @@ INSERT INTO proveedor (nombre, direccion, telefono, email) VALUES
 ('Tours & Más', 'Jr. Tours 567', '000111222', 'tours@email.com');
 
 -- 7. servicio (independiente)
-INSERT INTO servicio (id_proveedor, descripcion, costo) VALUES
-(1, 'Cita en el spa', 50.00),
-(2, 'Sesion e fotos', 80.00),
-(3, 'Paseo en lancha', 65.00),
-(4, 'Tour gastronomico', 100.00),
-(5, 'Excursion ecologica', 120.00);
-
+INSERT INTO servicio (id_proveedor, descripcion, costo, ciudad_int) VALUES
+(1, 'Cita en el spa', 50.00, 1),
+(2, 'Sesión de fotos en el centro histórico', 80.00, 2),
+(3, 'Paseo en lancha por el río Tieté', 65.00, 3),
+(4, 'Tour gastronómico por Brasilia', 100.00, 4),
+(5, 'Excursión ecológica en viñedos', 120.00, 5),
+(1, 'Cita en el spa frente al Morro de Arica', 50.00, 6),
+(3, 'Tour gastronómico en Bogotá', 100.00, 7),
+(4, 'Sesión de fotos en Comuna 13', 80.00, 8),
+(2, 'Paseo en lancha por el Delta del Tigre', 65.00, 9),
+(3, 'Excursión ecológica en las Sierras de Córdoba', 120.00, 10);
+INSERT INTO servicio (id_proveedor, descripcion, costo, ciudad_int) VALUES
+(1, 'Masaje relajante en el spa', 60.00, 1),
+(2, 'Tour histórico con guía local', 85.00, 2),
+(3, 'Paseo en bote por el río Tieté', 70.00, 3),
+(4, 'Degustación de platos típicos de Brasilia', 95.00, 4),
+(5, 'Ruta de viñedos en bicicleta', 125.00, 5),
+(1, 'Excursión al Morro de Arica al amanecer', 55.00, 6),
+(2, 'Cena gourmet en Bogotá', 110.00, 7),
+(3, 'Recorrido cultural en Comuna 13', 90.00, 8),
+(4, 'Tour ecológico por el Delta del Tigre', 75.00, 9),
+(5, 'Senderismo en las Sierras de Córdoba', 130.00, 10);
 
 -- 8. promocion 
 INSERT INTO promocion (descripcion, descuento) VALUES ('sin descuento', 0.00);
