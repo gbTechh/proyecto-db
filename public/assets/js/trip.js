@@ -175,7 +175,7 @@ function mostrarPaquetes(paquetes) {
     return paquetes.map(paquete => `
         <div class="card-trips">
             <div class="container-img">
-                <img src="/agencia/uplodas/${paquete.imagen}" />
+                <img src="/agencia/uploads/${paquete.imagen}" />
              
             </div>
             <div class="content-card-trips">
