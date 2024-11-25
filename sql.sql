@@ -551,7 +551,7 @@ END;
 //
 DELIMITER ;
 
-
+/****ESTO ES DESPUEEEEEEEEEEEEEES**/
 -- cliente
 -- INSERT INTO cliente (dni, nombre, apellidos, telefono, email, c_username, c_password) VALUES
 -- ('12345671', 'Luis', 'Rodríguez Pérez', '998777666', 'luis@email.com', 'lrodri', 'cpass123'),
